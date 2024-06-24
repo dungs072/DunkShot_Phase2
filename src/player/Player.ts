@@ -44,6 +44,7 @@ class Player extends Phaser.GameObjects.Image {
         this.scene.physics.world.enable(this)
         this.body.allowGravity = true
         this.body.setCircle(100)
+        this.body.setBounce(0.5)
         this.body.setCollideWorldBounds(true, this.horizontalBound, 0)
     }
     public update() {

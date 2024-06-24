@@ -25,7 +25,7 @@ class MainGameScene extends Scene {
             scene: this,
             x: 500,
             y: 250,
-            texture: 'ball',
+            texture: 'basketball',
         })
         this.basket = new Basket({
             scene: this,
@@ -34,7 +34,7 @@ class MainGameScene extends Scene {
             texture: 'net01',
         })
 
-        this.physics.add.collider(this.player, this.basket)
+        this.physics.add.collider(this.player, this.basket.getNets())
     }
     update(): void {
         this.player.update()
