@@ -1,12 +1,12 @@
 import IImageConstructor from '../types/image'
-class Ball extends Phaser.GameObjects.Image {
+class Ball extends Phaser.GameObjects.Sprite {
     declare body: Phaser.Physics.Arcade.Body
 
     // private drawer: Phaser.GameObjects.Graphics
 
     private horizontalBound: number
 
-    //private forceAmount: number
+    private forceAmount: number
 
     // public getBody(): Phaser.Physics.Arcade.Body{
     //     return this.body
@@ -14,7 +14,7 @@ class Ball extends Phaser.GameObjects.Image {
 
     constructor(params: IImageConstructor) {
         super(params.scene, params.x, params.y, params.texture, params.frame)
-        //this.forceAmount = 100
+        this.forceAmount = 750
         this.horizontalBound = 0.7
         this.initImage()
         this.initInput()
@@ -24,8 +24,8 @@ class Ball extends Phaser.GameObjects.Image {
     }
     private initImage() {
         this.setOrigin(0.5, 0.5)
-        this.setDepth(0)
-        this.setScale(0.2)
+        this.setDepth(5)
+        this.setScale(0.25)
         //this.drawer = this.scene.add.graphics()
     }
 
@@ -53,6 +53,9 @@ class Ball extends Phaser.GameObjects.Image {
     private handleDragStart(pointer: Phaser.Input.Pointer): void {
         this.setPosition(pointer.x, pointer.y)
         this.body.allowGravity = false
+        if (this.parentContainer) {
+            this.parentContainer.remove(this)
+        }
     }
     private handleDrag(pointer: Phaser.Input.Pointer): void {
         this.setPosition(pointer.x, pointer.y)
@@ -60,6 +63,19 @@ class Ball extends Phaser.GameObjects.Image {
     }
     private handleDragEnd(): void {
         this.body.allowGravity = true
+    }
+    public toggleStickMode(state: boolean): void {
+        this.body.allowGravity = !state
+        this.body.immovable = state
+        if (state) {
+            this.body.setVelocity(0, 0)
+        }
+    }
+    public getForceAmount(): number {
+        return this.forceAmount
+    }
+    public setForceAmount(amount: number): void {
+        this.forceAmount = amount
     }
     // private debug(): void {
     //     this.drawer.clear()

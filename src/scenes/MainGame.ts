@@ -1,8 +1,9 @@
 import { Scene } from 'phaser'
 import Ball from '../player/Ball'
 import Basket from '../basket/Basket'
+import EmptyColliderGameObject from '../basket/EmptyColliderGameObject'
 class MainGameScene extends Scene {
-    private player: Ball
+    private ball: Ball
     private basket: Basket
     constructor() {
         super({
@@ -22,9 +23,9 @@ class MainGameScene extends Scene {
     create(): void {
         const sky = this.add.image(0, 0, 'sky').setOrigin(0)
         sky.setDisplaySize(window.innerWidth, window.innerHeight)
-        this.player = new Ball({
+        this.ball = new Ball({
             scene: this,
-            x: 500,
+            x: 300,
             y: 250,
             texture: 'basketball',
         })
@@ -33,6 +34,12 @@ class MainGameScene extends Scene {
             x: 300,
             y: 400,
         })
+        this.physics.add.collider(
+            this.ball,
+            this.basket.getColliders(),
+            this.ballHitBasket,
+            undefined
+        )
 
         this.basket = new Basket({
             scene: this,
@@ -40,92 +47,25 @@ class MainGameScene extends Scene {
             y: 200,
         })
 
-        this.physics.add.collider(this.player, this.basket)
+        this.physics.add.collider(
+            this.ball,
+            this.basket.getColliders(),
+            this.ballHitBasket,
+            undefined
+        )
     }
-    update(): void {
-        this.player.update()
+    update(delta: number): void {
+        this.basket.updateRimPosition(delta)
     }
-    // preload() {
-    //
-    //     this.load.spritesheet('dude', 'assets/dude.png', {
-    //         frameWidth: 32,
-    //         frameHeight: 48,
-    //     })
-    // }
-    // create() {
-    //     const sky = this.add.image(0, 0, 'sky').setOrigin(0)
-    //     sky.setDisplaySize(window.innerWidth, window.innerHeight)
 
-    //     const platforms = this.physics.add.staticGroup()
-
-    //     platforms.create(400, 568, 'ground').setScale(2).refreshBody()
-
-    //     platforms.create(600, 400, 'ground')
-    //     platforms.create(50, 250, 'ground')
-    //     platforms.create(750, 220, 'ground')
-
-    //     this.player = this.physics.add.sprite(100, 450, 'dude')
-    //     this.player.setBounce(0.2)
-    //     this.player.setCollideWorldBounds(true)
-
-    //     this.anims.create({
-    //         key: 'left',
-    //         frames: this.anims.generateFrameNumbers('dude', {
-    //             start: 0,
-    //             end: 3,
-    //         }),
-    //         frameRate: 10,
-    //         repeat: -1,
-    //     })
-
-    //     this.anims.create({
-    //         key: 'turn',
-    //         frames: [{ key: 'dude', frame: 4 }],
-    //         frameRate: 20,
-    //     })
-
-    //     this.anims.create({
-    //         key: 'right',
-    //         frames: this.anims.generateFrameNumbers('dude', {
-    //             start: 5,
-    //             end: 8,
-    //         }),
-    //         frameRate: 10,
-    //         repeat: -1,
-    //     })
-    //     this.player.setGravityY(200)
-    //     this.physics.add.collider(this.player, platforms)
-
-    //     const stars = this.physics.add.group({
-    //         key:'star',
-    //         repeat: 11,
-    //         setXY:{x:12, y: 0, stepX: 70}
-    //     })
-    //     stars.children.iterate((child)=>
-    //         child.(Phaser.Math.FloatBetween(0.4, 0.8))
-    //     )
-    //     this.physics.add.collider(stars, platforms)
-    //     this.physics.add.overlap(this.player, stars, collectStar, null, this)
-
-    // }
-    // private collectStar(player, star: ){
-    //     star.d
-    // }
-    // update() {
-    //     const cursors = this.input.keyboard?.createCursorKeys()
-    //     if (cursors?.left.isDown) {
-    //         this.player.setVelocityX(-160)
-    //         this.player.anims.play('left', true)
-    //     } else if (cursors?.right.isDown) {
-    //         this.player.setVelocityX(160)
-    //         this.player.anims.play('right', true)
-    //     } else {
-    //         this.player.setVelocityX(0)
-    //         this.player.anims.play('turn')
-    //     }
-    //     if (cursors?.up.isDown && this.player.body.touching.down) {
-    //         this.player.setVelocityY(-360)
-    //     }
-    // }
+    private ballHitBasket(ball: Ball, other: EmptyColliderGameObject): void {
+        if (!other.getIsCenter()) {
+            return
+        }
+        const gameObj = other.parentContainer
+        if (gameObj instanceof Basket) {
+            gameObj.addBall(ball)
+        }
+    }
 }
 export default MainGameScene
