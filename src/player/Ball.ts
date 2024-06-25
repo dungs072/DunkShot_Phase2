@@ -1,5 +1,5 @@
 import IImageConstructor from '../types/image'
-class Player extends Phaser.GameObjects.Image {
+class Ball extends Phaser.GameObjects.Image {
     declare body: Phaser.Physics.Arcade.Body
 
     // private drawer: Phaser.GameObjects.Graphics
@@ -25,7 +25,7 @@ class Player extends Phaser.GameObjects.Image {
     private initImage() {
         this.setOrigin(0.5, 0.5)
         this.setDepth(0)
-        this.setScale(0.5)
+        this.setScale(0.2)
         //this.drawer = this.scene.add.graphics()
     }
 
@@ -69,4 +69,4 @@ class Player extends Phaser.GameObjects.Image {
     //     this.drawer.setDepth(1)
     // }
 }
-export default Player
+export default Ball

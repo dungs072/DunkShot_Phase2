@@ -1,5 +1,5 @@
 interface IImageConstructor {
-    scene: Phaser.Scene
+    scene: Scene
     x: number
     y: number
     texture: string

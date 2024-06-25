@@ -1,8 +1,8 @@
 import { Scene } from 'phaser'
-import Player from '../player/Player'
+import Ball from '../player/Ball'
 import Basket from '../basket/Basket'
 class MainGameScene extends Scene {
-    private player: Player
+    private player: Ball
     private basket: Basket
     constructor() {
         super({
@@ -16,12 +16,13 @@ class MainGameScene extends Scene {
         this.load.image('ball', 'assets/balls/babyface.png')
         this.load.image('basketball', 'assets/balls/basketball.png')
         this.load.image('rim01', 'assets/baskets/rim01.png')
+        this.load.image('rim02', 'assets/baskets/rim02.png')
         this.load.image('net01', 'assets/baskets/net01.png')
     }
     create(): void {
         const sky = this.add.image(0, 0, 'sky').setOrigin(0)
         sky.setDisplaySize(window.innerWidth, window.innerHeight)
-        this.player = new Player({
+        this.player = new Ball({
             scene: this,
             x: 500,
             y: 250,
@@ -29,12 +30,17 @@ class MainGameScene extends Scene {
         })
         this.basket = new Basket({
             scene: this,
-            x: 600,
-            y: 300,
-            texture: 'net01',
+            x: 300,
+            y: 400,
         })
 
-        this.physics.add.collider(this.player, this.basket.getNets())
+        this.basket = new Basket({
+            scene: this,
+            x: 700,
+            y: 200,
+        })
+
+        this.physics.add.collider(this.player, this.basket)
     }
     update(): void {
         this.player.update()
