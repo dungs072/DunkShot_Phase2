@@ -9,6 +9,7 @@ class EmptyColliderGameObject extends Phaser.Physics.Arcade.Image {
         this.scene.physics.world.enable(this)
         this.body.allowGravity = false
         this.body.setImmovable(true)
+        this.body.setFriction(0, 0)
     }
     public setColliderSize(x: number, y: number): void {
         this.body.setSize(x, y)
