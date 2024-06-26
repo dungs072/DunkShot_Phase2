@@ -1,4 +1,5 @@
 import { Game, Types } from 'phaser'
+import LoadingScene from './scenes/LoadingScene'
 import MainGameScene from './scenes/MainGameScene'
 
 //  Find out more information about the Game Config at:
@@ -20,7 +21,7 @@ const config: Types.Core.GameConfig = {
             debug: true,
         },
     },
-    scene: [MainGameScene],
+    scene: [LoadingScene, MainGameScene],
 }
 
 export default new Game(config)

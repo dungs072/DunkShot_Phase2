@@ -48,7 +48,7 @@ class BasketManager {
         })
     }
     public createBasket(): Basket {
-        const randomX = this.isLeft
+        let randomX = this.isLeft
             ? Phaser.Math.Between(150, this.screenWidth / 2)
             : Phaser.Math.Between(
                   this.screenWidth / 2 + 50,
@@ -61,6 +61,13 @@ class BasketManager {
         if (this.preBasket) {
             randomY = Phaser.Math.Between(this.minHeight, this.maxHeight) * -1
             randomY += this.preBasket.y
+            if (Math.abs(randomX - this.preBasket.x) < 50) {
+                if (this.isLeft) {
+                    randomX += 50
+                } else {
+                    randomX -= 50
+                }
+            }
         } else {
             randomY = this.screenHeight - 175
         }

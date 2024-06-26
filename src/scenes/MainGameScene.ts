@@ -1,10 +1,14 @@
 import { Scene } from 'phaser'
 import Ball from '../player/Ball'
 import BasketManager from '../basket/BasketManager'
+import TrajectoryPath from '../trajectory/TrajectoryPath'
+import MainMenuUI from '../ui/MainMenuUI'
+import MainGameUI from '../ui/MainGameUI'
 class MainGameScene extends Scene {
     private ball: Ball
     private basketManager: BasketManager
     private camera: Phaser.Cameras.Scene2D.Camera
+    private preBallPosY: number
     constructor() {
         super({
             key: 'MainGameScene',
@@ -17,21 +21,12 @@ class MainGameScene extends Scene {
             window.innerHeight
         )
     }
-    preload(): void {
-        this.load.image('sky', 'assets/sky.png')
-        this.load.image('bg', 'assets/bgs/bg4.png')
-        this.load.image('bgbricks', 'assets/bgs/bgWithBricks.png')
-        this.load.image('ground', 'assets/platform.png')
-        this.load.image('ball', 'assets/balls/babyface.png')
-        this.load.image('basketball', 'assets/balls/basketball.png')
-        this.load.image('rim01', 'assets/baskets/rim01.png')
-        this.load.image('rim02', 'assets/baskets/rim02.png')
-        this.load.image('net01', 'assets/baskets/net01.png')
-    }
+    preload(): void {}
     create(): void {
-        // const sky = this.add.image(0, 0, 'sky').setOrigin(0)
-        // sky.setDisplaySize(window.innerWidth, window.innerHeight)
-        // // sky.setDepth(3)
+        new TrajectoryPath(this, 20)
+        const menu = new MainMenuUI(this, 0, 0)
+        const gameUI = new MainGameUI(this, 0, 0)
+        gameUI.setVisible(false)
         this.physics.world.setBounds(
             0,
             0,
@@ -64,19 +59,30 @@ class MainGameScene extends Scene {
         const basket = this.basketManager.createBasket()
         this.ball.x = basket.x
         this.camera = this.cameras.main
+        menu.setFingerPosition(this.ball.x - 100, this.ball.y + 200)
+
+        this.input.once('pointerdown', () => {
+            if (menu.getStateMenu()) {
+                menu.toggleMenu(false)
+                gameUI.setVisible(true)
+            }
+        })
     }
     update(time: number, delta: number): void {
         this.basketManager.update(delta)
-
+        const maxDownBorder = this.camera.scrollY + this.camera.height - 150
         if (!this.ball.parentContainer) {
-            const maxUpBorder =
-                this.camera.scrollY + this.camera.height / 2 - 100
+            const maxUpBorder = this.camera.scrollY + this.camera.height / 2
+
             if (this.ball.y < maxUpBorder) {
                 this.camera.scrollY -= 200 * (delta / 1000)
+            } else if (this.ball.y > maxDownBorder) {
+                this.camera.scrollY += 200 * (delta / 1000)
             }
-            const maxDownBorder = this.camera.scrollY + this.camera.height - 150
-            if (this.ball.y > maxDownBorder) {
-                this.camera.scrollY += 500 * (delta / 1000)
+            this.preBallPosY = this.ball.y
+        } else {
+            if (this.preBallPosY > maxDownBorder) {
+                this.camera.scrollY += 200 * (delta / 1000)
             }
         }
     }
