@@ -5,7 +5,7 @@ import MainGameScene from './scenes/MainGameScene'
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: window.innerWidth,
+    width: window.innerWidth / 2,
     height: window.innerHeight,
     parent: 'game-container',
     backgroundColor: '#028af8',

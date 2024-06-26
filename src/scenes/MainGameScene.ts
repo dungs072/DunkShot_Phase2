@@ -1,10 +1,9 @@
 import { Scene } from 'phaser'
 import Ball from '../player/Ball'
-import Basket from '../basket/Basket'
-import EmptyColliderGameObject from '../basket/EmptyColliderGameObject'
+import BasketManager from '../basket/BasketManager'
 class MainGameScene extends Scene {
     private ball: Ball
-    private baskets: Basket[]
+    private basketManager: BasketManager
     private camera: Phaser.Cameras.Scene2D.Camera
     constructor() {
         super({
@@ -12,7 +11,11 @@ class MainGameScene extends Scene {
         })
     }
     init(): void {
-        this.baskets = []
+        this.basketManager = new BasketManager(
+            this,
+            window.innerWidth / 2,
+            window.innerHeight
+        )
     }
     preload(): void {
         this.load.image('sky', 'assets/sky.png')
@@ -29,90 +32,52 @@ class MainGameScene extends Scene {
         // const sky = this.add.image(0, 0, 'sky').setOrigin(0)
         // sky.setDisplaySize(window.innerWidth, window.innerHeight)
         // // sky.setDepth(3)
-
-        const mainGameBackground = this.add
-            .image(window.innerWidth / 4, 0, 'bg')
-            .setOrigin(0)
+        this.physics.world.setBounds(
+            0,
+            0,
+            window.innerWidth / 2,
+            0,
+            true,
+            true,
+            false,
+            false
+        )
+        const mainGameBackground = this.add.image(0, 0, 'bg').setOrigin(0)
         mainGameBackground.setDisplaySize(
             window.innerWidth / 2,
             window.innerHeight
         )
+        mainGameBackground.setScrollFactor(0, 0)
         // mainGameBackground.setDepth(4)
-        const bricks = this.add
-            .image(window.innerWidth / 4, 0, 'bgbricks')
-            .setOrigin(0)
+        const bricks = this.add.image(0, 0, 'bgbricks').setOrigin(0)
         bricks.setDisplaySize(window.innerWidth / 2, window.innerHeight)
+        bricks.setScrollFactor(0, 0)
         // bricks.setDepth(4)
 
         this.ball = new Ball({
             scene: this,
-            x: 400,
+            x: 200,
             y: 250,
             texture: 'basketball',
         })
-
-        this.baskets.push(
-            new Basket({
-                scene: this,
-                x: 400,
-                y: 400,
-            })
-        )
-        this.physics.add.collider(
-            this.ball,
-            this.baskets[0].getColliders(),
-            this.ballHitBasket,
-            undefined
-        )
-
-        this.baskets.push(
-            new Basket({
-                scene: this,
-                x: 700,
-                y: 200,
-            })
-        )
-
-        this.physics.add.collider(
-            this.ball,
-            this.baskets[1].getColliders(),
-            this.ballHitBasket,
-            undefined
-        )
+        this.basketManager.setBall(this.ball)
+        const basket = this.basketManager.createBasket()
+        this.ball.x = basket.x
         this.camera = this.cameras.main
     }
     update(time: number, delta: number): void {
-        console.log(this.ball.parentContainer)
-        this.baskets.forEach((basket) => {
-            basket.update(delta / 1000)
-            if (!this.ball.parentContainer) {
-                const distance = Phaser.Math.Distance.Between(
-                    this.ball.x,
-                    this.ball.y,
-                    basket.x,
-                    basket.y
-                )
-                if (distance > 100) {
-                    basket.toggleAllColliders(true)
-                }
-            }
-        })
-        if (this.ball.parentContainer) {
-        } else {
-            if (this.ball.y < this.camera.scrollY + this.camera.height / 2) {
-                this.camera.scrollY =
-                    (this.ball.y - this.camera.height / 2) * 50 * (delta / 1000)
-            }
-        }
-    }
+        this.basketManager.update(delta)
 
-    private ballHitBasket(ball: Ball, other: EmptyColliderGameObject): void {
-        if (!other.getIsCenter()) {
-            return
-        }
-        const gameObj = other.parentContainer
-        if (gameObj instanceof Basket) {
-            gameObj.addBall(ball)
+        if (!this.ball.parentContainer) {
+            const maxUpBorder =
+                this.camera.scrollY + this.camera.height / 2 - 100
+            if (this.ball.y < maxUpBorder) {
+                this.camera.scrollY -= 200 * (delta / 1000)
+            }
+            const maxDownBorder = this.camera.scrollY + this.camera.height - 150
+            if (this.ball.y > maxDownBorder) {
+                this.camera.scrollY += 500 * (delta / 1000)
+            }
         }
     }
 }
