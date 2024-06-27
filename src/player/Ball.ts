@@ -3,23 +3,24 @@ class Ball extends Phaser.GameObjects.Container {
     declare body: Phaser.Physics.Arcade.Body
 
     private forceAmount: number
-    private ballModel: Phaser.GameObjects.Sprite
+    private ballModel: Phaser.GameObjects.Image
 
     private initialVelocity: Phaser.Math.Vector2
 
-    private lineEffect: Phaser.Geom.Line
+    private lineEffect: Phaser.GameObjects.Line
+    private reverseVelocity: Phaser.Math.Vector2
 
     //private leftBounceEffect: Phaser.GameObjects.
 
     constructor(params: IImageConstructor) {
         super(params.scene, params.x, params.y)
-
+        this.reverseVelocity = new Phaser.Math.Vector2(0, 0)
         this.forceAmount = 7000
         this.initImage(params.texture, params.frame)
         this.initPhysic()
         this.initEffects()
         this.initialVelocity = new Phaser.Math.Vector2(0, 0)
-
+        this.moveDown(this.lineEffect)
         this.scene.add.existing(this)
     }
 
@@ -31,15 +32,15 @@ class Ball extends Phaser.GameObjects.Container {
             texture,
             frame
         )
-        this.ballModel.setOrigin(0.5, 0.5)
 
-        this.lineEffect = new Phaser.Geom.Line(0, 0, 50, 50)
+        this.ballModel.setOrigin(0.5, 0.5)
         this.add(this.ballModel)
+
         this.setDepth(12)
         this.setScale(0.25)
     }
 
-    private initPhysic() {
+    private initPhysic(): void {
         this.scene.physics.world.enable(this)
         this.body.allowGravity = true
         this.body.setCircle(100, -100, -100)
@@ -81,19 +82,32 @@ class Ball extends Phaser.GameObjects.Container {
             }
         )
     }
-    private initEffects() {
-        // this.lineEffect = new Phaser.GameObjects.Line(
-        //     this.scene,
-        //     0,
-        //     0,
-        //     100,
-        //     100,
-        //     200,
-        //     200,
-        //     0xff0000
-        // )
-        // this.setDepth(10)
-        // this.scene.add.existing(this.lineEffect)
+    private initEffects(): void {
+        this.lineEffect = new Phaser.GameObjects.Line(
+            this.scene,
+            50,
+            50,
+            100,
+            100,
+            400,
+            400,
+            0xf4c05a
+        )
+        this.lineEffect.setAlpha(0.9)
+        this.lineEffect.setLineWidth(200, 10)
+
+        this.add(this.lineEffect)
+    }
+    public update(): void {
+        this.reverseVelocity.x = this.body.velocity.x * -1
+        this.reverseVelocity.y = this.body.velocity.y * -1
+
+        this.lineEffect.setTo(
+            100,
+            100,
+            this.reverseVelocity.x,
+            this.reverseVelocity.y
+        )
     }
     public toggleStickMode(state: boolean): void {
         this.body.allowGravity = !state
@@ -125,6 +139,9 @@ class Ball extends Phaser.GameObjects.Container {
     public toggleBall(state: boolean): void {
         this.setVisible(state)
         this.setActive(state)
+    }
+    public toggleLineEffect(state: boolean): void {
+        this.lineEffect.setVisible(state)
     }
 }
 export default Ball

@@ -15,6 +15,8 @@ class BasketManager {
     private preBasket: Basket | undefined
     private scene: Scene
 
+    private explosionEffect: Phaser.GameObjects.Sprite
+
     constructor(scene: Scene, screenWidth: number, screenHeight: number) {
         this.scene = scene
         this.maxHeight = 250
@@ -25,6 +27,33 @@ class BasketManager {
         this.baskets = []
         this.prevHeight = screenHeight
         this.isLeft = true
+
+        this.explosionEffect = new Phaser.GameObjects.Sprite(
+            this.scene,
+            0,
+            0,
+            'ball'
+        ).setScale(1.5)
+        this.explosionEffect.setDepth(5)
+        this.explosionEffect.setVisible(false)
+        this.scene.add.existing(this.explosionEffect)
+        this.initAnimations()
+        this.setUpEvents()
+    }
+    private setUpEvents(): void {
+        this.explosionEffect.on('animationcomplete-explosion', () => {
+            this.toggleExplosionEffect(false)
+        })
+    }
+    private initAnimations(): void {
+        this.scene.anims.create({
+            key: 'explosion',
+            frames: this.scene.anims.generateFrameNumbers('explosion', {
+                start: 0,
+                end: 12,
+            }),
+            frameRate: 20,
+        })
     }
     public update(deltaTime: number): void {
         this.baskets.forEach((basket) => {
@@ -73,6 +102,7 @@ class BasketManager {
         }
 
         const basket = this.getFreeBasket(randomX, randomY)
+        basket.disableInteractive()
         if (!basket.getHasCollider()) {
             this.setUpColliders(basket)
             basket.setHasCollider(true)
@@ -97,7 +127,10 @@ class BasketManager {
 
         const gameObj = other.parentContainer
         if (gameObj instanceof Basket) {
+            this.toggleExplosionEffect(true, gameObj.x, gameObj.y - 40)
             gameObj.addBall(ball)
+            gameObj.setInteractive()
+
             if (this.preBasket && this.preBasket != gameObj) {
                 this.preBasket.toggleBasket(false)
             }
@@ -140,6 +173,14 @@ class BasketManager {
             basket.toggleBasket(state)
         })
     }
+    public toggleExplosionEffect(state: boolean, x = 0, y = 0): void {
+        this.explosionEffect.setVisible(state)
+        this.explosionEffect.setPosition(x, y)
+        if (state) {
+            this.explosionEffect.play('explosion')
+        }
+    }
+
     public getBaskets(): Basket[] {
         return this.baskets
     }

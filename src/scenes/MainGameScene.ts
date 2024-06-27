@@ -77,6 +77,7 @@ class MainGameScene extends Scene {
         this.setUpEvents()
     }
     update(time: number, delta: number): void {
+        this.ball.update()
         if (this.isOver) {
             return
         }

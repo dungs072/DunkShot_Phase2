@@ -1,4 +1,4 @@
-import { Cameras, Scene } from 'phaser'
+import { Scene } from 'phaser'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 
@@ -161,6 +161,7 @@ class Basket extends Phaser.GameObjects.Container {
         ball.setPosition(0, 0)
         ball.toggleStickMode(true)
         this.currentBall = ball
+        this.currentBall.toggleLineEffect(false)
         this.centerContainer.sendToBack(this.currentBall)
         this.toggleAllColliders(false)
         this.toggleCenterCollider(false)
@@ -192,7 +193,6 @@ class Basket extends Phaser.GameObjects.Container {
             pointer.x,
             pointer.y
         )
-        console.log(worldPointer)
 
         const angle =
             (Phaser.Math.Angle.Between(
@@ -302,6 +302,7 @@ class Basket extends Phaser.GameObjects.Container {
                 forceAmount,
                 this.currentBall.body.velocity
             )
+            this.currentBall.toggleLineEffect(true)
             this.currentBall = undefined
             this.canDrag = false
         }
