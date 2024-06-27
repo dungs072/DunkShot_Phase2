@@ -29,6 +29,9 @@ class Basket extends Phaser.GameObjects.Container {
     private canDrag: boolean
     private hasCollider: boolean
 
+    private maxPoint: number
+    private colliderPoints: Map<EmptyColliderGameObject, number>
+
     // private line: Phaser.Geom.Line
     // private graphics: Phaser.GameObjects.Graphics
 
@@ -48,14 +51,21 @@ class Basket extends Phaser.GameObjects.Container {
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         this.maxAngle = 45
+        this.colliderPoints = new Map<EmptyColliderGameObject, number>()
         this.groupColliders = new Phaser.GameObjects.Group(this.scene)
         this.groupColliders.runChildUpdate = true
         this.initChildren()
         this.initInput()
         this.initPhysic()
-        this.setDepth(5)
+        this.setUpPoint()
+        this.setDepth(14)
         this.scene.add.existing(this)
         this.canDrag = false
+    }
+    private setUpPoint() {
+        this.maxPoint = 2
+        this.colliderPoints.set(this.topLeftCollider, 1)
+        this.colliderPoints.set(this.topRightCollider, 1)
     }
     private initChildren() {
         this.net = new Phaser.GameObjects.Sprite(
@@ -138,6 +148,17 @@ class Basket extends Phaser.GameObjects.Container {
     private initPhysic(): void {
         this.scene.physics.add.staticGroup()
     }
+    public handleCollisionWithRim(collider: EmptyColliderGameObject): void {
+        if (collider == this.topLeftCollider) {
+            if (this.topLeftCollider) {
+                this.colliderPoints.set(this.topLeftCollider, 0)
+            }
+        } else if (collider == this.topRightCollider) {
+            if (this.topRightCollider) {
+                this.colliderPoints.set(this.topRightCollider, 0)
+            }
+        }
+    }
 
     public update(deltaTime: number): void {
         this.rim2.rotation = this.rotation
@@ -156,7 +177,7 @@ class Basket extends Phaser.GameObjects.Container {
             }
         }
     }
-    public addBall(ball: Ball): void {
+    public addBall(ball: Ball, canAddScore = true): void {
         this.centerContainer.add(ball)
         ball.setPosition(0, 0)
         ball.toggleStickMode(true)
@@ -168,7 +189,16 @@ class Basket extends Phaser.GameObjects.Container {
         this.maxScaleTargetY = 0.45
         this.minScaleTargetY = this.prevNetScaleY
         this.canDrag = true
-        Basket.eventEmitter.emit('balladded', 1)
+        if (canAddScore) {
+            let count = this.getPointAmount()
+            if (count) {
+                if (count <= 0) {
+                    count = 1
+                }
+
+                Basket.eventEmitter.emit('balladded', count)
+            }
+        }
     }
     public removeBalls(): void {
         this.centerContainer.removeAll()
@@ -230,7 +260,6 @@ class Basket extends Phaser.GameObjects.Container {
                 this.currentBall.body.velocity.x,
                 this.currentBall.body.velocity.y
             )
-            //console.log(this.currentBall.body.velocity)
             Basket.eventEmitter.emit(
                 'dragging',
                 this.currentBall.parentContainer.parentContainer.x,
@@ -320,6 +349,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.net.scaleY = this.prevNetScaleY
         this.centerCollider.y = this.prevCenterColliderY
         this.centerContainer.y = this.prevCenterContainerY
+        this.setUpPoint()
     }
 
     public toggleAllColliders(state: boolean): void {
@@ -359,6 +389,21 @@ class Basket extends Phaser.GameObjects.Container {
         this.prevNetScaleY = this.net.scaleY
         this.minScaleTargetY = this.maxScaleTargetY = 0
         this.canBack = false
+    }
+    public isPerfectThrow(): boolean {
+        const count = this.getPointAmount()
+
+        return count == this.maxPoint
+    }
+    private getPointAmount(): number | undefined {
+        let count = this.colliderPoints.get(this.topLeftCollider)
+        const temp = this.colliderPoints.get(this.topRightCollider)
+        if (count) {
+            if (temp) {
+                count += temp
+            }
+        }
+        return count
     }
 }
 export default Basket

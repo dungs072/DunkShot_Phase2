@@ -67,6 +67,9 @@ class OverGameUI extends Phaser.GameObjects.Container {
             duration: 50,
             ease: 'Sine.easeInOut',
             yoyo: true,
+            onComplete: () => {
+                this.playAgainButton.emit('playagain')
+            },
         })
     }
     public toggleUI(state: boolean): void {
@@ -74,7 +77,7 @@ class OverGameUI extends Phaser.GameObjects.Container {
         this.setActive(state)
     }
     public addHitPlayAgainListener(callBack: Function): void {
-        this.playAgainButton.on('pointerdown', callBack)
+        this.playAgainButton.on('playagain', callBack)
     }
     public setHighScoreText(amount: number) {
         this.highScoreText.text = amount.toString()
