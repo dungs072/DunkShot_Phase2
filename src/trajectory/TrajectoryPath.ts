@@ -13,7 +13,7 @@ class TrajectoryPath {
             this.points.push(point)
         }
         this.togglePoints(false)
-        Basket.draggingNet.on(
+        Basket.eventEmitter.on(
             'dragging',
             (x: number, y: number, velocityX: number, velocityY: number) => {
                 this.drawTrajectory(
@@ -22,10 +22,10 @@ class TrajectoryPath {
                 )
             }
         )
-        Basket.draggingNet.on('turnofftrajectory', () => {
+        Basket.eventEmitter.on('turnofftrajectory', () => {
             this.togglePoints(false)
         })
-        Basket.draggingNet.on('turnontrajectory', () => {
+        Basket.eventEmitter.on('turnontrajectory', () => {
             this.togglePoints(true)
         })
     }
@@ -60,7 +60,7 @@ class TrajectoryPath {
             this.points[i].setPosition(pos.x, pos.y)
         }
         if (normalVector) {
-            velocity.y += 200
+            velocity.y += 300
             const newVelocity = this.getReflectionVelocity(
                 velocity,
                 normalVector

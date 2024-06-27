@@ -12,7 +12,7 @@ class BasketManager {
     private prevHeight: number
     private isLeft: boolean
     private ball: Ball
-    private preBasket: Basket
+    private preBasket: Basket | undefined
     private scene: Scene
 
     constructor(scene: Scene, screenWidth: number, screenHeight: number) {
@@ -119,6 +119,26 @@ class BasketManager {
         const basket = new Basket(this.scene, x, y)
         this.baskets.push(basket)
         return basket
+    }
+    public toggleInteractive(state: boolean): void {
+        this.baskets.forEach((basket) => {
+            if (state) {
+                basket.setInteractive()
+            } else {
+                basket.disableInteractive()
+            }
+        })
+    }
+    public reset(): void {
+        this.prevHeight = this.screenHeight
+        this.preBasket = undefined
+        this.isLeft = true
+        this.toggleBaskets(false)
+    }
+    private toggleBaskets(state: boolean): void {
+        this.baskets.forEach((basket) => {
+            basket.toggleBasket(state)
+        })
     }
     public getBaskets(): Basket[] {
         return this.baskets

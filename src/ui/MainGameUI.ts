@@ -4,34 +4,30 @@ class MainGameUI extends Phaser.GameObjects.Container {
     private scoreText: Phaser.GameObjects.Text
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
-        this.initUI()
         this.setDepth(1)
+        this.initUI()
+
         this.scene.add.existing(this)
-        // this.stateMenu = true
-        // this.scene.tweens.add({
-        //     targets: this.dragIt,
-        //     alpha: { from: 1, to: 0.5 },
-        //     ease: 'Sine.InOut',
-        //     duration: 500,
-        //     repeat: -1,
-        //     yoyo: true,
-        // })
+        this.setScoreText(0)
     }
     private initUI(): void {
         this.scoreText = new Phaser.GameObjects.Text(
             this.scene,
             innerWidth / 4,
-            innerHeight / 6,
+            innerHeight / 4,
             '999',
             {
                 fontFamily: 'Arial',
-                color: '#645E5C',
+                color: '#BBB6B5',
                 fontSize: 75,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
         this.setScrollFactor(0, 0)
         this.add(this.scoreText)
+    }
+    public setScoreText(amount: number) {
+        this.scoreText.text = amount.toString()
     }
 }
 export default MainGameUI

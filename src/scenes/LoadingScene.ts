@@ -16,8 +16,11 @@ class LoadingScene extends Scene {
         this.load.image('net01', 'assets/baskets/net01.png')
         this.load.image('background', 'assets/bg.png')
 
-        this.load.image('dunkshot', 'assets/UI/Menu/dunkShot.png')
-        this.load.image('finger', 'assets/UI/Menu/finger.png')
+        // UI
+        this.load.image('dunkshot', 'assets/ui/menu/dunkShot.png')
+        this.load.image('finger', 'assets/ui/menu/finger.png')
+
+        this.load.image('playagain', 'assets/ui/over/playAgainButton.png')
     }
 
     create() {
