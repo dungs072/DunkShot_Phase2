@@ -111,7 +111,7 @@ class GameController {
             this.addScore(amount)
         })
     }
-    private restartGame(): void {
+    public restartGame(): void {
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
@@ -125,7 +125,7 @@ class GameController {
         this.addScore(-this.scoreCalculator.getCurrentScore())
         this.isOver = false
     }
-    private addScore(amount: number): void {
+    public addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
         this.gameUI.setScoreText(this.scoreCalculator.getCurrentScore())
     }

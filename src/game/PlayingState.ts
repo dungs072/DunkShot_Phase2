@@ -3,15 +3,15 @@ import IState from '../types/state'
 import GameController from './GameController'
 
 class PlayingState implements IState {
-    private scene: Scene
-    constructor(scene: Scene) {
-        this.scene = scene
+    private game: GameController
+    constructor(game: GameController) {
+        this.game = game
     }
-    public enter(game: GameController): void {
+    public enter(): void {
         console.log('start Playing state')
     }
-    public update(game: GameController): void {}
-    public exit(game: GameController): void {
+    public update() {}
+    public exit(): void {
         console.log('end Playing state')
     }
 }

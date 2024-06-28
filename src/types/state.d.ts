@@ -1,7 +1,7 @@
 import GameController from '../game/GameController'
 interface IState {
-    public enter(game: GameController): void
-    public update(game: GameController): void
-    public exit(game: GameController): void
+    public enter(): void
+    public update(): void
+    public exit(): void
 }
 export default IState
