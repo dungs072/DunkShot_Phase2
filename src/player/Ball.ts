@@ -101,7 +101,6 @@ class Ball extends Phaser.GameObjects.Container {
     public update(): void {
         this.reverseVelocity.x = this.body.velocity.x * -1
         this.reverseVelocity.y = this.body.velocity.y * -1
-
         this.lineEffect.setTo(
             100,
             100,

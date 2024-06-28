@@ -72,11 +72,11 @@ class BasketManager {
             frameRate: 20,
         })
     }
-    public update(deltaTime: number): void {
+    public update(delta: number): void {
         this.baskets.forEach((basket) => {
             if (basket.active) {
                 if (basket instanceof Basket) {
-                    basket.update(deltaTime)
+                    basket.update(delta)
                     if (basket.getCurrentBall() == undefined) {
                         const distance = Phaser.Math.Distance.Between(
                             this.ball.x,

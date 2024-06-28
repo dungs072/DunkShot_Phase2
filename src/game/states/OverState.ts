@@ -1,7 +1,5 @@
-import { Scene } from 'phaser'
-import OverGameUI from '../ui/OverGameUI'
-import GameController from './GameController'
-import IState from '../types/state'
+import GameController from '../GameController'
+import IState from '../../types/state'
 
 class OverState implements IState {
     private game: GameController
@@ -10,11 +8,16 @@ class OverState implements IState {
     }
     public enter(): void {
         console.log('start Over State')
+        this.game.getOverUI().toggleUI(true)
+        this.game
+            .getOverUI()
+            .setHighScoreText(this.game.getScoreCalculator().getHighScore())
         //this.overGameUI.setHighScoreText(game.getHighScore())
     }
-    public update(): void {}
+    public update(delta: number): void {}
     public exit(): void {
         console.log('end Over State')
+        this.game.getOverUI().toggleUI(true)
     }
 }
 export default OverState

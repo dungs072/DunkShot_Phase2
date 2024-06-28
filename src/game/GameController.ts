@@ -7,21 +7,47 @@ import MainGameUI from '../ui/MainGameUI'
 import ScoreCalculator from '../player/ScoreCalculator'
 import TrajectoryPath from '../trajectory/TrajectoryPath'
 import Basket from '../basket/Basket'
+import GameStateMachine from './GameStateMachine'
 
 class GameController {
     private ball: Ball
     private basketManager: BasketManager
     private camera: Phaser.Cameras.Scene2D.Camera
-    private preBallPosY: number
+
     private menu: MainMenuUI
     private overGameUI: OverGameUI
     private gameUI: MainGameUI
     private scoreCalculator: ScoreCalculator
-    private isOver: boolean
+
+    private gameStateMachine: GameStateMachine
 
     private scene: Scene
     constructor(scene: Scene) {
         this.scene = scene
+    }
+    public getGameMachine(): GameStateMachine {
+        return this.gameStateMachine
+    }
+    public getBall(): Ball {
+        return this.ball
+    }
+    public getBasketManager(): BasketManager {
+        return this.basketManager
+    }
+    public getMainCamera(): Phaser.Cameras.Scene2D.Camera {
+        return this.camera
+    }
+    public getMenuUI(): MainMenuUI {
+        return this.menu
+    }
+    public getOverUI(): OverGameUI {
+        return this.overGameUI
+    }
+    public getGameUI(): MainGameUI {
+        return this.gameUI
+    }
+    public getScoreCalculator(): ScoreCalculator {
+        return this.scoreCalculator
     }
 
     public initialize(): void {
@@ -62,72 +88,28 @@ class GameController {
         this.ball.x = basket.x
 
         this.menu.setFingerPosition(this.ball.x - 100, this.ball.y + 200)
-        this.overGameUI.addHitPlayAgainListener(() => {
-            this.restartGame()
-        })
-        this.setUpEvents()
-    }
-    update(delta: number): void {
-        this.ball.update()
-        if (this.isOver) {
-            return
-        }
-        this.basketManager.update(delta)
-        const maxDownBorder = this.camera.scrollY + this.camera.height - 150
-        if (!this.ball.parentContainer) {
-            if (this.ball.y > this.camera.scrollY + this.camera.height + 100) {
-                this.ball.toggleBall(false)
-                this.overGameUI.toggleUI(true)
-                this.basketManager.toggleInteractive(false)
-                this.scoreCalculator.saveHighScore()
-                this.overGameUI.setHighScoreText(
-                    this.scoreCalculator.getHighScore()
-                )
-                this.isOver = true
-            } else {
-                const maxUpBorder = this.camera.scrollY + this.camera.height / 2
 
-                if (this.ball.y < maxUpBorder) {
-                    this.camera.scrollY -= 200 * delta
-                } else if (this.ball.y > maxDownBorder) {
-                    this.camera.scrollY += 200 * delta
-                }
-                this.preBallPosY = this.ball.y
-            }
-        } else {
-            if (this.preBallPosY > maxDownBorder) {
-                this.camera.scrollY += 200 * delta
-            }
-        }
+        this.setUpEvents()
+        this.gameStateMachine = new GameStateMachine(this)
+        this.gameStateMachine.initialize(this.gameStateMachine.getMenuState())
     }
     private setUpEvents(): void {
-        this.scene.input.once('pointerdown', () => {
+        this.overGameUI.addHitPlayAgainListener(() => {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getRestartState()
+            )
+        })
+        this.scene.input.on('pointerdown', () => {
             if (this.menu.getStateMenu()) {
-                this.menu.toggleMenu(false)
-                this.gameUI.setVisible(true)
+                this.gameStateMachine.transitionTo(
+                    this.gameStateMachine.getPlayingState()
+                )
             }
         })
-        Basket.eventEmitter.on('balladded', (amount: number) => {
-            this.addScore(amount)
-        })
     }
-    public restartGame(): void {
-        this.camera.scrollY = 0
-        this.basketManager.reset()
-        this.basketManager.toggleInteractive(true)
-        const basket = this.basketManager.createBasket()
-        this.ball.x = basket.x
-        this.ball.y = 250
-        this.ball.toggleBall(true)
-        this.ball.body.setVelocity(0, 0)
-        this.menu.setFingerPosition(this.ball.x - 100, this.ball.y + 200)
-        this.overGameUI.toggleUI(false)
-        this.addScore(-this.scoreCalculator.getCurrentScore())
-        this.isOver = false
-    }
-    public addScore(amount: number): void {
-        this.scoreCalculator.addCurrentScore(amount)
-        this.gameUI.setScoreText(this.scoreCalculator.getCurrentScore())
+
+    update(delta: number): void {
+        this.gameStateMachine.update(delta)
     }
 }
 export default GameController
