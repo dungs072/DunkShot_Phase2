@@ -2,6 +2,7 @@ import Basket from './Basket'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
+import MovableBasket from './MovableBasket'
 class BasketManager {
     private baskets: Basket[]
     private maxHeight: number
@@ -20,8 +21,8 @@ class BasketManager {
 
     constructor(scene: Scene, screenWidth: number, screenHeight: number) {
         this.scene = scene
-        this.maxHeight = 250
-        this.minHeight = 200
+        this.maxHeight = 200
+        this.minHeight = 150
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
 
@@ -73,25 +74,25 @@ class BasketManager {
         })
     }
     public update(delta: number): void {
-        this.baskets.forEach((basket) => {
-            if (basket.active) {
-                if (basket instanceof Basket) {
-                    basket.update(delta)
-                    if (basket.getCurrentBall() == undefined) {
-                        const distance = Phaser.Math.Distance.Between(
-                            this.ball.x,
-                            this.ball.y,
-                            basket.x,
-                            basket.y
-                        )
-                        if (distance > 100) {
-                            basket.toggleAllColliders(true)
-                        }
-                        basket.toggleCenterCollider(this.ball.y < basket.y)
-                    }
+        for (let i = 0; i < this.baskets.length; i++) {
+            if (!this.baskets[i].active) continue
+            if (this.baskets[i] instanceof Basket) {
+                this.baskets[i].update(delta)
+                if (this.baskets[i].getCurrentBall() != undefined) continue
+                const distance = Phaser.Math.Distance.Between(
+                    this.ball.x,
+                    this.ball.y,
+                    this.baskets[i].x,
+                    this.baskets[i].y
+                )
+                if (distance > 100) {
+                    this.baskets[i].toggleAllColliders(true)
                 }
+                this.baskets[i].toggleCenterCollider(
+                    this.ball.y < this.baskets[i].y
+                )
             }
-        })
+        }
     }
     public createBasket(): Basket {
         let randomX = this.isLeft
@@ -115,7 +116,7 @@ class BasketManager {
                 }
             }
         } else {
-            randomY = this.screenHeight - 175
+            randomY = this.screenHeight / 1.5
         }
 
         const basket = this.getFreeBasket(randomX, randomY)
@@ -176,7 +177,7 @@ class BasketManager {
                 return this.baskets[i]
             }
         }
-        const basket = new Basket(this.scene, x, y)
+        const basket = new MovableBasket(this.scene, x, y, true, 100, 100)
         this.baskets.push(basket)
         return basket
     }

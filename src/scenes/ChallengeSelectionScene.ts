@@ -1,16 +1,13 @@
 import { Scene } from 'phaser'
-import GameController from '../game/GameController'
+import SelectionChallengeMenuUI from '../ui/SelectionChallengeMenuUI'
 import CONST from '../Const'
-class MainGameScene extends Scene {
-    private gameController: GameController
+class ChallengeSelectionScene extends Scene {
     constructor() {
         super({
-            key: 'MainGameScene',
+            key: 'ChallengeSelectionScene',
         })
     }
-    init() {
-        this.gameController = new GameController(this)
-    }
+    init() {}
     preload() {
         // initialize background
         const mainGameBackground = this.add.image(0, 0, 'bg').setOrigin(0)
@@ -20,10 +17,8 @@ class MainGameScene extends Scene {
         bricks.setDisplaySize(CONST.WIDTH_SIZE, CONST.HEIGHT_SIZE)
         bricks.setScrollFactor(0, 0)
 
-        this.gameController.initialize()
+        new SelectionChallengeMenuUI(this)
     }
-    update(time: number, delta: number) {
-        this.gameController.update(delta / 1000)
-    }
+    update(time: number, delta: number) {}
 }
-export default MainGameScene
+export default ChallengeSelectionScene

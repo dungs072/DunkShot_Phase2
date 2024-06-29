@@ -3,6 +3,7 @@ import IState from '../../types/state'
 import Ball from '../../player/Ball'
 import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
+import CONST from '../../Const'
 
 class RestartState implements IState {
     private game: GameController
@@ -35,12 +36,9 @@ class RestartState implements IState {
         this.basketManager.toggleInteractive(true)
         const basket = this.basketManager.createBasket()
         this.ball.x = basket.x
-        this.ball.y = 250
+        this.ball.y = CONST.HEIGHT_SIZE / 2
         this.ball.toggleBall(true)
         this.ball.body.setVelocity(0, 0)
-        // this.game
-        //     .getMenuUI()
-        //     .setFingerPosition(this.ball.x - 100, this.ball.y + 200)
         this.game.getOverUI().toggleUI(false)
         this.addScore(-this.scoreCalculator.getCurrentScore())
     }

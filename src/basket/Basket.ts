@@ -22,7 +22,6 @@ class Basket extends Phaser.GameObjects.Container {
 
     private currentBall: Ball | undefined
 
-    private maxAngle: number
     private maxScaleTargetY: number
     private minScaleTargetY: number
     private canBack: boolean
@@ -50,7 +49,6 @@ class Basket extends Phaser.GameObjects.Container {
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
-        this.maxAngle = 45
         this.colliderPoints = new Map<EmptyColliderGameObject, number>()
         this.groupColliders = new Phaser.GameObjects.Group(this.scene)
         this.groupColliders.runChildUpdate = true
@@ -73,19 +71,21 @@ class Basket extends Phaser.GameObjects.Container {
             0,
             0,
             'net01'
-        ).setScale(0.3)
+        ).setScale(0.4)
+        this.net.setOrigin(0.5, 0.5)
         const rim1 = new Phaser.GameObjects.Sprite(
             this.scene,
             0,
-            -25,
+            -30,
             'rim01'
-        ).setScale(0.3)
+        ).setScale(0.4)
+        rim1.setOrigin(0.5, 0.5)
         this.rim2 = new Phaser.GameObjects.Sprite(
             this.scene,
             this.x,
             this.y,
             'rim02'
-        ).setScale(0.3)
+        ).setScale(0.4)
         this.rim2.setDepth(2)
         this.rim2.setSize(375, 325)
         this.rim2.setOrigin(0.5, 0.5)
@@ -93,18 +93,24 @@ class Basket extends Phaser.GameObjects.Container {
         this.add(this.net)
         this.add(rim1)
 
-        this.topLeftCollider = new EmptyColliderGameObject(this.scene, 45, -50)
-        this.topLeftCollider.createCircleCollider(10, 10, 30)
+        this.topLeftCollider = new EmptyColliderGameObject(this.scene, 70, -40)
+        //this.topLeftCollider.createCircleCollider(10, 10, 30)
+        this.topLeftCollider.setSize(15, 15)
+        this.topLeftCollider.setOrigin(0.5, 0.5)
 
         this.topRightCollider = new EmptyColliderGameObject(
             this.scene,
-            -50,
-            -50
+            -70,
+            -40
         )
-        this.topRightCollider.createCircleCollider(10, 10, 30)
+        this.topRightCollider.setSize(15, 15)
 
-        this.centerCollider = new EmptyColliderGameObject(this.scene, 0, 25)
-        this.centerCollider.setColliderSize(50, 10)
+        this.centerCollider = new EmptyColliderGameObject(
+            this.scene,
+            0,
+            10
+        ).setOrigin(0.5, 0.5)
+        this.centerCollider.setColliderSize(50, 20)
         this.centerCollider.setIsCenter(true)
 
         this.netCollider = new EmptyColliderGameObject(this.scene, 0, 0)
@@ -163,14 +169,14 @@ class Basket extends Phaser.GameObjects.Container {
     public update(deltaTime: number): void {
         this.rim2.rotation = this.rotation
         if (this.canBack) {
-            this.decreaseNetSize(0.1, 7)
+            this.decreaseNetSize(0.1, 15)
             this.minScaleTargetY = this.maxScaleTargetY
             if (this.net.scaleY <= this.prevNetScaleY) {
                 this.canBack = false
                 this.minScaleTargetY = this.prevNetScaleY
             }
         } else if (this.minScaleTargetY < this.maxScaleTargetY) {
-            this.increaseNetSize(this.maxScaleTargetY, 0.1, 7)
+            this.increaseNetSize(this.maxScaleTargetY, 0.1, 15)
             if (this.net.scaleY >= this.maxScaleTargetY) {
                 this.maxScaleTargetY -= deltaTime * 6
                 this.canBack = true
@@ -186,7 +192,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.centerContainer.sendToBack(this.currentBall)
         this.toggleAllColliders(false)
         this.toggleCenterCollider(false)
-        this.maxScaleTargetY = 0.45
+        this.maxScaleTargetY = 0.6
         this.minScaleTargetY = this.prevNetScaleY
         this.canDrag = true
         if (canAddScore) {
@@ -212,7 +218,6 @@ class Basket extends Phaser.GameObjects.Container {
         this.prevNetScaleY = this.net.scaleY
         this.prevCenterColliderY = this.centerCollider.y
         this.prevCenterContainerY = this.centerContainer.y
-        this.turnOnTrajectoryPath()
     }
     private handleDrag(pointer: Phaser.Input.Pointer): void {
         if (!this.canDrag) {
@@ -224,33 +229,38 @@ class Basket extends Phaser.GameObjects.Container {
             pointer.y
         )
 
-        const angle =
-            (Phaser.Math.Angle.Between(
-                this.x,
-                this.y,
-                worldPointer.x,
-                worldPointer.y
-            ) -
-                90 * (Math.PI / 180)) *
-            0.02 *
-            20
-        const maxRad = this.maxAngle * (Math.PI / 180)
-
-        if (angle > -maxRad && angle <= maxRad) {
-            this.rotation = angle
-        }
+        let angle = Phaser.Math.Angle.Between(
+            this.x,
+            this.y,
+            worldPointer.x,
+            worldPointer.y
+        )
+        angle += (Math.PI / 180) * 270
+        this.rotation = angle
 
         // handle stretch
         let scaleFactor = pointer.getDistance() / 100
-        this.bounceNet(0.6, scaleFactor, worldPointer.y)
+        const distance = Phaser.Math.Distance.Between(
+            worldPointer.x,
+            worldPointer.y,
+            this.x,
+            this.y
+        )
+
+        this.bounceNet(0.6, scaleFactor, distance)
 
         this.triggerDragEvent()
     }
     private triggerDragEvent() {
         if (this.currentBall) {
-            let forceAmount =
-                this.currentBall.getForceAmount() * (this.net.scaleY * 10)
-            forceAmount = forceAmount > 700 ? 700 : forceAmount
+            let proportion =
+                (this.net.scaleY - this.prevNetScaleY) /
+                (0.6 - this.prevNetScaleY)
+            if (proportion > 1) proportion = 1
+            if (proportion < 0) proportion = 0
+
+            let forceAmount = this.currentBall.getForceAmount() * proportion
+
             this.scene.physics.velocityFromRotation(
                 this.rotation + (-90 * Math.PI) / 180,
                 forceAmount,
@@ -260,12 +270,14 @@ class Basket extends Phaser.GameObjects.Container {
                 this.currentBall.body.velocity.x,
                 this.currentBall.body.velocity.y
             )
+
             Basket.eventEmitter.emit(
                 'dragging',
                 this.currentBall.parentContainer.parentContainer.x,
                 this.currentBall.parentContainer.parentContainer.y,
                 this.currentBall.body.velocity.x,
-                this.currentBall.body.velocity.y
+                this.currentBall.body.velocity.y,
+                proportion
             )
             this.currentBall.body.setVelocity(0, 0)
         }
@@ -273,10 +285,10 @@ class Basket extends Phaser.GameObjects.Container {
     private bounceNet(
         maxScale: number,
         scaleFactor: number,
-        maxHeight: number,
+        currentDistance: number,
         speed = 1
     ): void {
-        if (this.y < maxHeight) {
+        if (currentDistance >= 50) {
             this.increaseNetSize(maxScale, scaleFactor, speed)
         } else {
             this.decreaseNetSize(scaleFactor, speed)
@@ -311,39 +323,38 @@ class Basket extends Phaser.GameObjects.Container {
         this.turnOffTrajectoryPath()
         if (this.net.scaleY <= this.prevNetScaleY) {
             this.resetNet()
-            this.rotation = 0
             return
         } else {
+            if (this.currentBall) {
+                let proportion =
+                    (this.net.scaleY - this.prevNetScaleY) /
+                    (0.6 - this.prevNetScaleY)
+                if (proportion > 1) proportion = 1
+                if (proportion < 0) proportion = 0
+                let forceAmount = this.currentBall.getForceAmount() * proportion
+                this.currentBall.setPosition(
+                    this.x + this.centerContainer.x,
+                    this.y + this.centerContainer.y
+                )
+
+                this.currentBall.toggleStickMode(false)
+                this.scene.physics.velocityFromRotation(
+                    this.rotation + (-90 * Math.PI) / 180,
+                    forceAmount,
+                    this.currentBall.body.velocity
+                )
+                //this.currentBall.toggleLineEffect(true)
+                this.currentBall = undefined
+                this.canDrag = false
+            }
             this.resetNet()
         }
-        if (this.currentBall) {
-            let forceAmount =
-                this.currentBall.getForceAmount() * (this.net.scaleY * 10)
-            forceAmount = forceAmount > 700 ? 700 : forceAmount
-            this.currentBall.setPosition(
-                this.x + this.centerContainer.x,
-                this.y + this.centerContainer.y
-            )
-
-            this.currentBall.toggleStickMode(false)
-            this.scene.physics.velocityFromRotation(
-                this.rotation + (-90 * Math.PI) / 180,
-                forceAmount,
-                this.currentBall.body.velocity
-            )
-            this.currentBall.toggleLineEffect(true)
-            this.currentBall = undefined
-            this.canDrag = false
-        }
-        this.rotation = 0
         this.centerContainer.removeAll()
     }
     private turnOffTrajectoryPath(): void {
         Basket.eventEmitter.emit('turnofftrajectory')
     }
-    private turnOnTrajectoryPath(): void {
-        Basket.eventEmitter.emit('turnontrajectory')
-    }
+
     private resetNet(): void {
         this.net.y = this.prevNetY
         this.net.scaleY = this.prevNetScaleY
@@ -404,6 +415,14 @@ class Basket extends Phaser.GameObjects.Container {
             }
         }
         return count
+    }
+    protected setBasketXPosition(x: number): void {
+        this.x += x
+        this.rim2.x += x
+    }
+    protected setBasketYPosition(y: number): void {
+        this.y += y
+        this.rim2.y += y
     }
 }
 export default Basket

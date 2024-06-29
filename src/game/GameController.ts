@@ -6,12 +6,15 @@ import OverGameUI from '../ui/OverGameUI'
 import MainGameUI from '../ui/MainGameUI'
 import ScoreCalculator from '../player/ScoreCalculator'
 import TrajectoryPath from '../trajectory/TrajectoryPath'
-import Basket from '../basket/Basket'
 import GameStateMachine from './GameStateMachine'
+import CONST from '../Const'
+import Obstacle from '../obstacle/Obstacle'
+import ObstacleManager from '../obstacle/ObstacleManager'
 
 class GameController {
     private ball: Ball
     private basketManager: BasketManager
+    private obstacleManager: ObstacleManager
     private camera: Phaser.Cameras.Scene2D.Camera
 
     private menu: MainMenuUI
@@ -53,14 +56,15 @@ class GameController {
     public initialize(): void {
         this.basketManager = new BasketManager(
             this.scene,
-            window.innerWidth / 2,
-            window.innerHeight
+            CONST.WIDTH_SIZE,
+            CONST.HEIGHT_SIZE
         )
+
         this.scoreCalculator = new ScoreCalculator()
         this.create()
     }
     private create(): void {
-        new TrajectoryPath(this.scene, 20)
+        new TrajectoryPath(this.scene, 10)
         this.menu = new MainMenuUI(this.scene, 0, 0)
         this.gameUI = new MainGameUI(this.scene, 0, 0)
         this.overGameUI = new OverGameUI(this.scene, 0, 0)
@@ -68,7 +72,7 @@ class GameController {
         this.scene.physics.world.setBounds(
             0,
             0,
-            window.innerWidth / 2,
+            CONST.WIDTH_SIZE,
             0,
             true,
             true,
@@ -78,20 +82,26 @@ class GameController {
 
         this.ball = new Ball({
             scene: this.scene,
-            x: 200,
-            y: 250,
+            x: CONST.WIDTH_SIZE / 3,
+            y: CONST.HEIGHT_SIZE / 2,
             texture: 'basketball',
         })
+        this.obstacleManager = new ObstacleManager(this.scene, this.ball)
         this.camera = this.scene.cameras.main
         this.basketManager.setBall(this.ball)
         const basket = this.basketManager.createBasket()
         this.ball.x = basket.x
 
-        this.menu.setFingerPosition(this.ball.x - 100, this.ball.y + 200)
+        this.menu.setFingerPosition(basket.x, basket.y)
 
         this.setUpEvents()
+
+        this.createObstacles()
         this.gameStateMachine = new GameStateMachine(this)
         this.gameStateMachine.initialize(this.gameStateMachine.getMenuState())
+    }
+    private createObstacles(): void {
+        const obstacle = this.obstacleManager.createObstacle(100, 100)
     }
     private setUpEvents(): void {
         this.overGameUI.addHitPlayAgainListener(() => {
@@ -100,7 +110,7 @@ class GameController {
             )
         })
         this.scene.input.on('pointerdown', () => {
-            if (this.menu.getStateMenu()) {
+            if (this.menu.getStateMenu() && !this.menu.getIsButtonClick()) {
                 this.gameStateMachine.transitionTo(
                     this.gameStateMachine.getPlayingState()
                 )
@@ -110,6 +120,7 @@ class GameController {
 
     update(delta: number): void {
         this.gameStateMachine.update(delta)
+        this.obstacleManager.update(delta)
     }
 }
 export default GameController

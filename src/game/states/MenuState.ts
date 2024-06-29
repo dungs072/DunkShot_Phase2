@@ -9,15 +9,9 @@ class MenuState implements IState {
     public enter(): void {
         console.log('start Menu State')
         this.game.getMenuUI().toggleMenu(true)
-        this.game
-            .getMenuUI()
-            .setFingerPosition(
-                this.game.getBall().x - 100,
-                this.game.getBall().y + 200
-            )
     }
     public update(delta: number): void {
-        this.game.getBall().update()
+        this.game.getBall().update(delta)
         this.game.getBasketManager().update(delta)
     }
     public exit(): void {

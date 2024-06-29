@@ -1,8 +1,14 @@
 import { Scene } from 'phaser'
+import Button from './base/Button'
+import CONST from '../Const'
 
 class MainMenuUI extends Phaser.GameObjects.Container {
     private titleGame: Phaser.GameObjects.Image
+    private challengesButton: Button
     private dragIt: Phaser.GameObjects.Image
+
+    private isButtonsClick: boolean
+
     private stateMenu: boolean
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -22,10 +28,28 @@ class MainMenuUI extends Phaser.GameObjects.Container {
     private initUI(): void {
         this.titleGame = new Phaser.GameObjects.Image(
             this.scene,
-            innerWidth / 4,
-            innerHeight / 6,
+            CONST.WIDTH_SIZE / 2,
+            CONST.HEIGHT_SIZE / 3,
             'dunkshot'
-        ).setScale(0.25)
+        ).setScale(0.4)
+
+        this.challengesButton = new Button(
+            this.scene,
+            CONST.WIDTH_SIZE / 1.2,
+            CONST.HEIGHT_SIZE / 1.1,
+            'challenge',
+            () => {
+                this.handleChallengeButtonClick()
+            },
+            '',
+            500,
+            200
+        ).setScale(0.3)
+
+        this.challengesButton.on('pointerout', () => {
+            this.handleButtonsOut()
+        })
+
         this.dragIt = new Phaser.GameObjects.Image(
             this.scene,
             0,
@@ -35,9 +59,14 @@ class MainMenuUI extends Phaser.GameObjects.Container {
         this.dragIt.rotation = 20 * (Math.PI / 180)
         this.add(this.titleGame)
         this.add(this.dragIt)
+        this.add(this.challengesButton)
     }
+
     public setFingerPosition(x: number, y: number): void {
-        this.dragIt.setPosition(x, y)
+        this.dragIt.setPosition(
+            x - CONST.WIDTH_SIZE / 14,
+            y + CONST.HEIGHT_SIZE / 12
+        )
     }
     public toggleMenu(state: boolean): void {
         this.stateMenu = state
@@ -60,6 +89,16 @@ class MainMenuUI extends Phaser.GameObjects.Container {
     }
     public getStateMenu(): boolean {
         return this.stateMenu
+    }
+    public getIsButtonClick(): boolean {
+        return this.isButtonsClick
+    }
+    private handleChallengeButtonClick(): void {
+        this.isButtonsClick = true
+        this.scene.scene.start('ChallengeSelectionScene')
+    }
+    private handleButtonsOut(): void {
+        this.isButtonsClick = false
     }
 }
 export default MainMenuUI

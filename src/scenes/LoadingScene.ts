@@ -15,9 +15,16 @@ class LoadingScene extends Scene {
         this.load.image('rim02', 'assets/baskets/rim02.png')
         this.load.image('net01', 'assets/baskets/net01.png')
 
+        // Obstacles
+        this.load.image('obstacle', 'assets/obstacles/obstacle.png')
         // UI
         this.load.image('dunkshot', 'assets/ui/menu/dunkShot.png')
         this.load.image('finger', 'assets/ui/menu/finger.png')
+        this.load.image('challenge', 'assets/ui/menu/challenge.png')
+        this.load.image('ballchallenge', 'assets/ui/menu/ballChallenge.png')
+
+        this.load.image('challengePanel', 'assets/ui/menu/challengePanel.png')
+        this.load.image('buttonbg', 'assets/ui/menu/button.png')
 
         this.load.image('playagain', 'assets/ui/over/playAgainButton.png')
 

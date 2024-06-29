@@ -28,16 +28,20 @@ class PlayingState implements IState {
     }
 
     public update(delta: number) {
-        this.game.getBall().update()
+        this.game.getBall().update(delta)
         this.game.getBasketManager().update(delta)
-        const maxDownBorder = this.camera.scrollY + this.camera.height - 150
+        const maxDownBorder =
+            this.camera.scrollY + this.camera.height - 200 * devicePixelRatio
         if (!this.ball.parentContainer) {
             if (this.ball.y > this.camera.scrollY + this.camera.height + 100) {
                 this.game
                     .getGameMachine()
                     .transitionTo(this.game.getGameMachine().getOverState())
             } else {
-                const maxUpBorder = this.camera.scrollY + this.camera.height / 2
+                const maxUpBorder =
+                    this.camera.scrollY +
+                    this.camera.height / 2 +
+                    50 * devicePixelRatio
 
                 if (this.ball.y < maxUpBorder) {
                     this.camera.scrollY -= 200 * delta

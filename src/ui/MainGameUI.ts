@@ -1,4 +1,5 @@
 import { Scene } from 'phaser'
+import CONST from '../Const'
 
 class MainGameUI extends Phaser.GameObjects.Container {
     private scoreText: Phaser.GameObjects.Text
@@ -13,8 +14,8 @@ class MainGameUI extends Phaser.GameObjects.Container {
     private initUI(): void {
         this.scoreText = new Phaser.GameObjects.Text(
             this.scene,
-            innerWidth / 4,
-            innerHeight / 4,
+            CONST.WIDTH_SIZE / 2,
+            CONST.HEIGHT_SIZE / 4,
             '999',
             {
                 fontFamily: 'Arial',
