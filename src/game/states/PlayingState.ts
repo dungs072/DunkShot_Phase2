@@ -21,9 +21,12 @@ class PlayingState implements IState {
         this.camera = game.getMainCamera()
         this.scoreCalculator = game.getScoreCalculator()
         Basket.eventEmitter.on('balladded', (amount: number) => {
+            const challengeType = this.game
+                .getLevelManager()
+                .getCurrentChallenge()
             if (
-                this.game.getLevelManager().getCurrentChallenge() ==
-                ChallengeType.SCORE
+                challengeType == ChallengeType.SCORE ||
+                challengeType == ChallengeType.NONE
             )
                 this.addScore(amount)
         })
@@ -31,6 +34,7 @@ class PlayingState implements IState {
     public enter(): void {
         console.log('start Playing state')
         this.game.getGameUI().setVisible(true)
+        this.basketManager.toggleInteractive(true)
     }
 
     public update(delta: number) {
@@ -90,6 +94,7 @@ class PlayingState implements IState {
         this.ball.toggleBall(false)
         this.basketManager.toggleInteractive(false)
         this.scoreCalculator.saveHighScore()
+        this.game.getGameUI().setVisible(false)
     }
 
     private addScore(amount: number): void {

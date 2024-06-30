@@ -40,6 +40,7 @@ class MainMenuUI extends Phaser.GameObjects.Container {
             'challenge',
             () => {
                 this.handleChallengeButtonClick()
+                this.challengesButton.emit('challenge')
             },
             '',
             500,
@@ -48,6 +49,9 @@ class MainMenuUI extends Phaser.GameObjects.Container {
 
         this.challengesButton.on('pointerout', () => {
             this.handleButtonsOut()
+        })
+        this.challengesButton.on('pointerover', () => {
+            this.handleButtonIn()
         })
 
         this.dragIt = new Phaser.GameObjects.Image(
@@ -99,6 +103,12 @@ class MainMenuUI extends Phaser.GameObjects.Container {
     }
     private handleButtonsOut(): void {
         this.isButtonsClick = false
+    }
+    private handleButtonIn(): void {
+        this.isButtonsClick = true
+    }
+    public addHitChallengeButton(callBack: Function): void {
+        this.challengesButton.on('challenge', callBack)
     }
 }
 export default MainMenuUI

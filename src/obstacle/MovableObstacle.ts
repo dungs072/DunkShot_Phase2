@@ -51,5 +51,10 @@ class MovableObstacle extends Obstacle {
             }
         }
     }
+    public setObstaclePosition(x: number, y: number): void {
+        super.setObstaclePosition(x, y)
+        this.startX = x
+        this.startY = y
+    }
 }
 export default MovableObstacle

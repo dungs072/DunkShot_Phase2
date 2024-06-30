@@ -11,7 +11,7 @@ class NextLevelState implements IState {
     }
     public enter(): void {
         console.log('Next level state')
-
+        this.game.getBasketManager().reset()
         this.nextLevelUI.toggleUI(true)
     }
     public update(delta: number): void {}

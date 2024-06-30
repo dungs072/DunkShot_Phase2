@@ -12,6 +12,8 @@ import ObstacleManager from '../obstacle/ObstacleManager'
 import LevelManager from '../level/LevelManager'
 import ChallengeType from '../types/level/challenge'
 import NextLevelUI from '../ui/NextLevelUI'
+import Basket from '../basket/Basket'
+import PauseUI from '../ui/PauseUI'
 
 class GameController {
     private ball: Ball
@@ -23,6 +25,7 @@ class GameController {
     private overGameUI: OverGameUI
     private gameUI: MainGameUI
     private nextLevelUI: NextLevelUI
+    private pauseUI: PauseUI
     private scoreCalculator: ScoreCalculator
 
     private gameStateMachine: GameStateMachine
@@ -32,8 +35,10 @@ class GameController {
     private trajectory: TrajectoryPath
 
     private scene: Scene
-    constructor(scene: Scene) {
+    private challengeType: ChallengeType
+    constructor(scene: Scene, challengeType: ChallengeType) {
         this.scene = scene
+        this.challengeType = challengeType
     }
     public getGameMachine(): GameStateMachine {
         return this.gameStateMachine
@@ -62,6 +67,9 @@ class GameController {
     public getNextLevelUI(): NextLevelUI {
         return this.nextLevelUI
     }
+    public getPauseUI(): PauseUI {
+        return this.pauseUI
+    }
     public getScoreCalculator(): ScoreCalculator {
         return this.scoreCalculator
     }
@@ -70,7 +78,7 @@ class GameController {
     }
 
     public initialize(): void {
-        this.levelManager = new LevelManager(this.scene, ChallengeType.TIME)
+        this.levelManager = new LevelManager(this.scene, this.challengeType)
         this.basketManager = new BasketManager(
             this.scene,
             CONST.WIDTH_SIZE,
@@ -87,6 +95,7 @@ class GameController {
         this.menu = new MainMenuUI(this.scene, 0, 0)
         this.gameUI = new MainGameUI(this.scene, 0, 0)
         this.overGameUI = new OverGameUI(this.scene, 0, 0)
+        this.pauseUI = new PauseUI(this.scene)
         this.nextLevelUI = new NextLevelUI(
             this.scene,
             CONST.WIDTH_SIZE / 2,
@@ -117,7 +126,13 @@ class GameController {
         )
         this.camera = this.scene.cameras.main
         this.basketManager.setBall(this.ball)
-        const basket = this.basketManager.createBasketByLevel()
+        let basket
+        if (this.levelManager.getCurrentChallenge() == ChallengeType.NONE) {
+            basket = this.basketManager.createBasket()
+        } else {
+            basket = this.basketManager.createBasketByLevel()
+        }
+
         this.ball.x = basket.x
 
         this.menu.setFingerPosition(basket.x, basket.y)
@@ -128,6 +143,9 @@ class GameController {
         this.gameStateMachine.initialize(this.gameStateMachine.getMenuState())
     }
     private setUpEvents(): void {
+        this.menu.addHitChallengeButton(() => {
+            this.obstacleManager.clear()
+        })
         this.overGameUI.addHitPlayAgainListener(() => {
             this.trajectory.togglePoints(false)
             this.gameStateMachine.transitionTo(
@@ -138,6 +156,22 @@ class GameController {
             this.levelManager.gotoNextLevel()
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getRestartState()
+            )
+        })
+        this.gameUI.addHitPauseListener(() => {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getPauseState()
+            )
+        })
+
+        this.pauseUI.addBackMenuListener(() => {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getMenuState()
+            )
+        })
+        this.pauseUI.addResumeListenerListener(() => {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getResumeState()
             )
         })
 
@@ -157,6 +191,11 @@ class GameController {
         BasketManager.BasketCollided.on('basketcollided', () => {
             this.obstacleManager.createObstacleByLevel()
         })
+    }
+    public deleteEvents(): void {
+        BasketManager.BasketCollided.destroy()
+        LevelManager.LevelFinished.destroy()
+        Basket.eventEmitter.destroy()
     }
 
     update(delta: number): void {

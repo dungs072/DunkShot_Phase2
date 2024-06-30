@@ -3,8 +3,10 @@ import GameController from './GameController'
 import MenuState from './states/MenuState'
 import NextLevelState from './states/NextLevelState'
 import OverState from './states/OverState'
+import PauseState from './states/PauseState'
 import PlayingState from './states/PlayingState'
 import RestartState from './states/RestartState'
+import ResumeState from './states/ResumeState'
 
 class GameStateMachine {
     private currentState: IState
@@ -14,6 +16,8 @@ class GameStateMachine {
     private overState: OverState
     private restartState: RestartState
     private nextLevelState: NextLevelState
+    private pauseState: PauseState
+    private resumeState: ResumeState
 
     constructor(gameController: GameController) {
         this.menuState = new MenuState(gameController)
@@ -21,6 +25,8 @@ class GameStateMachine {
         this.overState = new OverState(gameController)
         this.restartState = new RestartState(gameController)
         this.nextLevelState = new NextLevelState(gameController)
+        this.pauseState = new PauseState(gameController)
+        this.resumeState = new ResumeState(gameController)
     }
 
     public initialize(startingState: IState) {
@@ -54,6 +60,12 @@ class GameStateMachine {
     }
     public getNextLevelState(): NextLevelState {
         return this.nextLevelState
+    }
+    public getPauseState(): PauseState {
+        return this.pauseState
+    }
+    public getResumeState(): ResumeState {
+        return this.resumeState
     }
 }
 export default GameStateMachine

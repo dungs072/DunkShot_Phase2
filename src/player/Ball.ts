@@ -11,6 +11,16 @@ class Ball extends Phaser.GameObjects.Container {
     private lineEffect: Phaser.GameObjects.Line
     private reverseVelocity: Phaser.Math.Vector2
 
+    private hitSound: Phaser.Sound.BaseSound
+    private boomSound: Phaser.Sound.BaseSound
+
+    public playHitSound(): void {
+        this.hitSound.play()
+    }
+    public playBoomSound(): void {
+        this.boomSound.play()
+    }
+
     //private leftBounceEffect: Phaser.GameObjects.
 
     constructor(params: IImageConstructor) {
@@ -24,6 +34,8 @@ class Ball extends Phaser.GameObjects.Container {
         this.initialVelocity = new Phaser.Math.Vector2(0, 0)
         this.moveDown(this.lineEffect)
         this.scene.add.existing(this)
+        this.hitSound = this.scene.sound.add('hit')
+        this.boomSound = this.scene.sound.add('boom')
     }
 
     private initImage(texture: string, frame: string | number | undefined) {
@@ -61,6 +73,7 @@ class Ball extends Phaser.GameObjects.Container {
             ) => {
                 const ball = body.gameObject
                 if (ball instanceof Ball) {
+                    ball.playHitSound()
                     let normalVector = undefined
                     if (left) {
                         normalVector = new Phaser.Math.Vector2(1, 0)

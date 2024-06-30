@@ -17,8 +17,8 @@ class ChallengeSelectionScene extends Scene {
         bricks.setDisplaySize(CONST.WIDTH_SIZE, CONST.HEIGHT_SIZE)
         bricks.setScrollFactor(0, 0)
 
-        new SelectionChallengeMenuUI(this)
+        const selectionChallengeMenu = new SelectionChallengeMenuUI(this)
+        selectionChallengeMenu.toggleUI(true)
     }
-    update(time: number, delta: number) {}
 }
 export default ChallengeSelectionScene

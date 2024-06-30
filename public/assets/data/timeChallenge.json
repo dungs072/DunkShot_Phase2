@@ -6,14 +6,14 @@
             "baskets": [
                 {
                     "position": {
-                        "posX": "-150",
+                        "posX": "150",
                         "posY": "7"
                     },
                     "obstacles": []
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "50",
                         "posY": "-150"
                     },
                     "obstacles": []
@@ -21,6 +21,81 @@
                 {
                     "position": {
                         "posX": "150",
+                        "posY": "-200"
+                    },
+                    "obstacles": []
+                }
+            ]
+        },
+        {
+            "data": "25",
+            "baskets": [
+                {
+                    "position": {
+                        "posX": "150",
+                        "posY": "3"
+                    },
+                    "obstacles": [
+                        {
+                            "position": {
+                                "posX": "0",
+                                "posY": "330"
+                            },
+                            "isVertical": true,
+                            "isMovable": false
+                        }
+                    ]
+                },
+                {
+                    "position": {
+                        "posX": "75",
+                        "posY": "-150"
+                    },
+                    "obstacles": []
+                },
+                {
+                    "position": {
+                        "posX": "300",
+                        "posY": "-150"
+                    },
+                    "obstacles": [
+                        {
+                            "position": {
+                                "posX": "-25",
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": true
+                        }
+                    ]
+                },
+                {
+                    "position": {
+                        "posX": "100",
+                        "posY": "-150"
+                    },
+                    "obstacles": [
+                        {
+                            "position": {
+                                "posX": "-175",
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": false
+                        },
+                        {
+                            "position": {
+                                "posX": "175",
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": false
+                        }
+                    ]
+                },
+                {
+                    "position": {
+                        "posX": "200",
                         "posY": "-150"
                     },
                     "obstacles": []
@@ -28,138 +103,86 @@
             ]
         },
         {
-            "data": "12",
+            "data": "25",
             "baskets": [
                 {
                     "position": {
                         "posX": "150",
-                        "posY": "-150"
+                        "posY": "3"
                     },
                     "obstacles": [
                         {
                             "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
+                                "posX": "0",
+                                "posY": "400"
+                            },
+                            "isVertical": false,
+                            "isMovable": true
                         }
                     ]
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "75",
                         "posY": "-150"
                     },
                     "obstacles": [
                         {
                             "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
+                                "posX": "145",
+                                "posY": "250"
+                            },
+                            "isVertical": false,
+                            "isMovable": false
                         }
                     ]
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "300",
                         "posY": "-150"
                     },
                     "obstacles": [
                         {
                             "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
+                                "posX": "-25",
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": true
                         }
                     ]
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "100",
                         "posY": "-150"
                     },
                     "obstacles": [
                         {
                             "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "data": "20",
-            "baskets": [
-                {
-                    "position": {
-                        "posX": "150",
-                        "posY": "-150"
-                    },
-                    "obstacles": [
+                                "posX": "-175",
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": false
+                        },
                         {
                             "position": {
                                 "posX": "175",
-                                "posY": "-200"
-                            }
+                                "posY": "300"
+                            },
+                            "isVertical": true,
+                            "isMovable": false
                         }
                     ]
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "200",
                         "posY": "-150"
                     },
-                    "obstacles": [
-                        {
-                            "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "position": {
-                        "posX": "150",
-                        "posY": "-150"
-                    },
-                    "obstacles": [
-                        {
-                            "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "position": {
-                        "posX": "150",
-                        "posY": "-150"
-                    },
-                    "obstacles": [
-                        {
-                            "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "position": {
-                        "posX": "150",
-                        "posY": "-150"
-                    },
-                    "obstacles": [
-                        {
-                            "position": {
-                                "posX": "175",
-                                "posY": "-200"
-                            }
-                        }
-                    ]
+                    "obstacles": []
                 }
             ]
         }

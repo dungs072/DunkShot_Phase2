@@ -1,13 +1,15 @@
 import { Scene } from 'phaser'
 import CONST from '../Const'
+import Button from './base/Button'
 
 class MainGameUI extends Phaser.GameObjects.Container {
     private dataGameText: Phaser.GameObjects.Text
-
+    private pauseButton: Button
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         this.setDepth(1)
         this.initUI()
+        this.initButtons()
 
         this.scene.add.existing(this)
         this.setDataText(0)
@@ -28,8 +30,28 @@ class MainGameUI extends Phaser.GameObjects.Container {
         this.setScrollFactor(0, 0)
         this.add(this.dataGameText)
     }
+    private initButtons(): void {
+        this.pauseButton = new Button(
+            this.scene,
+            50,
+            50,
+            'setting',
+            () => {
+                this.pauseButton.emit('pause')
+            },
+            '',
+            100,
+            100
+        )
+        this.pauseButton.setScrollFactor(0, 0)
+
+        this.add(this.pauseButton)
+    }
     public setDataText(amount: number) {
         this.dataGameText.text = amount.toString()
+    }
+    public addHitPauseListener(callBack: Function): void {
+        this.pauseButton.on('pause', callBack)
     }
 }
 export default MainGameUI

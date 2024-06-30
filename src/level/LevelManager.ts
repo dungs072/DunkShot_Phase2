@@ -2,7 +2,6 @@ import ILevel from '../types/level/level'
 import ChallengeType from '../types/level/challenge'
 import { Scene } from 'phaser'
 import ILevelData from '../types/level/levelData'
-import IVector2 from '../types/level/vector2'
 import IObstacle from '../types/level/obstacle'
 import IBasket from '../types/level/basket'
 class LevelManager {
@@ -41,6 +40,9 @@ class LevelManager {
         ]
     }
     public getCurrentObstacles(): IObstacle[] {
+        if (this.currentChallenge == ChallengeType.NONE) {
+            return []
+        }
         return this.levelData.levels[this.currentLevelIndex].baskets[
             this.currentBasketIndex - 1
         ].obstacles

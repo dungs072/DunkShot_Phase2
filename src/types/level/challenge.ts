@@ -3,5 +3,6 @@ enum ChallengeType {
     SCORE,
     BOUNCE,
     NO_AIM,
+    NONE,
 }
 export default ChallengeType

@@ -4,6 +4,7 @@ import Ball from '../../player/Ball'
 import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
 import CONST from '../../Const'
+import ChallengeType from '../../types/level/challenge'
 
 class RestartState implements IState {
     private game: GameController
@@ -36,7 +37,16 @@ class RestartState implements IState {
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
         this.game.getObstacleManager().reset()
-        const basket = this.basketManager.createBasketByLevel()
+
+        let basket
+        if (
+            this.game.getLevelManager().getCurrentChallenge() ==
+            ChallengeType.NONE
+        ) {
+            basket = this.basketManager.createBasket()
+        } else {
+            basket = this.basketManager.createBasketByLevel()
+        }
 
         this.ball.x = basket.x
         this.ball.y = CONST.HEIGHT_SIZE / 2

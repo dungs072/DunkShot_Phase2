@@ -1,4 +1,5 @@
 import { Scene } from 'phaser'
+import CONST from '../Const'
 
 class LoadingScene extends Scene {
     constructor() {
@@ -7,6 +8,32 @@ class LoadingScene extends Scene {
         })
     }
     preload() {
+        // this.load.image('loadingbg', 'assets/bgs/bg4.png')
+        // this.add.image(0, 0, 'loadingbg')
+
+        let loadingBarBg = this.add.graphics()
+        loadingBarBg.fillStyle(0x222222, 1)
+        loadingBarBg.fillRect(
+            CONST.WIDTH_SIZE / 3.6,
+            CONST.HEIGHT_SIZE / 1.4,
+            320,
+            50
+        )
+
+        let loadingBarFill = this.add.graphics()
+
+        this.load.on('progress', (value: number) => {
+            loadingBarFill.clear()
+            loadingBarFill.fillStyle(0xffffff, 1)
+            loadingBarFill.fillRect(
+                CONST.WIDTH_SIZE / 3.6 + 10,
+                CONST.HEIGHT_SIZE / 1.4 + 10,
+                300 * value,
+                30
+            )
+        })
+
+        // assets
         this.load.image('bg', 'assets/bgs/bg4.png')
         this.load.image('bgbricks', 'assets/bgs/bgWithBricks.png')
         this.load.image('ball', 'assets/balls/babyface.png')
@@ -28,6 +55,8 @@ class LoadingScene extends Scene {
 
         this.load.image('playagain', 'assets/ui/over/playAgainButton.png')
 
+        this.load.image('setting', 'assets/ui/setting.png')
+
         // Animations
         this.load.spritesheet('explosion', 'assets/effects/explosion4.png', {
             frameWidth: 128,
@@ -37,6 +66,23 @@ class LoadingScene extends Scene {
         // json file
 
         this.load.json('timeChallenge', 'assets/data/timeChallenge.json')
+
+        this.add
+            .text(
+                CONST.WIDTH_SIZE / 2 + 10,
+                CONST.HEIGHT_SIZE / 1.25,
+                'Loading...',
+                {
+                    fontSize: '20px',
+                    color: '#ffffff',
+                }
+            )
+            .setOrigin(0.5, 0.5)
+
+        // sounds
+        this.load.audio('hit', 'assets/sounds/hit.mp3')
+        this.load.audio('boom', 'assets/sounds/boom.mp3')
+        this.load.audio('press', 'assets/sounds/press.mp3')
     }
 
     create() {

@@ -4,6 +4,7 @@ import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
 import LevelManager from '../level/LevelManager'
 import CONST from '../Const'
+import ChallengeType from '../types/level/challenge'
 class BasketManager {
     public static BasketCollided = new Phaser.Events.EventEmitter()
     private baskets: Basket[]
@@ -107,9 +108,10 @@ class BasketManager {
     public createBasketByLevel(): Basket {
         let basket
         const basketData = this.levelManager.getCurrentBasket()
+
         if (this.preBasket) {
             basket = this.getFreeBasket(
-                basketData.position.posX * devicePixelRatio + this.preBasket.x,
+                basketData.position.posX * devicePixelRatio,
                 basketData.position.posY * devicePixelRatio + this.preBasket.y
             )
         } else {
@@ -183,7 +185,11 @@ class BasketManager {
         if (!ball.body.allowGravity) return
 
         if (!other.getIsCenter()) {
+            ball.playHitSound()
             return
+        }
+        if (!ball.parentContainer) {
+            ball.playBoomSound()
         }
 
         const gameObj = other.parentContainer
@@ -205,11 +211,14 @@ class BasketManager {
         }
         if (this.prevHeight > gameObj.y) {
             this.prevHeight = gameObj.y
-            //this.createBasket()
-            if (this.levelManager.isFinishCurrentLevel()) {
-                LevelManager.LevelFinished.emit('nextlevel')
+            if (this.levelManager.getCurrentChallenge() == ChallengeType.NONE) {
+                this.createBasket()
             } else {
-                this.createBasketByLevel()
+                if (this.levelManager.isFinishCurrentLevel()) {
+                    LevelManager.LevelFinished.emit('nextlevel')
+                } else {
+                    this.createBasketByLevel()
+                }
             }
         }
     }

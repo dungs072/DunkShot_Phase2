@@ -2,6 +2,7 @@ class Button extends Phaser.GameObjects.Container {
     private text: Phaser.GameObjects.Text
     private background: Phaser.GameObjects.Image
     private minScalePlayAgainButton: number
+    private pressSound: Phaser.Sound.BaseSound
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -30,8 +31,10 @@ class Button extends Phaser.GameObjects.Container {
         this.setInteractive({
             useHandCursor: true,
         })
+        this.pressSound = this.scene.sound.add('press')
 
         this.on('pointerdown', () => {
+            this.pressSound.play()
             this.scene.tweens.add({
                 targets: this,
                 scaleX: this.minScalePlayAgainButton,
