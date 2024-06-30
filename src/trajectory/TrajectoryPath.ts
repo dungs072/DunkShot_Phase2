@@ -41,7 +41,7 @@ class TrajectoryPath {
             this.togglePoints(true)
         })
     }
-    private togglePoints(state: boolean): void {
+    public togglePoints(state: boolean): void {
         for (let i = 0; i < this.points.length; i++) {
             this.points[i].setVisible(state)
         }

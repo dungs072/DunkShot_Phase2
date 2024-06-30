@@ -2,7 +2,10 @@ import Basket from './Basket'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
+import LevelManager from '../level/LevelManager'
+import CONST from '../Const'
 class BasketManager {
+    public static BasketCollided = new Phaser.Events.EventEmitter()
     private baskets: Basket[]
     private maxHeight: number
     private minHeight: number
@@ -14,12 +17,19 @@ class BasketManager {
     private ball: Ball
     private preBasket: Basket | undefined
     private scene: Scene
+    private levelManager: LevelManager
 
     private explosionEffect: Phaser.GameObjects.Sprite
     private complicationText: Phaser.GameObjects.Text
 
-    constructor(scene: Scene, screenWidth: number, screenHeight: number) {
+    constructor(
+        scene: Scene,
+        screenWidth: number,
+        screenHeight: number,
+        levelManager: LevelManager
+    ) {
         this.scene = scene
+        this.levelManager = levelManager
         this.maxHeight = 200
         this.minHeight = 150
         this.screenWidth = screenWidth
@@ -93,6 +103,32 @@ class BasketManager {
             }
         }
     }
+
+    public createBasketByLevel(): Basket {
+        let basket
+        const basketData = this.levelManager.getCurrentBasket()
+        if (this.preBasket) {
+            basket = this.getFreeBasket(
+                basketData.position.posX * devicePixelRatio + this.preBasket.x,
+                basketData.position.posY * devicePixelRatio + this.preBasket.y
+            )
+        } else {
+            basket = this.getFreeBasket(
+                basketData.position.posX * devicePixelRatio +
+                    CONST.WIDTH_SIZE / 2,
+                basketData.position.posY * devicePixelRatio +
+                    CONST.HEIGHT_SIZE / 1.4
+            )
+        }
+
+        basket.disableInteractive()
+        if (!basket.getHasCollider()) {
+            this.setUpColliders(basket)
+            basket.setHasCollider(true)
+        }
+        return basket
+    }
+
     public createBasket(): Basket {
         let randomX = this.isLeft
             ? Phaser.Math.Between(150, this.screenWidth / 2)
@@ -144,6 +180,7 @@ class BasketManager {
                 basket.handleCollisionWithRim(other)
             }
         }
+        if (!ball.body.allowGravity) return
 
         if (!other.getIsCenter()) {
             return
@@ -161,11 +198,19 @@ class BasketManager {
             if (this.preBasket && this.preBasket != gameObj) {
                 this.preBasket.toggleBasket(false)
             }
+            if (this.preBasket != gameObj) {
+                BasketManager.BasketCollided.emit('basketcollided')
+            }
             this.preBasket = gameObj
         }
         if (this.prevHeight > gameObj.y) {
             this.prevHeight = gameObj.y
-            this.createBasket()
+            //this.createBasket()
+            if (this.levelManager.isFinishCurrentLevel()) {
+                LevelManager.LevelFinished.emit('nextlevel')
+            } else {
+                this.createBasketByLevel()
+            }
         }
     }
     public getFreeBasket(x: number, y: number): Basket {

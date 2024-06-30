@@ -2,7 +2,6 @@ class Button extends Phaser.GameObjects.Container {
     private text: Phaser.GameObjects.Text
     private background: Phaser.GameObjects.Image
     private minScalePlayAgainButton: number
-    private maxScalePlayAgainButton: number
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -21,7 +20,6 @@ class Button extends Phaser.GameObjects.Container {
     ) {
         super(scene, x, y)
         this.minScalePlayAgainButton = 0.15
-        this.maxScalePlayAgainButton = 0.2
         this.background = new Phaser.GameObjects.Sprite(
             this.scene,
             0,
@@ -43,7 +41,6 @@ class Button extends Phaser.GameObjects.Container {
                 yoyo: true,
                 onComplete: () => {
                     callback()
-                    //this.playAgainButton.emit('playagain')
                 },
             })
         })

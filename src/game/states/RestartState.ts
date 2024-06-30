@@ -31,22 +31,24 @@ class RestartState implements IState {
     }
 
     private restartGame(): void {
+        this.game.getLevelManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
-        const basket = this.basketManager.createBasket()
+        this.game.getObstacleManager().reset()
+        const basket = this.basketManager.createBasketByLevel()
+
         this.ball.x = basket.x
         this.ball.y = CONST.HEIGHT_SIZE / 2
-        this.ball.toggleBall(true)
-        this.ball.body.setVelocity(0, 0)
-        this.game.getOverUI().toggleUI(false)
+        this.ball.resetBall()
+
         this.addScore(-this.scoreCalculator.getCurrentScore())
     }
     private addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
         this.game
             .getGameUI()
-            .setScoreText(this.scoreCalculator.getCurrentScore())
+            .setDataText(this.scoreCalculator.getCurrentScore())
     }
 }
 export default RestartState

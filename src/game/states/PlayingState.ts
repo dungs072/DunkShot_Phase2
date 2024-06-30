@@ -2,6 +2,7 @@ import Basket from '../../basket/Basket'
 import BasketManager from '../../basket/BasketManager'
 import Ball from '../../player/Ball'
 import ScoreCalculator from '../../player/ScoreCalculator'
+import ChallengeType from '../../types/level/challenge'
 import IState from '../../types/state'
 import GameController from '../GameController'
 
@@ -12,6 +13,7 @@ class PlayingState implements IState {
     private camera: Phaser.Cameras.Scene2D.Camera
     private scoreCalculator: ScoreCalculator
     private preBallPosY: number
+    private currentTime: number = 0
     constructor(game: GameController) {
         this.game = game
         this.ball = game.getBall()
@@ -19,7 +21,11 @@ class PlayingState implements IState {
         this.camera = game.getMainCamera()
         this.scoreCalculator = game.getScoreCalculator()
         Basket.eventEmitter.on('balladded', (amount: number) => {
-            this.addScore(amount)
+            if (
+                this.game.getLevelManager().getCurrentChallenge() ==
+                ChallengeType.SCORE
+            )
+                this.addScore(amount)
         })
     }
     public enter(): void {
@@ -30,6 +36,7 @@ class PlayingState implements IState {
     public update(delta: number) {
         this.game.getBall().update(delta)
         this.game.getBasketManager().update(delta)
+        this.game.getObstacleManager().update(delta)
         const maxDownBorder =
             this.camera.scrollY + this.camera.height - 200 * devicePixelRatio
         if (!this.ball.parentContainer) {
@@ -55,9 +62,31 @@ class PlayingState implements IState {
                 this.camera.scrollY += 200 * delta
             }
         }
+        if (
+            this.game.getLevelManager().getCurrentChallenge() ==
+            ChallengeType.TIME
+        ) {
+            this.currentTime += delta
+            const remainingTime =
+                Math.floor(
+                    Math.max(
+                        this.game.getLevelManager().getDataGame() -
+                            this.currentTime,
+                        0
+                    ) * 100
+                ) / 100
+            this.game.getGameUI().setDataText(remainingTime)
+            if (this.currentTime >= this.game.getLevelManager().getDataGame()) {
+                this.currentTime = 0
+                this.game
+                    .getGameMachine()
+                    .transitionTo(this.game.getGameMachine().getOverState())
+            }
+        }
     }
     public exit(): void {
         console.log('end Playing state')
+        this.currentTime = 0
         this.ball.toggleBall(false)
         this.basketManager.toggleInteractive(false)
         this.scoreCalculator.saveHighScore()
@@ -67,7 +96,7 @@ class PlayingState implements IState {
         this.scoreCalculator.addCurrentScore(amount)
         this.game
             .getGameUI()
-            .setScoreText(this.scoreCalculator.getCurrentScore())
+            .setDataText(this.scoreCalculator.getCurrentScore())
     }
 }
 export default PlayingState

@@ -393,6 +393,12 @@ class Basket extends Phaser.GameObjects.Container {
         this.rotation = 0
         this.setVisible(state)
         this.setActive(state)
+        this.centerContainer.removeAll()
+        this.net.setScale(0.4)
+        this.net.setPosition(0, 0)
+        this.centerContainer.setPosition(0, -10)
+        this.centerCollider.setPosition(0, 10)
+        this.canBack = false
     }
     public setNewPosition(x: number, y: number): void {
         this.setPosition(x, y)

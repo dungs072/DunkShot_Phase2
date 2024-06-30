@@ -26,6 +26,7 @@ class Obstacle extends Phaser.GameObjects.Image {
         }
     }
     public toggleObstacle(state: boolean): void {
+        this.body.enable = state
         this.setVisible(state)
         this.setActive(state)
     }

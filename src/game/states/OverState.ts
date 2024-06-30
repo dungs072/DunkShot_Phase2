@@ -17,7 +17,7 @@ class OverState implements IState {
     public update(delta: number): void {}
     public exit(): void {
         console.log('end Over State')
-        this.game.getOverUI().toggleUI(true)
+        this.game.getOverUI().toggleUI(false)
     }
 }
 export default OverState

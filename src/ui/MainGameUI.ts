@@ -2,17 +2,18 @@ import { Scene } from 'phaser'
 import CONST from '../Const'
 
 class MainGameUI extends Phaser.GameObjects.Container {
-    private scoreText: Phaser.GameObjects.Text
+    private dataGameText: Phaser.GameObjects.Text
+
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         this.setDepth(1)
         this.initUI()
 
         this.scene.add.existing(this)
-        this.setScoreText(0)
+        this.setDataText(0)
     }
     private initUI(): void {
-        this.scoreText = new Phaser.GameObjects.Text(
+        this.dataGameText = new Phaser.GameObjects.Text(
             this.scene,
             CONST.WIDTH_SIZE / 2,
             CONST.HEIGHT_SIZE / 4,
@@ -25,10 +26,10 @@ class MainGameUI extends Phaser.GameObjects.Container {
             }
         ).setOrigin(0.5)
         this.setScrollFactor(0, 0)
-        this.add(this.scoreText)
+        this.add(this.dataGameText)
     }
-    public setScoreText(amount: number) {
-        this.scoreText.text = amount.toString()
+    public setDataText(amount: number) {
+        this.dataGameText.text = amount.toString()
     }
 }
 export default MainGameUI

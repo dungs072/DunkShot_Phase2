@@ -142,11 +142,22 @@ class Ball extends Phaser.GameObjects.Container {
         )
     }
     public toggleBall(state: boolean): void {
+        this.body.enable = state
         this.setVisible(state)
         this.setActive(state)
+        this.body.immovable = !state
+        this.body.allowGravity = state
     }
     public toggleLineEffect(state: boolean): void {
         this.lineEffect.setVisible(state)
+    }
+    public resetBall(): void {
+        if (this.parentContainer) {
+            this.parentContainer.removeAll()
+        }
+        this.toggleBall(true)
+        this.body.setVelocity(0, 0)
+        this.body.allowGravity = true
     }
 }
 export default Ball
