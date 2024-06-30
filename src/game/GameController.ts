@@ -8,8 +8,9 @@ import ScoreCalculator from '../player/ScoreCalculator'
 import TrajectoryPath from '../trajectory/TrajectoryPath'
 import GameStateMachine from './GameStateMachine'
 import CONST from '../Const'
-import Obstacle from '../obstacle/Obstacle'
 import ObstacleManager from '../obstacle/ObstacleManager'
+import LevelManager from '../level/LevelManager'
+import ChallengeType from '../types/challenge'
 
 class GameController {
     private ball: Ball
@@ -23,6 +24,8 @@ class GameController {
     private scoreCalculator: ScoreCalculator
 
     private gameStateMachine: GameStateMachine
+
+    private levelManager: LevelManager
 
     private scene: Scene
     constructor(scene: Scene) {
@@ -61,6 +64,7 @@ class GameController {
         )
 
         this.scoreCalculator = new ScoreCalculator()
+        this.levelManager = new LevelManager(this.scene, ChallengeType.TIME)
         this.create()
     }
     private create(): void {
@@ -96,12 +100,8 @@ class GameController {
 
         this.setUpEvents()
 
-        this.createObstacles()
         this.gameStateMachine = new GameStateMachine(this)
         this.gameStateMachine.initialize(this.gameStateMachine.getMenuState())
-    }
-    private createObstacles(): void {
-        const obstacle = this.obstacleManager.createObstacle(100, 100)
     }
     private setUpEvents(): void {
         this.overGameUI.addHitPlayAgainListener(() => {

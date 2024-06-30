@@ -2,7 +2,6 @@ import Basket from './Basket'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
-import MovableBasket from './MovableBasket'
 class BasketManager {
     private baskets: Basket[]
     private maxHeight: number
@@ -177,7 +176,8 @@ class BasketManager {
                 return this.baskets[i]
             }
         }
-        const basket = new MovableBasket(this.scene, x, y, true, 100, 100)
+        //const basket = new MovableBasket(this.scene, x, y, true, 100, 100)
+        const basket = new Basket(this.scene, x, y)
         this.baskets.push(basket)
         return basket
     }

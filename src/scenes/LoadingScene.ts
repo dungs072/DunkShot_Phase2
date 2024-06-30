@@ -33,6 +33,10 @@ class LoadingScene extends Scene {
             frameWidth: 128,
             frameHeight: 80,
         })
+
+        // json file
+
+        this.load.json('timeChallenge', 'assets/data/timeChallenge.json')
     }
 
     create() {
