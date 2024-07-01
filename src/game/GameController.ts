@@ -141,6 +141,11 @@ class GameController {
 
         this.gameStateMachine = new GameStateMachine(this)
         this.gameStateMachine.initialize(this.gameStateMachine.getMenuState())
+        if (this.challengeType != ChallengeType.NONE) {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getPlayingState()
+            )
+        }
     }
     private setUpEvents(): void {
         this.menu.addHitChallengeButton(() => {
@@ -152,12 +157,7 @@ class GameController {
                 this.gameStateMachine.getRestartState()
             )
         })
-        this.nextLevelUI.addNextLevelListener(() => {
-            this.levelManager.gotoNextLevel()
-            this.gameStateMachine.transitionTo(
-                this.gameStateMachine.getRestartState()
-            )
-        })
+
         this.gameUI.addHitPauseListener(() => {
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getPauseState()
@@ -166,7 +166,7 @@ class GameController {
 
         this.pauseUI.addBackMenuListener(() => {
             this.gameStateMachine.transitionTo(
-                this.gameStateMachine.getMenuState()
+                this.gameStateMachine.getResetState()
             )
         })
         this.pauseUI.addResumeListenerListener(() => {
@@ -174,7 +174,18 @@ class GameController {
                 this.gameStateMachine.getResumeState()
             )
         })
-
+        this.nextLevelUI.addBackMenuListener(() => {
+            this.levelManager.setChallengeType(ChallengeType.NONE)
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getResetState()
+            )
+        })
+        this.nextLevelUI.addNextLevelListener(() => {
+            this.levelManager.gotoNextLevel()
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getRestartState()
+            )
+        })
         this.scene.input.on('pointerdown', () => {
             if (this.menu.getStateMenu() && !this.menu.getIsButtonClick()) {
                 this.gameStateMachine.transitionTo(

@@ -13,14 +13,14 @@
                 },
                 {
                     "position": {
-                        "posX": "50",
+                        "posX": "80",
                         "posY": "-150"
                     },
                     "obstacles": []
                 },
                 {
                     "position": {
-                        "posX": "150",
+                        "posX": "250",
                         "posY": "-200"
                     },
                     "obstacles": []
@@ -48,7 +48,7 @@
                 },
                 {
                     "position": {
-                        "posX": "75",
+                        "posX": "125",
                         "posY": "-150"
                     },
                     "obstacles": []
@@ -123,7 +123,7 @@
                 },
                 {
                     "position": {
-                        "posX": "75",
+                        "posX": "125",
                         "posY": "-150"
                     },
                     "obstacles": [

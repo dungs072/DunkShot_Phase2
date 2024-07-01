@@ -34,7 +34,6 @@ class PlayingState implements IState {
     public enter(): void {
         console.log('start Playing state')
         this.game.getGameUI().setVisible(true)
-        this.basketManager.toggleInteractive(true)
     }
 
     public update(delta: number) {
@@ -71,14 +70,14 @@ class PlayingState implements IState {
             ChallengeType.TIME
         ) {
             this.currentTime += delta
-            const remainingTime =
-                Math.floor(
-                    Math.max(
-                        this.game.getLevelManager().getDataGame() -
-                            this.currentTime,
-                        0
-                    ) * 100
-                ) / 100
+            const remainingTime = Phaser.Math.RoundTo(
+                Math.max(
+                    this.game.getLevelManager().getDataGame() -
+                        this.currentTime,
+                    0
+                ),
+                -1
+            )
             this.game.getGameUI().setDataText(remainingTime)
             if (this.currentTime >= this.game.getLevelManager().getDataGame()) {
                 this.currentTime = 0
@@ -91,8 +90,6 @@ class PlayingState implements IState {
     public exit(): void {
         console.log('end Playing state')
         this.currentTime = 0
-        this.ball.toggleBall(false)
-        this.basketManager.toggleInteractive(false)
         this.scoreCalculator.saveHighScore()
         this.game.getGameUI().setVisible(false)
     }

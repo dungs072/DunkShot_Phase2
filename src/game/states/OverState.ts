@@ -8,6 +8,8 @@ class OverState implements IState {
     }
     public enter(): void {
         console.log('start Over State')
+        this.game.getBall().toggleBall(false)
+        this.game.getBasketManager().toggleInteractive(false)
         this.game.getOverUI().toggleUI(true)
         this.game
             .getOverUI()

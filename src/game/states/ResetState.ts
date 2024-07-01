@@ -6,7 +6,7 @@ import ScoreCalculator from '../../player/ScoreCalculator'
 import CONST from '../../Const'
 import ChallengeType from '../../types/level/challenge'
 
-class RestartState implements IState {
+class ResetState implements IState {
     private game: GameController
     private ball: Ball
     private basketManager: BasketManager
@@ -20,33 +20,25 @@ class RestartState implements IState {
         this.scoreCalculator = game.getScoreCalculator()
     }
     public enter(): void {
-        console.log('restart state')
-        this.restartGame()
+        console.log('reset state')
+        this.resetGame()
         this.game
             .getGameMachine()
-            .transitionTo(this.game.getGameMachine().getPlayingState())
+            .transitionTo(this.game.getGameMachine().getMenuState())
     }
     public update(delta: number): void {}
     public exit(): void {
-        console.log('end restart state')
+        console.log('end reset state')
     }
 
-    private restartGame(): void {
+    private resetGame(): void {
         this.game.getLevelManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
         this.game.getObstacleManager().reset()
-
-        let basket
-        if (
-            this.game.getLevelManager().getCurrentChallenge() ==
-            ChallengeType.NONE
-        ) {
-            basket = this.basketManager.createBasket()
-        } else {
-            basket = this.basketManager.createBasketByLevel()
-        }
+        this.game.getLevelManager().setChallengeType(ChallengeType.NONE)
+        const basket = this.basketManager.createBasket()
         this.game.getMenuUI().setFingerPosition(basket.x, basket.y)
         this.ball.x = basket.x
         this.ball.y = CONST.HEIGHT_SIZE / 2
@@ -61,4 +53,4 @@ class RestartState implements IState {
             .setDataText(this.scoreCalculator.getCurrentScore())
     }
 }
-export default RestartState
+export default ResetState

@@ -73,5 +73,8 @@ class LevelManager {
             parseInt(this.levelData.levels[this.currentLevelIndex].data)
         )
     }
+    public setChallengeType(challengeType: ChallengeType): void {
+        this.currentChallenge = challengeType
+    }
 }
 export default LevelManager

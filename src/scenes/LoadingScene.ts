@@ -58,7 +58,7 @@ class LoadingScene extends Scene {
         this.load.image('setting', 'assets/ui/setting.png')
 
         // Animations
-        this.load.spritesheet('explosion', 'assets/effects/explosion4.png', {
+        this.load.spritesheet('explosions', 'assets/effects/explosion4.png', {
             frameWidth: 128,
             frameHeight: 80,
         })

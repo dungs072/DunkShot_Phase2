@@ -11,14 +11,13 @@ class ObstacleManager {
     private scene: Scene
     private levelManager: LevelManager
     private preObstacles: Obstacle[]
-    private hitSound: Phaser.Sound.BaseSound
+
     constructor(scene: Scene, ball: Ball, levelManager: LevelManager) {
         this.obstacles = []
         this.scene = scene
         this.ball = ball
         this.levelManager = levelManager
         this.preObstacles = []
-        this.hitSound = this.scene.sound.add('hit')
     }
 
     public createObstacleByLevel(): void {

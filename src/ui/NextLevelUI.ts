@@ -66,7 +66,9 @@ class NextLevelUI extends Phaser.GameObjects.Container {
             -150,
             140,
             'buttonbg',
-            () => {},
+            () => {
+                this.backMainMenuButton.emit('backmenubutton')
+            },
             'Main Menu',
             400,
             100,
@@ -113,6 +115,9 @@ class NextLevelUI extends Phaser.GameObjects.Container {
     }
     public addNextLevelListener(callBack: Function): void {
         this.nextButton.on('nextbutton', callBack)
+    }
+    public addBackMenuListener(callBack: Function): void {
+        this.backMainMenuButton.on('backmenubutton', callBack)
     }
 }
 export default NextLevelUI

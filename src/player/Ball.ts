@@ -14,6 +14,9 @@ class Ball extends Phaser.GameObjects.Container {
     private hitSound: Phaser.Sound.BaseSound
     private boomSound: Phaser.Sound.BaseSound
 
+    private currentVelocityX: number
+    private currentVelocityY: number
+
     public playHitSound(): void {
         this.hitSound.play()
     }
@@ -170,7 +173,17 @@ class Ball extends Phaser.GameObjects.Container {
         }
         this.toggleBall(true)
         this.body.setVelocity(0, 0)
-        this.body.allowGravity = true
+    }
+    public pauseBall(state: boolean): void {
+        if (state) {
+            this.currentVelocityX = this.body.velocity.x
+            this.currentVelocityY = this.body.velocity.y
+            this.body.setVelocity(0, 0)
+        } else {
+            this.body.setVelocity(this.currentVelocityX, this.currentVelocityY)
+        }
+        this.body.immovable = state
+        this.body.allowGravity = !state
     }
 }
 export default Ball

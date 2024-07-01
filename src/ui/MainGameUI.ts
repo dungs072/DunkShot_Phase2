@@ -43,8 +43,6 @@ class MainGameUI extends Phaser.GameObjects.Container {
             100,
             100
         )
-        this.pauseButton.setScrollFactor(0, 0)
-
         this.add(this.pauseButton)
     }
     public setDataText(amount: number) {

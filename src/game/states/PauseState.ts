@@ -9,12 +9,14 @@ class PauseState implements IState {
     public enter(): void {
         console.log('start Pause State')
         this.game.getPauseUI().toggleUI(true)
+        this.game.getBall().pauseBall(true)
         //this.overGameUI.setHighScoreText(game.getHighScore())
     }
     public update(delta: number): void {}
     public exit(): void {
         console.log('end Pause State')
         this.game.getPauseUI().toggleUI(false)
+        this.game.getBall().pauseBall(false)
     }
 }
 export default PauseState

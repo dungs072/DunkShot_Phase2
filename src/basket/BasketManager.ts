@@ -74,9 +74,10 @@ class BasketManager {
         })
     }
     private initAnimations(): void {
+        if (this.scene.anims.exists('explosion')) return
         this.scene.anims.create({
             key: 'explosion',
-            frames: this.scene.anims.generateFrameNumbers('explosion', {
+            frames: this.scene.anims.generateFrameNumbers('explosions', {
                 start: 0,
                 end: 11,
             }),

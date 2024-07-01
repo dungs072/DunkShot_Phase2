@@ -53,12 +53,11 @@ class OverGameUI extends Phaser.GameObjects.Container {
             '',
             400,
             400
-        ).setScale(0.2)
+        ).setScale(0.35)
 
         this.add(this.playAgainButton)
         this.add(this.highScoreText)
         this.add(this.bestScoreTitleText)
-        this.playAgainButton.setScrollFactor(0, 0)
         this.setScrollFactor(0, 0)
     }
     public toggleUI(state: boolean): void {
