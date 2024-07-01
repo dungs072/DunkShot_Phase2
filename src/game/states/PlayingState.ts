@@ -5,6 +5,7 @@ import ScoreCalculator from '../../player/ScoreCalculator'
 import ChallengeType from '../../types/level/challenge'
 import IState from '../../types/state'
 import GameController from '../GameController'
+import ResumeState from './ResumeState'
 
 class PlayingState implements IState {
     private game: GameController
@@ -34,7 +35,8 @@ class PlayingState implements IState {
         this.game.getGameUI().setVisible(true)
         if (
             this.game.getChallengeManager().getCurrentChallengeType() !=
-            ChallengeType.NONE
+                ChallengeType.NONE &&
+            !(this.game.getGameMachine().getPreState() instanceof ResumeState)
         ) {
             this.game.getMainCamera().scrollY = -CONST.HEIGHT_SIZE / 1.5
         }
@@ -75,17 +77,18 @@ class PlayingState implements IState {
             ChallengeType.TIME
         ) {
             this.game.currentTime += delta
+            const value = this.game
+                .getChallengeManager()
+                .getCurrentLevelManager()
+                ?.getCurrentLevelData()
+            if (!value) return
             const remainingTime = Phaser.Math.RoundTo(
-                Math.max(
-                    // this.game.getChallengeManager().getDataGame() -
-                    this.game.currentTime,
-                    0
-                ),
+                Math.max(value - this.game.currentTime, 0),
                 -1
             )
             this.game.getGameUI().setDataText(remainingTime.toString() + ' s')
             if (
-                this.game.currentTime >= 5000000000000000
+                this.game.currentTime >= value
                 // this.game.getChallengeManager().getDataGame()
             ) {
                 this.game.currentTime = 0

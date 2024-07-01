@@ -10,8 +10,6 @@ class ResumeState implements IState {
         console.log('start Resume state')
         this.game.getGameUI().setVisible(true)
         this.game.getBasketManager().toggleInteractive(true)
-        //this.game.getBall().resetBall()
-        //this.game.getBall().setVisible(true)
         this.game
             .getGameMachine()
             .transitionTo(this.game.getGameMachine().getPlayingState())

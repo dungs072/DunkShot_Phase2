@@ -71,9 +71,10 @@ class LoadingScene extends Scene {
 
         // json file
 
-        this.load.json('timeChallenge', 'assets/data/timeChallenge.json')
+        this.load.json('timeChallenge', 'assets/data/time/timeChallenge.json')
 
         this.load.tilemapTiledJSON('level1', 'assets/data/time/level1.json')
+        this.load.tilemapTiledJSON('level2', 'assets/data/time/level2.json')
 
         this.add
             .text(

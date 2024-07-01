@@ -12,7 +12,7 @@ class ChallengeManager {
         this.initChallengeData()
     }
     private initChallengeData(): void {
-        const levelManager = new LevelManager(this.scene, ChallengeType.TIME, 1)
+        const levelManager = new LevelManager(this.scene, ChallengeType.TIME, 2)
         this.challenges.set(ChallengeType.TIME, levelManager)
     }
     public getCurrentChallengeType(): ChallengeType {

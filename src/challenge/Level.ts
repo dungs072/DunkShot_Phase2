@@ -19,16 +19,32 @@ class Level {
             classType: Phaser.GameObjects.Sprite,
         })
         this.basketTileObjs = baskets as Phaser.GameObjects.Sprite[]
+        this.basketTileObjs.sort((a, b) => a.y - b.y)
         const obstacles = map.createFromObjects('ObstacleLayer', {
             name: 'obstacle',
             classType: Phaser.GameObjects.Sprite,
         })
+        const movableObstacles = map.createFromObjects('ObstacleLayer', {
+            name: 'movableObstacle',
+            classType: Phaser.GameObjects.Sprite,
+        }) as Phaser.GameObjects.Sprite[]
         this.obstacleTileObjs = obstacles as Phaser.GameObjects.Sprite[]
+        movableObstacles.forEach((a) => {
+            a.width = 10
+            this.obstacleTileObjs.push(a)
+        })
 
+        this.obstacleTileObjs.sort((a, b) => a.y - b.y)
         this.basketTileObjs.forEach((basket) => {
             console.log(basket.x, basket.y)
 
             basket.setVisible(false)
+        })
+
+        this.obstacleTileObjs.forEach((obstacle) => {
+            obstacle.y = CONST.HEIGHT_SIZE - obstacle.y * devicePixelRatio
+            obstacle.x = obstacle.x * devicePixelRatio - CONST.WIDTH_SIZE / 6.5
+            obstacle.setVisible(false)
         })
     }
     public isFinishCurrentLevel(): boolean {
@@ -54,6 +70,9 @@ class Level {
         this.currentBasketIndex++
     }
     public resetLevel(): void {
+        this.obstacleTileObjs.forEach((obstacle) => {
+            obstacle.setActive(true)
+        })
         this.currentBasketIndex = 0
     }
 }

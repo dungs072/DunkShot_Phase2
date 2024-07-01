@@ -9,7 +9,6 @@ class Ball extends Phaser.GameObjects.Container {
     private initialVelocity: Phaser.Math.Vector2
 
     private lineEffect: Phaser.GameObjects.Line
-    private reverseVelocity: Phaser.Math.Vector2
 
     private hitSound: Phaser.Sound.BaseSound
     private boomSound: Phaser.Sound.BaseSound
@@ -28,7 +27,6 @@ class Ball extends Phaser.GameObjects.Container {
 
     constructor(params: IImageConstructor) {
         super(params.scene, params.x, params.y)
-        this.reverseVelocity = new Phaser.Math.Vector2(0, 0)
         this.forceAmount = 1400
         this.rotationSpeed = 15
         this.initImage(params.texture, params.frame)

@@ -4,6 +4,7 @@ import Ball from '../player/Ball'
 import MovableObstacle from './MovableObstacle'
 import CONST from '../Const'
 import ChallengeManager from '../challenge/ChallengeManager'
+import ChallengeType from '../types/level/challenge'
 
 class ObstacleManager {
     private obstacles: Obstacle[]
@@ -21,8 +22,18 @@ class ObstacleManager {
     }
 
     public createObstacleByLevel(): void {
-        // const obstacleDatas = this.levelManager.getCurrentObstacles()
-        // if (!obstacleDatas) return
+        if (
+            this.challengeManager.getCurrentChallengeType() ==
+            ChallengeType.NONE
+        )
+            return
+
+        const obstacleDatas = this.challengeManager
+            .getCurrentLevelManager()
+            ?.getCurrentLevel()
+        if (!obstacleDatas) return
+
+        const obstacles = obstacleDatas.getObstacles()
         // if (this.preObstacles.length > 0) {
         //     this.preObstacles.forEach((obstacle) => {
         //         if (obstacle) {
@@ -31,17 +42,34 @@ class ObstacleManager {
         //     })
         // }
         // this.preObstacles.splice(0, this.preObstacles.length)
-        // obstacleDatas.forEach((obstacleData) => {
-        //     const obstacle = this.spawnObstacle(
-        //         obstacleData.position.posX * devicePixelRatio +
-        //             CONST.WIDTH_SIZE / 2,
-        //         obstacleData.position.posY * devicePixelRatio +
-        //             this.scene.cameras.main.scrollY,
-        //         obstacleData.isVertical,
-        //         obstacleData.isMovable
-        //     )
-        //     this.preObstacles.push(obstacle)
-        // })
+        const cameraY = this.scene.cameras.main.scrollY
+        obstacles.forEach((obstacleData) => {
+            if (
+                obstacleData.y <= cameraY + CONST.HEIGHT_SIZE &&
+                obstacleData.y >= cameraY &&
+                obstacleData.active
+            ) {
+                const isVertical = obstacleData.angle != 90
+                const isMovable = obstacleData.width == 10
+                console.log('width' + obstacleData.width)
+
+                this.spawnObstacle(
+                    obstacleData.x,
+                    obstacleData.y,
+                    isVertical,
+                    isMovable
+                )
+                obstacleData.setActive(false)
+            }
+        })
+        this.obstacles.forEach((obstacle) => {
+            if (
+                obstacle.y > cameraY + CONST.HEIGHT_SIZE &&
+                obstacle.y < cameraY
+            ) {
+                obstacle.toggleObstacle(false)
+            }
+        })
     }
 
     public spawnObstacle(
@@ -96,7 +124,14 @@ class ObstacleManager {
         return newObstacle
     }
     private setUpColliders(obstacle: Obstacle): void {
-        this.scene.physics.add.collider(this.ball, obstacle)
+        this.scene.physics.add.collider(
+            this.ball,
+            obstacle,
+            this.collideWithObstacle
+        )
+    }
+    private collideWithObstacle = () => {
+        this.ball.playHitSound()
     }
 
     public getObstalces(): Obstacle[] {
@@ -106,6 +141,7 @@ class ObstacleManager {
         this.obstacles.forEach((obstacle) => {
             obstacle.update(delta)
         })
+        console.log(this.obstacles.length)
     }
 
     public reset(): void {
