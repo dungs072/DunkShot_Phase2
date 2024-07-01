@@ -1,9 +1,5 @@
-// import ILevel from '../types/level/level'
 import ChallengeType from '../types/level/challenge'
 import { Scene } from 'phaser'
-import ILevelData from '../types/level/levelData'
-// import IObstacle from '../types/level/obstacle'
-// import IBasket from '../types/level/basket'
 import Level from './Level'
 class LevelManager {
     public static LevelFinished = new Phaser.Events.EventEmitter()
@@ -40,6 +36,9 @@ class LevelManager {
     public gotoNextLevel(): void {
         this.currentLevelIndex =
             (this.currentLevelIndex + 1) % this.levels.length
+    }
+    public resetLevel(): void {
+        this.levels[this.currentLevelIndex].resetLevel()
     }
 
     // private fetchLevels(): void {

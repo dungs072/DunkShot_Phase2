@@ -3,7 +3,6 @@ import IState from '../../types/state'
 import Ball from '../../player/Ball'
 import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
-import CONST from '../../Const'
 import ChallengeType from '../../types/level/challenge'
 
 class RestartState implements IState {
@@ -32,15 +31,15 @@ class RestartState implements IState {
     }
 
     private restartGame(): void {
-        this.game.getChallengeManager().resetCurrentLevel()
+        //this.game.getChallengeManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
         this.game.getObstacleManager().reset()
-
+        this.game.getChallengeManager().resetCurrentLevel()
         let basket
         if (
-            this.game.getChallengeManager().getCurrentChallenge() ==
+            this.game.getChallengeManager().getCurrentChallengeType() ==
             ChallengeType.NONE
         ) {
             basket = this.basketManager.createBasket()
@@ -49,7 +48,7 @@ class RestartState implements IState {
         }
         this.game.getMenuUI().setFingerPosition(basket.x, basket.y)
         this.ball.x = basket.x
-        this.ball.y = CONST.HEIGHT_SIZE / 2
+        this.ball.y = basket.y - 75 * devicePixelRatio
         this.ball.resetBall()
 
         this.addScore(-this.scoreCalculator.getCurrentScore())

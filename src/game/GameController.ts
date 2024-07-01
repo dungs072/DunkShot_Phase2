@@ -81,8 +81,11 @@ class GameController {
     }
 
     public initialize(): void {
-        this.challengeManager = new ChallengeManager(this.scene)
-        this.challengeManager.setChallengeType(this.challengeType)
+        if (!this.challengeManager) {
+            this.challengeManager = new ChallengeManager(this.scene)
+            this.challengeManager.setChallengeType(this.challengeType)
+        }
+
         this.basketManager = new BasketManager(
             this.scene,
             CONST.WIDTH_SIZE,
@@ -141,7 +144,7 @@ class GameController {
         }
 
         this.ball.x = basket.x
-
+        this.ball.y = basket.y - 100 * devicePixelRatio
         this.menu.setFingerPosition(basket.x, basket.y)
 
         this.setUpEvents()

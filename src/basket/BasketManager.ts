@@ -3,7 +3,6 @@ import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
 import LevelManager from '../challenge/LevelManager'
-import CONST from '../Const'
 import ChallengeType from '../types/level/challenge'
 import ChallengeManager from '../challenge/ChallengeManager'
 class BasketManager {
@@ -112,15 +111,16 @@ class BasketManager {
         const level = this.challengeManager
             .getCurrentLevelManager()
             ?.getCurrentLevel()
+
         if (!level) {
             return this.createBasket()
         }
-        console.log(level)
+
         basket = this.getFreeBasket(
-            level.getBasketPosX() * devicePixelRatio + CONST.WIDTH_SIZE / 2,
-            level.getBasketPosY() * devicePixelRatio + CONST.HEIGHT_SIZE
+            level.getBasketPosX(),
+            level.getBasketPosY()
         )
-        console.log(basket.y)
+        level.gotoNextBasket()
 
         basket.disableInteractive()
         if (!basket.getHasCollider()) {

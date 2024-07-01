@@ -1,12 +1,11 @@
 import { Scene } from 'phaser'
+import CONST from '../Const'
 
 class Level {
-    private basketTileObjs: Phaser.Types.Tilemaps.TiledObject[] | undefined
-    private obstacleTileObjs: Phaser.Types.Tilemaps.TiledObject[] | undefined
+    private basketTileObjs: Phaser.GameObjects.Sprite[]
+    private obstacleTileObjs: Phaser.GameObjects.Sprite[]
     private scene: Scene
     private currentBasketIndex: number
-    private maxBasketHeight: number
-    private maxBasketWidth: number
     constructor(scene: Scene, levelName: string) {
         this.currentBasketIndex = 0
         this.scene = scene
@@ -15,45 +14,47 @@ class Level {
     private initTileMap(levelName: string): void {
         const map = this.scene.add.tilemap(levelName)
 
-        this.basketTileObjs = map.getObjectLayer('BasketLayer')?.objects
-        this.basketTileObjs?.reverse()
-        this.obstacleTileObjs = map.getObjectLayer('ObstacleLayer')?.objects
-        this.obstacleTileObjs?.reverse()
-        if (this.basketTileObjs) {
-            if (this.basketTileObjs.length > 0) {
-                const value = this.basketTileObjs[0].y
-                const value2 = this.basketTileObjs[0].x
-                if (value) {
-                    this.maxBasketHeight = value
-                }
-                if (value2) {
-                    this.maxBasketWidth = value2
-                }
-            }
-        }
+        const baskets = map.createFromObjects('BasketLayer', {
+            name: 'basket',
+            classType: Phaser.GameObjects.Sprite,
+        })
+        this.basketTileObjs = baskets as Phaser.GameObjects.Sprite[]
+        const obstacles = map.createFromObjects('ObstacleLayer', {
+            name: 'obstacle',
+            classType: Phaser.GameObjects.Sprite,
+        })
+        this.obstacleTileObjs = obstacles as Phaser.GameObjects.Sprite[]
+
+        this.basketTileObjs.forEach((basket) => {
+            console.log(basket.x, basket.y)
+
+            basket.setVisible(false)
+        })
     }
     public isFinishCurrentLevel(): boolean {
         return this.currentBasketIndex == this.basketTileObjs?.length
     }
     public getBasketPosX(): number {
-        if (!this.basketTileObjs) return -1
-        const temp = this.basketTileObjs
-        const value = temp[this.currentBasketIndex].x
-        if (!value) return -1
-        return this.maxBasketWidth - value
+        let value =
+            this.basketTileObjs[this.currentBasketIndex].x * devicePixelRatio
+        value -= CONST.WIDTH_SIZE / 6.5
+
+        return value
     }
     public getBasketPosY(): number {
-        if (!this.basketTileObjs) return -1
-        const temp = this.basketTileObjs
-        const value = temp[this.currentBasketIndex].y
-        if (!value) return -1
-        return this.maxBasketHeight - value
+        let value =
+            this.basketTileObjs[this.currentBasketIndex].y * devicePixelRatio
+        value = CONST.HEIGHT_SIZE - value
+        return value
     }
-    public getObstacles(): Phaser.Types.Tilemaps.TiledObject[] | undefined {
+    public getObstacles(): Phaser.GameObjects.Sprite[] {
         return this.obstacleTileObjs
     }
     public gotoNextBasket(): void {
         this.currentBasketIndex++
+    }
+    public resetLevel(): void {
+        this.currentBasketIndex = 0
     }
 }
 export default Level

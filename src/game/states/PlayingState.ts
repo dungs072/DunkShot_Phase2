@@ -1,3 +1,4 @@
+import CONST from '../../Const'
 import Basket from '../../basket/Basket'
 import Ball from '../../player/Ball'
 import ScoreCalculator from '../../player/ScoreCalculator'
@@ -31,6 +32,12 @@ class PlayingState implements IState {
     public enter(): void {
         console.log('start Playing state')
         this.game.getGameUI().setVisible(true)
+        if (
+            this.game.getChallengeManager().getCurrentChallengeType() !=
+            ChallengeType.NONE
+        ) {
+            this.game.getMainCamera().scrollY = -CONST.HEIGHT_SIZE / 1.5
+        }
     }
 
     public update(delta: number) {
@@ -39,17 +46,15 @@ class PlayingState implements IState {
         this.game.getObstacleManager().update(delta)
         const maxDownBorder =
             this.camera.scrollY + this.camera.height - 200 * devicePixelRatio
+        const maxUpBorder =
+            this.camera.scrollY + this.camera.height / 2 + 50 * devicePixelRatio
+
         if (!this.ball.parentContainer) {
             if (this.ball.y > this.camera.scrollY + this.camera.height + 100) {
                 this.game
                     .getGameMachine()
                     .transitionTo(this.game.getGameMachine().getOverState())
             } else {
-                const maxUpBorder =
-                    this.camera.scrollY +
-                    this.camera.height / 2 +
-                    50 * devicePixelRatio
-
                 if (this.ball.y < maxUpBorder) {
                     this.camera.scrollY -= 200 * delta
                 } else if (this.ball.y > maxDownBorder) {
@@ -61,6 +66,9 @@ class PlayingState implements IState {
             if (this.preBallPosY > maxDownBorder) {
                 this.camera.scrollY += 200 * delta
             }
+            // if (this.ball.y < maxUpBorder) {
+            //     this.camera.scrollY -= 200 * delta
+            // }
         }
         if (
             this.game.getChallengeManager().getCurrentChallengeType() ==

@@ -27,5 +27,8 @@ class ChallengeManager {
     public getCurrentLevelManager(): LevelManager | undefined {
         return this.challenges.get(this.currentChallengeType)
     }
+    public resetCurrentLevel(): void {
+        this.challenges.get(this.currentChallengeType)?.resetLevel()
+    }
 }
 export default ChallengeManager
