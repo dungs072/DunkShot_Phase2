@@ -9,7 +9,13 @@ class LoadingScene extends Scene {
     }
     preload() {
         // this.load.image('loadingbg', 'assets/bgs/bg4.png')
-        // this.add.image(0, 0, 'loadingbg')
+        this.add
+            .image(CONST.WIDTH_SIZE / 2, CONST.HEIGHT_SIZE / 2, 'prebg')
+            .setOrigin(0.5, 0.5)
+        this.add
+            .image(CONST.WIDTH_SIZE / 2, CONST.HEIGHT_SIZE / 2, 'logo')
+            .setOrigin(0.5, 0.5)
+            .setScale(0.5)
 
         let loadingBarBg = this.add.graphics()
         loadingBarBg.fillStyle(0x222222, 1)
@@ -66,6 +72,8 @@ class LoadingScene extends Scene {
         // json file
 
         this.load.json('timeChallenge', 'assets/data/timeChallenge.json')
+
+        this.load.tilemapTiledJSON('level1', 'assets/data/time/level1.json')
 
         this.add
             .text(

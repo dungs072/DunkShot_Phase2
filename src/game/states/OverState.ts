@@ -11,6 +11,7 @@ class OverState implements IState {
         this.game.getBall().toggleBall(false)
         this.game.getBasketManager().toggleInteractive(false)
         this.game.getOverUI().toggleUI(true)
+        this.game.currentTime = 0
         this.game
             .getOverUI()
             .setHighScoreText(this.game.getScoreCalculator().getHighScore())

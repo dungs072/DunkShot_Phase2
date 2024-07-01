@@ -65,5 +65,8 @@ class Button extends Phaser.GameObjects.Container {
     public setTextPosition(x: number, y: number): void {
         this.text.setPosition(x, y)
     }
+    public setText(text: string): void {
+        this.text.text = text
+    }
 }
 export default Button

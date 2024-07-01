@@ -2,46 +2,46 @@ import { Scene } from 'phaser'
 import Obstacle from './Obstacle'
 import Ball from '../player/Ball'
 import MovableObstacle from './MovableObstacle'
-import LevelManager from '../level/LevelManager'
 import CONST from '../Const'
+import ChallengeManager from '../challenge/ChallengeManager'
 
 class ObstacleManager {
     private obstacles: Obstacle[]
     private ball: Ball
     private scene: Scene
-    private levelManager: LevelManager
+    private challengeManager: ChallengeManager
     private preObstacles: Obstacle[]
 
-    constructor(scene: Scene, ball: Ball, levelManager: LevelManager) {
+    constructor(scene: Scene, ball: Ball, challengeManager: ChallengeManager) {
         this.obstacles = []
         this.scene = scene
         this.ball = ball
-        this.levelManager = levelManager
+        this.challengeManager = challengeManager
         this.preObstacles = []
     }
 
     public createObstacleByLevel(): void {
-        const obstacleDatas = this.levelManager.getCurrentObstacles()
-        if (!obstacleDatas) return
-        if (this.preObstacles.length > 0) {
-            this.preObstacles.forEach((obstacle) => {
-                if (obstacle) {
-                    obstacle.toggleObstacle(false)
-                }
-            })
-        }
-        this.preObstacles.splice(0, this.preObstacles.length)
-        obstacleDatas.forEach((obstacleData) => {
-            const obstacle = this.spawnObstacle(
-                obstacleData.position.posX * devicePixelRatio +
-                    CONST.WIDTH_SIZE / 2,
-                obstacleData.position.posY * devicePixelRatio +
-                    this.scene.cameras.main.scrollY,
-                obstacleData.isVertical,
-                obstacleData.isMovable
-            )
-            this.preObstacles.push(obstacle)
-        })
+        // const obstacleDatas = this.levelManager.getCurrentObstacles()
+        // if (!obstacleDatas) return
+        // if (this.preObstacles.length > 0) {
+        //     this.preObstacles.forEach((obstacle) => {
+        //         if (obstacle) {
+        //             obstacle.toggleObstacle(false)
+        //         }
+        //     })
+        // }
+        // this.preObstacles.splice(0, this.preObstacles.length)
+        // obstacleDatas.forEach((obstacleData) => {
+        //     const obstacle = this.spawnObstacle(
+        //         obstacleData.position.posX * devicePixelRatio +
+        //             CONST.WIDTH_SIZE / 2,
+        //         obstacleData.position.posY * devicePixelRatio +
+        //             this.scene.cameras.main.scrollY,
+        //         obstacleData.isVertical,
+        //         obstacleData.isMovable
+        //     )
+        //     this.preObstacles.push(obstacle)
+        // })
     }
 
     public spawnObstacle(

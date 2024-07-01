@@ -9,11 +9,12 @@ import TrajectoryPath from '../trajectory/TrajectoryPath'
 import GameStateMachine from './GameStateMachine'
 import CONST from '../Const'
 import ObstacleManager from '../obstacle/ObstacleManager'
-import LevelManager from '../level/LevelManager'
+import LevelManager from '../challenge/LevelManager'
 import ChallengeType from '../types/level/challenge'
 import NextLevelUI from '../ui/NextLevelUI'
 import Basket from '../basket/Basket'
 import PauseUI from '../ui/PauseUI'
+import ChallengeManager from '../challenge/ChallengeManager'
 
 class GameController {
     private ball: Ball
@@ -30,12 +31,14 @@ class GameController {
 
     private gameStateMachine: GameStateMachine
 
-    private levelManager: LevelManager
+    private challengeManager: ChallengeManager
 
     private trajectory: TrajectoryPath
 
     private scene: Scene
     private challengeType: ChallengeType
+
+    public currentTime: number = 0
     constructor(scene: Scene, challengeType: ChallengeType) {
         this.scene = scene
         this.challengeType = challengeType
@@ -73,17 +76,18 @@ class GameController {
     public getScoreCalculator(): ScoreCalculator {
         return this.scoreCalculator
     }
-    public getLevelManager(): LevelManager {
-        return this.levelManager
+    public getChallengeManager(): ChallengeManager {
+        return this.challengeManager
     }
 
     public initialize(): void {
-        this.levelManager = new LevelManager(this.scene, this.challengeType)
+        this.challengeManager = new ChallengeManager(this.scene)
+        this.challengeManager.setChallengeType(this.challengeType)
         this.basketManager = new BasketManager(
             this.scene,
             CONST.WIDTH_SIZE,
             CONST.HEIGHT_SIZE,
-            this.levelManager
+            this.challengeManager
         )
 
         this.scoreCalculator = new ScoreCalculator()
@@ -122,12 +126,15 @@ class GameController {
         this.obstacleManager = new ObstacleManager(
             this.scene,
             this.ball,
-            this.levelManager
+            this.challengeManager
         )
         this.camera = this.scene.cameras.main
         this.basketManager.setBall(this.ball)
         let basket
-        if (this.levelManager.getCurrentChallenge() == ChallengeType.NONE) {
+        if (
+            this.challengeManager.getCurrentChallengeType() ==
+            ChallengeType.NONE
+        ) {
             basket = this.basketManager.createBasket()
         } else {
             basket = this.basketManager.createBasketByLevel()
@@ -175,13 +182,13 @@ class GameController {
             )
         })
         this.nextLevelUI.addBackMenuListener(() => {
-            this.levelManager.setChallengeType(ChallengeType.NONE)
+            this.challengeManager.setChallengeType(ChallengeType.NONE)
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getResetState()
             )
         })
         this.nextLevelUI.addNextLevelListener(() => {
-            this.levelManager.gotoNextLevel()
+            this.challengeManager.gotoNextLevel()
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getRestartState()
             )

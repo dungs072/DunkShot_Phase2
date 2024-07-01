@@ -5,4 +5,5 @@ let CONST = {
             : innerWidth * devicePixelRatio,
     HEIGHT_SIZE: 700 * devicePixelRatio,
 }
+
 export default CONST

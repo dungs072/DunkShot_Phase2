@@ -3,6 +3,7 @@ import LoadingScene from './scenes/LoadingScene'
 import MainGameScene from './scenes/MainGameScene'
 import ChallengeSelectionScene from './scenes/ChallengeSelectionScene'
 import CONST from './Const'
+import BoostScene from './scenes/BoostScene'
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -23,7 +24,7 @@ const config: Types.Core.GameConfig = {
             debug: false,
         },
     },
-    scene: [LoadingScene, MainGameScene, ChallengeSelectionScene],
+    scene: [BoostScene, LoadingScene, MainGameScene, ChallengeSelectionScene],
 }
 const game = new Game(config)
 export default game

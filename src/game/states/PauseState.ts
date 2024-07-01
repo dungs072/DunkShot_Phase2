@@ -10,13 +10,14 @@ class PauseState implements IState {
         console.log('start Pause State')
         this.game.getPauseUI().toggleUI(true)
         this.game.getBall().pauseBall(true)
-        //this.overGameUI.setHighScoreText(game.getHighScore())
+        this.game.getBasketManager().toggleInteractive(false)
     }
     public update(delta: number): void {}
     public exit(): void {
         console.log('end Pause State')
         this.game.getPauseUI().toggleUI(false)
         this.game.getBall().pauseBall(false)
+        this.game.getBasketManager().toggleInteractive(true)
     }
 }
 export default PauseState

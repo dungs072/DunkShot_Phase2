@@ -32,7 +32,7 @@ class RestartState implements IState {
     }
 
     private restartGame(): void {
-        this.game.getLevelManager().resetCurrentLevel()
+        this.game.getChallengeManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
@@ -40,7 +40,7 @@ class RestartState implements IState {
 
         let basket
         if (
-            this.game.getLevelManager().getCurrentChallenge() ==
+            this.game.getChallengeManager().getCurrentChallenge() ==
             ChallengeType.NONE
         ) {
             basket = this.basketManager.createBasket()
@@ -58,7 +58,7 @@ class RestartState implements IState {
         this.scoreCalculator.addCurrentScore(amount)
         this.game
             .getGameUI()
-            .setDataText(this.scoreCalculator.getCurrentScore())
+            .setDataText(this.scoreCalculator.getCurrentScore().toString())
     }
 }
 export default RestartState

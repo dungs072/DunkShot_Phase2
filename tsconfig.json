@@ -19,5 +19,5 @@
         "noFallthroughCasesInSwitch": true,
         "strictPropertyInitialization": false
     },
-    "include": ["src", "src/level"]
+    "include": ["src", "src/challenge"]
 }

@@ -32,12 +32,12 @@ class ResetState implements IState {
     }
 
     private resetGame(): void {
-        this.game.getLevelManager().resetCurrentLevel()
+        this.game.getChallengeManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
         this.game.getObstacleManager().reset()
-        this.game.getLevelManager().setChallengeType(ChallengeType.NONE)
+        this.game.getChallengeManager().setChallengeType(ChallengeType.NONE)
         const basket = this.basketManager.createBasket()
         this.game.getMenuUI().setFingerPosition(basket.x, basket.y)
         this.ball.x = basket.x
@@ -50,7 +50,7 @@ class ResetState implements IState {
         this.scoreCalculator.addCurrentScore(amount)
         this.game
             .getGameUI()
-            .setDataText(this.scoreCalculator.getCurrentScore())
+            .setDataText(this.scoreCalculator.getCurrentScore().toString())
     }
 }
 export default ResetState

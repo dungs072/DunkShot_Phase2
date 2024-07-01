@@ -59,12 +59,13 @@ class MainMenuUI extends Phaser.GameObjects.Container {
             0,
             0,
             'finger'
-        ).setScale(0.25)
+        ).setScale(0.5)
         this.dragIt.rotation = 20 * (Math.PI / 180)
         this.add(this.titleGame)
         this.add(this.dragIt)
         this.add(this.challengesButton)
         this.setScrollFactor(0, 0)
+        this.challengesButton.setScrollFactor(0, 0)
     }
 
     public setFingerPosition(x: number, y: number): void {

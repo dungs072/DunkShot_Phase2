@@ -144,5 +144,8 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             })
         }
     }
+    public setTimeButtonText(text: string): void {
+        this.timeButton.setText(text)
+    }
 }
 export default SelectionChallengeMenuUI

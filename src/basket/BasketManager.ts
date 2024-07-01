@@ -2,9 +2,10 @@ import Basket from './Basket'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import { Scene } from 'phaser'
-import LevelManager from '../level/LevelManager'
+import LevelManager from '../challenge/LevelManager'
 import CONST from '../Const'
 import ChallengeType from '../types/level/challenge'
+import ChallengeManager from '../challenge/ChallengeManager'
 class BasketManager {
     public static BasketCollided = new Phaser.Events.EventEmitter()
     private baskets: Basket[]
@@ -18,7 +19,7 @@ class BasketManager {
     private ball: Ball
     private preBasket: Basket | undefined
     private scene: Scene
-    private levelManager: LevelManager
+    private challengeManager: ChallengeManager
 
     private explosionEffect: Phaser.GameObjects.Sprite
     private complicationText: Phaser.GameObjects.Text
@@ -27,10 +28,10 @@ class BasketManager {
         scene: Scene,
         screenWidth: number,
         screenHeight: number,
-        levelManager: LevelManager
+        challengeManager: ChallengeManager
     ) {
         this.scene = scene
-        this.levelManager = levelManager
+        this.challengeManager = challengeManager
         this.maxHeight = 200
         this.minHeight = 150
         this.screenWidth = screenWidth
@@ -108,21 +109,18 @@ class BasketManager {
 
     public createBasketByLevel(): Basket {
         let basket
-        const basketData = this.levelManager.getCurrentBasket()
-
-        if (this.preBasket) {
-            basket = this.getFreeBasket(
-                basketData.position.posX * devicePixelRatio,
-                basketData.position.posY * devicePixelRatio + this.preBasket.y
-            )
-        } else {
-            basket = this.getFreeBasket(
-                basketData.position.posX * devicePixelRatio +
-                    CONST.WIDTH_SIZE / 2,
-                basketData.position.posY * devicePixelRatio +
-                    CONST.HEIGHT_SIZE / 1.4
-            )
+        const level = this.challengeManager
+            .getCurrentLevelManager()
+            ?.getCurrentLevel()
+        if (!level) {
+            return this.createBasket()
         }
+        console.log(level)
+        basket = this.getFreeBasket(
+            level.getBasketPosX() * devicePixelRatio + CONST.WIDTH_SIZE / 2,
+            level.getBasketPosY() * devicePixelRatio + CONST.HEIGHT_SIZE
+        )
+        console.log(basket.y)
 
         basket.disableInteractive()
         if (!basket.getHasCollider()) {
@@ -212,10 +210,18 @@ class BasketManager {
         }
         if (this.prevHeight > gameObj.y) {
             this.prevHeight = gameObj.y
-            if (this.levelManager.getCurrentChallenge() == ChallengeType.NONE) {
+            if (
+                this.challengeManager.getCurrentChallengeType() ==
+                ChallengeType.NONE
+            ) {
                 this.createBasket()
             } else {
-                if (this.levelManager.isFinishCurrentLevel()) {
+                if (
+                    this.challengeManager
+                        .getCurrentLevelManager()
+                        ?.getCurrentLevel()
+                        .isFinishCurrentLevel()
+                ) {
                     LevelManager.LevelFinished.emit('nextlevel')
                 } else {
                     this.createBasketByLevel()

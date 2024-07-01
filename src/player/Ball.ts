@@ -182,8 +182,10 @@ class Ball extends Phaser.GameObjects.Container {
         } else {
             this.body.setVelocity(this.currentVelocityX, this.currentVelocityY)
         }
-        this.body.immovable = state
-        this.body.allowGravity = !state
+        if (!this.parentContainer) {
+            this.body.immovable = state
+            this.body.allowGravity = !state
+        }
     }
 }
 export default Ball

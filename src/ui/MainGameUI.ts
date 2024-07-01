@@ -12,7 +12,7 @@ class MainGameUI extends Phaser.GameObjects.Container {
         this.initButtons()
 
         this.scene.add.existing(this)
-        this.setDataText(0)
+        this.setDataText('0')
     }
     private initUI(): void {
         this.dataGameText = new Phaser.GameObjects.Text(
@@ -45,8 +45,8 @@ class MainGameUI extends Phaser.GameObjects.Container {
         )
         this.add(this.pauseButton)
     }
-    public setDataText(amount: number) {
-        this.dataGameText.text = amount.toString()
+    public setDataText(text: string) {
+        this.dataGameText.text = text
     }
     public addHitPauseListener(callBack: Function): void {
         this.pauseButton.on('pause', callBack)
