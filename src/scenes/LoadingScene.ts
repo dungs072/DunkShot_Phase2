@@ -75,7 +75,7 @@ class LoadingScene extends Scene {
 
         this.load.tilemapTiledJSON('level1', 'assets/data/time/level1.json')
         this.load.tilemapTiledJSON('level2', 'assets/data/time/level2.json')
-
+        this.load.tilemapTiledJSON('level3', 'assets/data/time/level3.json')
         this.add
             .text(
                 CONST.WIDTH_SIZE / 2 + 10,

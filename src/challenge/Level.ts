@@ -18,8 +18,12 @@ class Level {
             name: 'basket',
             classType: Phaser.GameObjects.Sprite,
         })
+        const movableBaskets = map.createFromObjects('BasketLayer', {
+            name: 'movableBasket',
+            classType: Phaser.GameObjects.Sprite,
+        }) as Phaser.GameObjects.Sprite[]
         this.basketTileObjs = baskets as Phaser.GameObjects.Sprite[]
-        this.basketTileObjs.sort((a, b) => a.y - b.y)
+
         const obstacles = map.createFromObjects('ObstacleLayer', {
             name: 'obstacle',
             classType: Phaser.GameObjects.Sprite,
@@ -33,12 +37,16 @@ class Level {
             a.width = 10
             this.obstacleTileObjs.push(a)
         })
+        movableBaskets.forEach((a) => {
+            a.width = 10
+            this.basketTileObjs.push(a)
+        })
+        this.basketTileObjs.sort((a, b) => a.y - b.y)
 
         this.obstacleTileObjs.sort((a, b) => a.y - b.y)
         this.basketTileObjs.forEach((basket) => {
-            console.log(basket.x, basket.y)
-
             basket.setVisible(false)
+            console.log(basket.x, basket.y)
         })
 
         this.obstacleTileObjs.forEach((obstacle) => {
@@ -62,6 +70,12 @@ class Level {
             this.basketTileObjs[this.currentBasketIndex].y * devicePixelRatio
         value = CONST.HEIGHT_SIZE - value
         return value
+    }
+    public getIsMovable(): boolean {
+        return this.basketTileObjs[this.currentBasketIndex].width == 10
+    }
+    public getIsVertical(): boolean {
+        return this.basketTileObjs[this.currentBasketIndex].angle != 90
     }
     public getObstacles(): Phaser.GameObjects.Sprite[] {
         return this.obstacleTileObjs

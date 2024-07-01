@@ -9,6 +9,7 @@ class MovableBasket extends Basket {
     private speed: number
     private isReachOneSide: boolean
     private isVertical: boolean
+    private isStop: boolean
     constructor(
         scene: Scene,
         x: number,
@@ -25,9 +26,11 @@ class MovableBasket extends Basket {
         this.startY = this.y
         this.isReachOneSide = false
         this.isVertical = isVertical
+        this.isStop = false
     }
     public update(delta: number): void {
         super.update(delta)
+        if (this.isStop) return
         if (this.isVertical) {
             if (this.y < this.startY - this.maxDistance) {
                 this.isReachOneSide = false
@@ -53,6 +56,17 @@ class MovableBasket extends Basket {
                 this.setBasketXPosition(this.speed * delta)
             }
         }
+    }
+    public setIsVertical(isVertical: boolean): void {
+        this.isVertical = isVertical
+    }
+    public setIsStop(isStop: boolean): void {
+        this.isStop = isStop
+    }
+    public setNewPosition(x: number, y: number): void {
+        super.setNewPosition(x, y)
+        this.startX = x
+        this.startY = y
     }
 }
 export default MovableBasket

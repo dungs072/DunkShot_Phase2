@@ -62,7 +62,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
                 const data = { challengeType: ChallengeType.TIME }
                 this.scene.scene.start('MainGameScene', data)
             },
-            'Time',
+            'Time (3)',
             400,
             100
         ).setScale(0.5)

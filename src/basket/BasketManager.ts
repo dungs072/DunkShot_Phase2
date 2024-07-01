@@ -5,6 +5,7 @@ import { Scene } from 'phaser'
 import LevelManager from '../challenge/LevelManager'
 import ChallengeType from '../types/level/challenge'
 import ChallengeManager from '../challenge/ChallengeManager'
+import MovableBasket from './MovableBasket'
 class BasketManager {
     public static BasketCollided = new Phaser.Events.EventEmitter()
     private baskets: Basket[]
@@ -118,7 +119,9 @@ class BasketManager {
 
         basket = this.getFreeBasket(
             level.getBasketPosX(),
-            level.getBasketPosY()
+            level.getBasketPosY(),
+            level.getIsVertical(),
+            level.getIsMovable()
         )
         level.gotoNextBasket()
 
@@ -208,6 +211,9 @@ class BasketManager {
             }
             this.preBasket = gameObj
         }
+        if (gameObj instanceof MovableBasket) {
+            gameObj.setIsStop(true)
+        }
         if (this.prevHeight > gameObj.y) {
             this.prevHeight = gameObj.y
             if (
@@ -229,16 +235,36 @@ class BasketManager {
             }
         }
     }
-    public getFreeBasket(x: number, y: number): Basket {
+    public getFreeBasket(
+        x: number,
+        y: number,
+        isVertical = false,
+        isMovable = false
+    ): Basket {
         for (let i = 0; i < this.baskets.length; i++) {
             if (!this.baskets[i].active) {
-                this.baskets[i].toggleBasket(true)
-                this.baskets[i].setNewPosition(x, y)
-                return this.baskets[i]
+                if (isMovable) {
+                    const basket = this.baskets[i]
+                    if (basket instanceof MovableBasket) {
+                        basket.toggleBasket(true)
+                        basket.setNewPosition(x, y)
+                        basket.setIsVertical(isVertical)
+                        basket.setIsStop(false)
+                        return basket
+                    }
+                } else if (!(this.baskets[i] instanceof MovableBasket)) {
+                    this.baskets[i].toggleBasket(true)
+                    this.baskets[i].setNewPosition(x, y)
+                    return this.baskets[i]
+                }
             }
         }
-        //const basket = new MovableBasket(this.scene, x, y, true, 100, 100)
-        const basket = new Basket(this.scene, x, y)
+        let basket
+        if (isMovable) {
+            basket = new MovableBasket(this.scene, x, y, isVertical, 100, 100)
+        } else {
+            basket = new Basket(this.scene, x, y)
+        }
         this.baskets.push(basket)
         return basket
     }
