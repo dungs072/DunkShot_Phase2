@@ -17,7 +17,7 @@ class LevelManager {
     constructor(scene: Scene, challengeType: ChallengeType, numberLevel = 1) {
         this.scene = scene
         this.currentChallenge = challengeType
-        this.currentLevelIndex = 2
+        this.currentLevelIndex = 0
         // this.currentBasketIndex = 0
         this.levels = []
         this.initLevels(numberLevel)

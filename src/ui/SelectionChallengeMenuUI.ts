@@ -73,8 +73,8 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             -35,
             'buttonbg',
             () => {
-                const data = { challengeType: ChallengeType.SCORE }
-                this.scene.scene.start('MainGameScene', data)
+                // const data = { challengeType: ChallengeType.SCORE }
+                // this.scene.scene.start('MainGameScene', data)
             },
             'Score',
             400,
@@ -87,8 +87,8 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             40,
             'buttonbg',
             () => {
-                const data = { challengeType: ChallengeType.BOUNCE }
-                this.scene.scene.start('MainGameScene', data)
+                // const data = { challengeType: ChallengeType.BOUNCE }
+                // this.scene.scene.start('MainGameScene', data)
             },
             'Bounce',
             400,
@@ -103,7 +103,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
                 const data = { challengeType: ChallengeType.NO_AIM }
                 this.scene.scene.start('MainGameScene', data)
             },
-            'No aim',
+            'No aim (3)',
             400,
             100
         ).setScale(0.5)

@@ -1,5 +1,6 @@
 import GameController from '../GameController'
 import IState from '../../types/state'
+import ChallengeType from '../../types/level/challenge'
 
 class MenuState implements IState {
     private game: GameController
@@ -9,6 +10,11 @@ class MenuState implements IState {
     public enter(): void {
         console.log('start Menu State')
         this.game.getMenuUI().toggleMenu(true)
+
+        this.game.toggleForceDownTrajectory(
+            this.game.getChallengeManager().getCurrentChallengeType() ==
+                ChallengeType.NO_AIM
+        )
     }
     public update(delta: number): void {
         this.game.getBall().update(delta)

@@ -12,8 +12,18 @@ class ChallengeManager {
         this.initChallengeData()
     }
     private initChallengeData(): void {
-        const levelManager = new LevelManager(this.scene, ChallengeType.TIME, 3)
-        this.challenges.set(ChallengeType.TIME, levelManager)
+        const timeLevelManager = new LevelManager(
+            this.scene,
+            ChallengeType.TIME,
+            3
+        )
+        const noAimLevelManager = new LevelManager(
+            this.scene,
+            ChallengeType.NO_AIM,
+            3
+        )
+        this.challenges.set(ChallengeType.TIME, timeLevelManager)
+        this.challenges.set(ChallengeType.NO_AIM, noAimLevelManager)
     }
     public getCurrentChallengeType(): ChallengeType {
         return this.currentChallengeType

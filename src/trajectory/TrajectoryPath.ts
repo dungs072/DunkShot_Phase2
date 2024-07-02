@@ -8,11 +8,13 @@ class TrajectoryPath {
     private scene: Scene
     private maxPoint: number
     private currentMaxPoint: number
-    constructor(scene: Scene, maxPoint: number) {
+    private forceDown: boolean
+    constructor(scene: Scene, maxPoint: number, forceDown = false) {
         this.points = []
         this.scene = scene
         this.maxPoint = maxPoint
         this.currentMaxPoint = maxPoint
+        this.forceDown = forceDown
         for (let i = 0; i < maxPoint; i++) {
             const point = new Point(scene, 0, 0)
             this.points.push(point)
@@ -27,6 +29,7 @@ class TrajectoryPath {
                 velocityY: number,
                 ratio: number
             ) => {
+                if (this.forceDown) return
                 this.drawTrajectory(
                     new Phaser.Math.Vector2(x, y),
                     new Phaser.Math.Vector2(velocityX, velocityY),
@@ -38,6 +41,7 @@ class TrajectoryPath {
             this.togglePoints(false)
         })
         Basket.eventEmitter.on('turnontrajectory', () => {
+            if (this.forceDown) return
             this.togglePoints(true)
         })
     }
@@ -45,6 +49,9 @@ class TrajectoryPath {
         for (let i = 0; i < this.points.length; i++) {
             this.points[i].setVisible(state)
         }
+    }
+    public setForceDown(state: boolean): void {
+        this.forceDown = state
     }
     private drawTrajectory(
         startPosition: Phaser.Math.Vector2,

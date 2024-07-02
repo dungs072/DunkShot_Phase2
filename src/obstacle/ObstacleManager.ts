@@ -51,8 +51,6 @@ class ObstacleManager {
             ) {
                 const isVertical = obstacleData.angle != 90
                 const isMovable = obstacleData.width == 10
-                console.log('width' + obstacleData.width)
-
                 this.spawnObstacle(
                     obstacleData.x,
                     obstacleData.y,
@@ -141,7 +139,6 @@ class ObstacleManager {
         this.obstacles.forEach((obstacle) => {
             obstacle.update(delta)
         })
-        console.log(this.obstacles.length)
     }
 
     public reset(): void {

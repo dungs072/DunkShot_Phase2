@@ -46,7 +46,7 @@ class Level {
         this.obstacleTileObjs.sort((a, b) => a.y - b.y)
         this.basketTileObjs.forEach((basket) => {
             basket.setVisible(false)
-            console.log(basket.x, basket.y)
+            // console.log(basket.x, basket.y)
         })
 
         this.obstacleTileObjs.forEach((obstacle) => {
@@ -70,6 +70,9 @@ class Level {
             this.basketTileObjs[this.currentBasketIndex].y * devicePixelRatio
         value = CONST.HEIGHT_SIZE - value
         return value
+    }
+    public getBasketRotation(): number {
+        return this.basketTileObjs[this.currentBasketIndex].angle
     }
     public getIsMovable(): boolean {
         return this.basketTileObjs[this.currentBasketIndex].width == 10

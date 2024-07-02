@@ -14,7 +14,7 @@ class Basket extends Phaser.GameObjects.Container {
 
     private topLeftCollider: EmptyColliderGameObject
     private topRightCollider: EmptyColliderGameObject
-    private centerCollider: EmptyColliderGameObject
+    protected centerCollider: EmptyColliderGameObject
     private netCollider: EmptyColliderGameObject
 
     private groupColliders: Phaser.GameObjects.Group
@@ -386,6 +386,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.netCollider.toggleCollision(!state)
     }
     public toggleBasket(state: boolean): void {
+        this.x = 1000
         this.toggleAllColliders(state)
         this.toggleCenterCollider(state)
         this.rim2.setVisible(state)

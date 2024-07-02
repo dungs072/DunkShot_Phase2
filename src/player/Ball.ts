@@ -63,6 +63,7 @@ class Ball extends Phaser.GameObjects.Container {
         this.body.setFriction(0, 0)
         this.body.setAllowDrag(false)
         this.body.setCollideWorldBounds(true, 0, 0, true)
+        this.body.setMass(100)
         this.scene.physics.world.on(
             'worldbounds',
             (

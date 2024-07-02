@@ -22,7 +22,7 @@ class BasketManager {
     private challengeManager: ChallengeManager
 
     private explosionEffect: Phaser.GameObjects.Sprite
-    private complicationText: Phaser.GameObjects.Text
+    private complimentText: Phaser.GameObjects.Text
 
     constructor(
         scene: Scene,
@@ -50,7 +50,7 @@ class BasketManager {
         this.explosionEffect.setDepth(5)
         this.explosionEffect.setVisible(false)
         this.scene.add.existing(this.explosionEffect)
-        this.complicationText = new Phaser.GameObjects.Text(
+        this.complimentText = new Phaser.GameObjects.Text(
             this.scene,
             0,
             0,
@@ -62,10 +62,10 @@ class BasketManager {
                 fontStyle: 'bold',
             }
         )
-        this.complicationText.setDepth(5)
-        this.complicationText.setVisible(false)
+        this.complimentText.setDepth(5)
+        this.complimentText.setVisible(false)
         // this.complicationText.setVisible(false)
-        this.scene.add.existing(this.complicationText)
+        this.scene.add.existing(this.complimentText)
         this.initAnimations()
         this.setUpEvents()
     }
@@ -123,6 +123,10 @@ class BasketManager {
             level.getIsVertical(),
             level.getIsMovable()
         )
+        if (level.getBasketRotation() != 90) {
+            basket.setRotation(level.getBasketRotation())
+        }
+
         level.gotoNextBasket()
 
         basket.disableInteractive()
@@ -135,7 +139,7 @@ class BasketManager {
 
     public createBasket(): Basket {
         let randomX = this.isLeft
-            ? Phaser.Math.Between(150, this.screenWidth / 2)
+            ? Phaser.Math.Between(150, this.screenWidth / 2 - 50)
             : Phaser.Math.Between(
                   this.screenWidth / 2 + 50,
                   this.screenWidth - 150
@@ -209,6 +213,7 @@ class BasketManager {
             if (this.preBasket != gameObj) {
                 BasketManager.BasketCollided.emit('basketcollided')
             }
+
             this.preBasket = gameObj
         }
         if (gameObj instanceof MovableBasket) {
@@ -296,13 +301,13 @@ class BasketManager {
         }
     }
     private triggerPerfectText(basket: Basket): void {
-        this.complicationText.setVisible(true)
-        this.complicationText.setPosition(basket.x - 43, basket.y - 50)
+        this.complimentText.setVisible(true)
+        this.complimentText.setPosition(basket.x - 43, basket.y - 50)
         this.scene.tweens.add({
-            targets: this.complicationText,
+            targets: this.complimentText,
             y: {
-                from: this.complicationText.y,
-                to: this.complicationText.y - 50,
+                from: this.complimentText.y,
+                to: this.complimentText.y - 50,
             },
             alpha: { from: 0, to: 1 },
             duration: 500,

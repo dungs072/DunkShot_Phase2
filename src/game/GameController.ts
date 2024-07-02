@@ -98,7 +98,7 @@ class GameController {
         this.create()
     }
     private create(): void {
-        this.trajectory = new TrajectoryPath(this.scene, 20)
+        this.trajectory = new TrajectoryPath(this.scene, 10)
         this.menu = new MainMenuUI(this.scene, 0, 0)
         this.gameUI = new MainGameUI(this.scene, 0, 0)
         this.overGameUI = new OverGameUI(this.scene, 0, 0)
@@ -217,6 +217,9 @@ class GameController {
         BasketManager.BasketCollided.destroy()
         LevelManager.LevelFinished.destroy()
         Basket.eventEmitter.destroy()
+    }
+    public toggleForceDownTrajectory(state: boolean) {
+        this.trajectory.setForceDown(state)
     }
 
     update(delta: number): void {

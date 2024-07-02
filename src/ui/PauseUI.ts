@@ -56,7 +56,7 @@ class PauseUI extends Phaser.GameObjects.Container {
         this.backMenuButton = new Button(
             this.scene,
             150,
-            0,
+            100,
             'buttonbg',
             () => {
                 this.backMenuButton.emit('backmenu')
@@ -66,12 +66,27 @@ class PauseUI extends Phaser.GameObjects.Container {
             100
         ).setScale(0.5)
 
+        this.challengesButton = new Button(
+            this.scene,
+            150,
+            0,
+            'challenge',
+            () => {
+                this.handleChallengeButtonClick()
+                this.challengesButton.emit('challenge')
+            },
+            '',
+            500,
+            200
+        ).setScale(0.3)
+
         this.add(this.background)
         this.add(this.resumeButton)
         this.add(this.backMenuButton)
+        this.add(this.challengesButton)
 
-        this.backMenuButton.setScrollFactor(0, 0)
-        this.resumeButton.setScrollFactor(0, 0)
+        // this.backMenuButton.setScrollFactor(0, 0)
+        // this.resumeButton.setScrollFactor(0, 0)
         this.add(title)
     }
     public toggleUI(state: boolean, immediate = false): void {
@@ -107,6 +122,9 @@ class PauseUI extends Phaser.GameObjects.Container {
     }
     public addBackMenuListener(callBack: Function): void {
         this.backMenuButton.on('backmenu', callBack)
+    }
+    private handleChallengeButtonClick(): void {
+        this.scene.scene.start('ChallengeSelectionScene')
     }
 }
 export default PauseUI
