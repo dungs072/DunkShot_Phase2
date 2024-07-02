@@ -25,6 +25,7 @@ class PlayingState implements IState {
                 .getCurrentChallengeType()
             if (
                 challengeType == ChallengeType.SCORE ||
+                challengeType == ChallengeType.NO_AIM ||
                 challengeType == ChallengeType.NONE
             )
                 this.addScore(amount)
@@ -40,6 +41,7 @@ class PlayingState implements IState {
         ) {
             this.game.getMainCamera().scrollY = -CONST.HEIGHT_SIZE / 1.5
         }
+        this.setTime()
     }
 
     public update(delta: number) {
@@ -76,6 +78,7 @@ class PlayingState implements IState {
             this.game.getChallengeManager().getCurrentChallengeType() ==
             ChallengeType.TIME
         ) {
+            if (!this.game.getBasketManager().isFirstBasket()) return
             this.game.currentTime += delta
             const value = this.game
                 .getChallengeManager()
@@ -109,6 +112,20 @@ class PlayingState implements IState {
         this.game
             .getGameUI()
             .setDataText(this.scoreCalculator.getCurrentScore().toString())
+    }
+    private setTime(): void {
+        if (
+            this.game.getChallengeManager().getCurrentChallengeType() ==
+            ChallengeType.TIME
+        ) {
+            const value = this.game
+                .getChallengeManager()
+                .getCurrentLevelManager()
+                ?.getCurrentLevelData()
+            if (!value) return
+            this.game.getGameUI().setDataText(value.toString() + ' s')
+            this.game.currentTime == 0
+        }
     }
 }
 export default PlayingState

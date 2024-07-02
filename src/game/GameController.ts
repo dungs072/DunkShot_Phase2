@@ -184,6 +184,11 @@ class GameController {
                 this.gameStateMachine.getResumeState()
             )
         })
+        this.pauseUI.addRestartListener(() => {
+            this.gameStateMachine.transitionTo(
+                this.gameStateMachine.getRestartState()
+            )
+        })
         this.nextLevelUI.addBackMenuListener(() => {
             this.challengeManager.setChallengeType(ChallengeType.NONE)
             this.gameStateMachine.transitionTo(

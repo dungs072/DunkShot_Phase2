@@ -21,7 +21,7 @@ const config: Types.Core.GameConfig = {
         default: 'arcade',
         arcade: {
             gravity: { x: 0, y: 1800 },
-            debug: true,
+            debug: false,
         },
     },
     scene: [BoostScene, LoadingScene, MainGameScene, ChallengeSelectionScene],

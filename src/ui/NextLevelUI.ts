@@ -1,5 +1,4 @@
 import { Scene } from 'phaser'
-import CONST from '../Const'
 import Button from './base/Button'
 
 class NextLevelUI extends Phaser.GameObjects.Container {
@@ -13,7 +12,6 @@ class NextLevelUI extends Phaser.GameObjects.Container {
         this.initUI()
         this.initButtons()
         this.scene.add.existing(this)
-        this.setScoreText(0)
         this.setDepth(15)
         this.toggleUI(false, true)
     }
@@ -26,19 +24,20 @@ class NextLevelUI extends Phaser.GameObjects.Container {
         ).setScale(1.2, 1.8)
         this.dataText = new Phaser.GameObjects.Text(
             this.scene,
-            CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 4,
-            '999',
+            145,
+            0,
+            'Finish Level',
             {
                 fontFamily: 'Arial',
-                color: '#FFFFFF',
-                fontSize: 75,
+                color: '#FF9420',
+                fontSize: 25,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
         this.setScrollFactor(0, 0)
-        this.add(this.dataText)
+        this.dataText.setScrollFactor(0, 0)
         this.add(this.background)
+        this.add(this.dataText)
     }
     private initButtons(): void {
         this.nextButton = new Button(

@@ -56,7 +56,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
         this.timeButton = new Button(
             this.scene,
             150,
-            -110,
+            -105,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.TIME }
@@ -84,7 +84,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
         this.bounceButton = new Button(
             this.scene,
             150,
-            40,
+            35,
             'buttonbg',
             () => {
                 // const data = { challengeType: ChallengeType.BOUNCE }
@@ -97,7 +97,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
         this.noAimButton = new Button(
             this.scene,
             150,
-            115,
+            105,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.NO_AIM }

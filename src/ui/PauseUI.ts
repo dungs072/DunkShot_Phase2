@@ -5,7 +5,7 @@ import CONST from '../Const'
 class PauseUI extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Image
     private backMenuButton: Button
-    private challengesButton: Button
+    private restartButton: Button
     private resumeButton: Button
     // private noAimButton: Button
 
@@ -24,11 +24,11 @@ class PauseUI extends Phaser.GameObjects.Container {
             this.scene,
             0,
             -200,
-            'Pause Game',
+            'PAUSED',
             {
                 fontFamily: 'Arial',
-                color: '#FF911D',
-                fontSize: 75,
+                color: '#85837F',
+                fontSize: 50,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
@@ -37,53 +37,59 @@ class PauseUI extends Phaser.GameObjects.Container {
             this.scene,
             0,
             0,
-            'challengePanel'
-        ).setScale(1.5)
+            'pausePanel'
+        ).setScale(1)
 
         this.resumeButton = new Button(
             this.scene,
-            150,
-            -100,
-            'buttonbg',
+            260,
+            -275,
+            'closeButton',
             () => {
                 this.resumeButton.emit('resume')
             },
-            'Resume',
+            '',
             400,
             100
-        ).setScale(0.5)
-
+        ).setScale(1)
+        const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+            fontFamily: 'Arial',
+            color: '#FFFFFF',
+            fontSize: 30,
+            fontStyle: 'bold',
+        }
         this.backMenuButton = new Button(
             this.scene,
-            150,
+            0,
             100,
-            'buttonbg',
+            'greyButton',
             () => {
                 this.backMenuButton.emit('backmenu')
             },
-            'Back menu',
+            'GIVE UP',
             400,
-            100
-        ).setScale(0.5)
+            100,
+            textStyle
+        ).setScale(1)
 
-        this.challengesButton = new Button(
+        this.restartButton = new Button(
             this.scene,
-            150,
             0,
-            'challenge',
+            -50,
+            'blueButton',
             () => {
-                this.handleChallengeButtonClick()
-                this.challengesButton.emit('challenge')
+                this.restartButton.emit('restartGame')
             },
-            '',
+            'RESTART',
             500,
-            200
-        ).setScale(0.3)
+            200,
+            textStyle
+        ).setScale(1)
 
         this.add(this.background)
         this.add(this.resumeButton)
         this.add(this.backMenuButton)
-        this.add(this.challengesButton)
+        this.add(this.restartButton)
 
         // this.backMenuButton.setScrollFactor(0, 0)
         // this.resumeButton.setScrollFactor(0, 0)
@@ -123,8 +129,8 @@ class PauseUI extends Phaser.GameObjects.Container {
     public addBackMenuListener(callBack: Function): void {
         this.backMenuButton.on('backmenu', callBack)
     }
-    private handleChallengeButtonClick(): void {
-        this.scene.scene.start('ChallengeSelectionScene')
+    public addRestartListener(callBack: Function): void {
+        this.restartButton.on('restartGame', callBack)
     }
 }
 export default PauseUI

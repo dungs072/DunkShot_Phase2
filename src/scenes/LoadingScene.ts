@@ -63,6 +63,11 @@ class LoadingScene extends Scene {
 
         this.load.image('setting', 'assets/ui/setting.png')
 
+        this.load.image('closeButton', 'assets/ui/pause/closeButton.png')
+        this.load.image('blueButton', 'assets/ui/buttons/blueButton.png')
+        this.load.image('greyButton', 'assets/ui/buttons/greyButton.png')
+        this.load.image('pausePanel', 'assets/ui/pause/pausePanel.png')
+
         // Animations
         this.load.spritesheet('explosions', 'assets/effects/explosion4.png', {
             frameWidth: 128,
@@ -83,10 +88,21 @@ class LoadingScene extends Scene {
                 'Loading...',
                 {
                     fontSize: '20px',
-                    color: '#ffffff',
+                    color: '#000000',
                 }
             )
             .setOrigin(0.5, 0.5)
+
+        // effects
+        this.load.image('hitcenter', 'assets/effects/hit/hitCenterLeft.png')
+        this.load.image('hitdownleft', 'assets/effects/hit/hitDownLeft.png')
+        this.load.image('hitupleft', 'assets/effects/hit/hitUpLeft.png')
+
+        this.load.atlas(
+            'flares',
+            'assets/effects/flare/flares.png',
+            'assets/effects/flare/flares.json'
+        )
 
         // sounds
         this.load.audio('hit', 'assets/sounds/hit.mp3')

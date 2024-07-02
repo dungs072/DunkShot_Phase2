@@ -23,6 +23,8 @@ class BasketManager {
 
     private explosionEffect: Phaser.GameObjects.Sprite
     private complimentText: Phaser.GameObjects.Text
+    //for time
+    private firstDragEnd: boolean = false
 
     constructor(
         scene: Scene,
@@ -72,6 +74,9 @@ class BasketManager {
     private setUpEvents(): void {
         this.explosionEffect.on('animationcomplete-explosion', () => {
             this.toggleExplosionEffect(false)
+        })
+        Basket.eventEmitter.on('dragend', () => {
+            this.firstDragEnd = true
         })
     }
     private initAnimations(): void {
@@ -168,6 +173,14 @@ class BasketManager {
             this.setUpColliders(basket)
             basket.setHasCollider(true)
         }
+        if (Math.random() > 0.75) {
+            if (this.isLeft) {
+                basket.setAngle(-30)
+            } else {
+                basket.setAngle(30)
+            }
+        }
+
         return basket
     }
     private setUpColliders(basket: Basket): void {
@@ -182,6 +195,7 @@ class BasketManager {
         ball: Ball,
         other: EmptyColliderGameObject
     ): void => {
+        // this.game.getNextLevelUI().toggleUI(true)
         if (other.parentContainer) {
             const basket = other.parentContainer
             if (basket instanceof Basket) {
@@ -286,6 +300,7 @@ class BasketManager {
         this.prevHeight = this.screenHeight
         this.preBasket = undefined
         this.isLeft = true
+        this.firstDragEnd = false
         this.toggleBaskets(false)
     }
     private toggleBaskets(state: boolean): void {
@@ -321,6 +336,12 @@ class BasketManager {
     }
     public setBall(ball: Ball): void {
         this.ball = ball
+    }
+    public getPreBasket(): Basket | undefined {
+        return this.preBasket
+    }
+    public isFirstBasket(): boolean {
+        return this.firstDragEnd
     }
 }
 export default BasketManager

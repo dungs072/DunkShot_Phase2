@@ -1,4 +1,5 @@
 import IImageConstructor from '../types/image'
+import HitEffect from './HitEffect'
 class Ball extends Phaser.GameObjects.Container {
     declare body: Phaser.Physics.Arcade.Body
 
@@ -7,14 +8,15 @@ class Ball extends Phaser.GameObjects.Container {
     private ballModel: Phaser.GameObjects.Image
 
     private initialVelocity: Phaser.Math.Vector2
-
-    private lineEffect: Phaser.GameObjects.Line
+    private emitter: Phaser.GameObjects.Particles.ParticleEmitter
 
     private hitSound: Phaser.Sound.BaseSound
     private boomSound: Phaser.Sound.BaseSound
 
     private currentVelocityX: number
     private currentVelocityY: number
+
+    private hitEffects: HitEffect[]
 
     public playHitSound(): void {
         this.hitSound.play()
@@ -33,10 +35,10 @@ class Ball extends Phaser.GameObjects.Container {
         this.initPhysic()
         this.initEffects()
         this.initialVelocity = new Phaser.Math.Vector2(0, 0)
-        this.moveDown(this.lineEffect)
         this.scene.add.existing(this)
         this.hitSound = this.scene.sound.add('hit')
         this.boomSound = this.scene.sound.add('boom')
+        this.hitEffects = []
     }
 
     private initImage(texture: string, frame: string | number | undefined) {
@@ -82,6 +84,7 @@ class Ball extends Phaser.GameObjects.Container {
                     } else {
                         normalVector = new Phaser.Math.Vector2(-1, 0)
                     }
+                    this.spawnHitEffect(ball.x, ball.y, !left)
                     this.initialVelocity.y += 400
                     const reflectVelocity = this.getReflectionVelocity(
                         this.initialVelocity,
@@ -99,32 +102,59 @@ class Ball extends Phaser.GameObjects.Container {
             }
         )
     }
-    private initEffects(): void {
-        this.lineEffect = new Phaser.GameObjects.Line(
+    private spawnHitEffect(x: number, y: number, isRight: boolean): void {
+        for (let i = 0; i < this.hitEffects.length; i++) {
+            if (!this.hitEffects[i].active) {
+                this.hitEffects[i].setActive(true)
+                this.hitEffects[i].setVisible(true)
+                this.hitEffects[i].setPosition(isRight ? x - 20 : x + 20, y)
+                if (isRight) {
+                    this.hitEffects[i].rotateToRight()
+                } else {
+                    this.hitEffects[i].rotateToLeft()
+                }
+                this.hitEffects[i].triggerEffect()
+                return
+            }
+        }
+        const hitEffect = new HitEffect(
             this.scene,
-            50,
-            50,
-            100,
-            100,
-            400,
-            400,
-            0xf4c05a
+            isRight ? x - 20 : x + 20,
+            y
         )
-        this.lineEffect.setAlpha(0.5)
-        this.lineEffect.setLineWidth(200, 50)
-        this.lineEffect.setVisible(false)
+        if (isRight) {
+            hitEffect.rotateToRight()
+        } else {
+            hitEffect.rotateToLeft()
+        }
 
-        this.add(this.lineEffect)
+        hitEffect.triggerEffect()
+        this.hitEffects.push(hitEffect)
+    }
+    private initEffects(): void {
+        // this.emitter = this.scene.add.particles(0, 0, 'flares', {
+        //     frame: {
+        //         frames: ['red', 'green', 'blue', 'white', 'yellow'],
+        //         cycle: true,
+        //     },
+        //     blendMode: 'ADD',
+        //     speed: 100,
+        //     scale: { start: 0.8, end: 0 },
+        // })
+        this.emitter = this.scene.add.particles(0, 0, 'flares', {
+            frame: 'white',
+            color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+            colorEase: 'quad.out',
+            lifespan: 400,
+            angle: { min: -100, max: -80 },
+            scale: { start: 0.7, end: 0, ease: 'sine.out' },
+            speed: 100,
+            advance: 2000,
+            blendMode: 'ADD',
+        })
+        this.emitter.startFollow(this)
     }
     public update(delta: number): void {
-        // this.reverseVelocity.x = this.body.velocity.x * -1
-        // this.reverseVelocity.y = this.body.velocity.y * -1
-        // this.lineEffect.setTo(
-        //     100,
-        //     100,
-        //     this.reverseVelocity.x,
-        //     this.reverseVelocity.y
-        // )
         if (!this.parentContainer) {
             this.ballModel.rotation += delta * this.rotationSpeed
         }
@@ -134,6 +164,15 @@ class Ball extends Phaser.GameObjects.Container {
         this.body.immovable = state
         if (state) {
             this.body.setVelocity(0, 0)
+        }
+    }
+    public toggleTrail(state: boolean): void {
+        this.emitter.stop()
+        // this.emitter.setVisible(state)
+        if (state) {
+            this.emitter.start()
+        } else {
+            this.emitter.stop()
         }
     }
     public getForceAmount(): number {
@@ -162,9 +201,6 @@ class Ball extends Phaser.GameObjects.Container {
         this.setActive(state)
         this.body.immovable = !state
         this.body.allowGravity = state
-    }
-    public toggleLineEffect(state: boolean): void {
-        this.lineEffect.setVisible(state)
     }
     public resetBall(): void {
         if (this.parentContainer) {

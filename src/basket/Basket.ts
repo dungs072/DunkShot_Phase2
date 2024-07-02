@@ -15,7 +15,9 @@ class Basket extends Phaser.GameObjects.Container {
     private topLeftCollider: EmptyColliderGameObject
     private topRightCollider: EmptyColliderGameObject
     protected centerCollider: EmptyColliderGameObject
-    private netCollider: EmptyColliderGameObject
+    // private netCollider: EmptyColliderGameObject
+
+    private netColliders: Phaser.GameObjects.Container
 
     private groupColliders: Phaser.GameObjects.Group
     private centerContainer: Phaser.GameObjects.Container
@@ -52,13 +54,28 @@ class Basket extends Phaser.GameObjects.Container {
         this.colliderPoints = new Map<EmptyColliderGameObject, number>()
         this.groupColliders = new Phaser.GameObjects.Group(this.scene)
         this.groupColliders.runChildUpdate = true
+        this.netColliders = new Phaser.GameObjects.Container(this.scene, 0, 0)
         this.initChildren()
         this.initInput()
         this.initPhysic()
         this.setUpPoint()
+        this.setUpNetColliders()
         this.setDepth(14)
         this.scene.add.existing(this)
         this.canDrag = false
+    }
+    private setUpNetColliders(): void {
+        for (let i = -60; i <= 60; i = i + 30) {
+            const x = i
+            const y = (-x * x) / 100 + 25
+            const collider = new EmptyColliderGameObject(this.scene, x, y)
+            collider.setSize(15, 15)
+            collider.setOrigin(0.5, 0.5)
+            this.netColliders.add(collider)
+            this.groupColliders.add(collider)
+        }
+
+        this.add(this.netColliders)
     }
     private setUpPoint() {
         this.maxPoint = 2
@@ -113,18 +130,18 @@ class Basket extends Phaser.GameObjects.Container {
         this.centerCollider.setColliderSize(50, 20)
         this.centerCollider.setIsCenter(true)
 
-        this.netCollider = new EmptyColliderGameObject(this.scene, 0, 0)
-        this.netCollider.setColliderSize(60, 40)
+        // this.netCollider = new EmptyColliderGameObject(this.scene, 0, 0)
+        // this.netCollider.setColliderSize(60, 40)
 
         this.add(this.topLeftCollider)
         this.add(this.topRightCollider)
         this.add(this.centerCollider)
-        this.add(this.netCollider)
+        // this.add(this.netCollider)
 
         this.groupColliders.add(this.topLeftCollider)
         this.groupColliders.add(this.topRightCollider)
         this.groupColliders.add(this.centerCollider)
-        this.groupColliders.add(this.netCollider)
+        // this.groupColliders.add(this.netCollider)
 
         this.centerContainer = new Phaser.GameObjects.Container(
             this.scene,
@@ -182,13 +199,16 @@ class Basket extends Phaser.GameObjects.Container {
                 this.canBack = true
             }
         }
+        if (this.currentBall) {
+            this.currentBall.setPosition(0, 0)
+        }
     }
     public addBall(ball: Ball, canAddScore = true): void {
         this.centerContainer.add(ball)
         ball.setPosition(0, 0)
         ball.toggleStickMode(true)
+        ball.toggleTrail(false)
         this.currentBall = ball
-        this.currentBall.toggleLineEffect(false)
         this.centerContainer.sendToBack(this.currentBall)
         this.toggleAllColliders(false)
         this.toggleCenterCollider(false)
@@ -299,7 +319,10 @@ class Basket extends Phaser.GameObjects.Container {
             this.net.scaleY -= scaleFactor * 0.03 * speed
             this.net.y -= scaleFactor * 1.7 * speed
             this.centerCollider.y -= scaleFactor * 1.7 * speed
-            this.centerContainer.y -= scaleFactor * 3.2 * speed
+            this.centerContainer.y = Math.max(
+                this.centerContainer.y - scaleFactor * 3.2 * speed,
+                -10
+            )
         }
     }
 
@@ -312,7 +335,10 @@ class Basket extends Phaser.GameObjects.Container {
             this.net.scaleY += scaleFactor * 0.03 * speed
             this.net.y += scaleFactor * 1.7 * speed
             this.centerCollider.y += scaleFactor * 1.7 * speed
-            this.centerContainer.y += scaleFactor * 3.2 * speed
+            this.centerContainer.y = Math.min(
+                this.centerContainer.y + scaleFactor * 3.2 * speed,
+                10
+            )
         }
     }
 
@@ -343,9 +369,10 @@ class Basket extends Phaser.GameObjects.Container {
                     forceAmount,
                     this.currentBall.body.velocity
                 )
-                //this.currentBall.toggleLineEffect(true)
+                this.currentBall.toggleTrail(true)
                 this.currentBall = undefined
                 this.canDrag = false
+                Basket.eventEmitter.emit('dragend')
             }
             this.resetNet()
         }
@@ -382,8 +409,8 @@ class Basket extends Phaser.GameObjects.Container {
         }
     }
     public toggleCenterCollider(state: boolean): void {
-        this.centerCollider.toggleCollision(state)
-        this.netCollider.toggleCollision(!state)
+        //this.centerCollider.toggleCollision(state)
+        // this.netCollider.toggleCollision(!state)
     }
     public toggleBasket(state: boolean): void {
         this.x = 1000
@@ -400,6 +427,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.centerContainer.setPosition(0, -10)
         this.centerCollider.setPosition(0, 10)
         this.canBack = false
+        this.currentBall = undefined
     }
     public setNewPosition(x: number, y: number): void {
         this.setPosition(x, y)

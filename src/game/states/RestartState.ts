@@ -33,6 +33,7 @@ class RestartState implements IState {
     private restartGame(): void {
         //this.game.getChallengeManager().resetCurrentLevel()
         this.camera.scrollY = 0
+        this.game.currentTime = 0
         this.basketManager.reset()
         this.basketManager.toggleInteractive(true)
         this.game.getObstacleManager().reset()
