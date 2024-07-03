@@ -4,6 +4,7 @@ import Ball from '../../player/Ball'
 import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
 import ChallengeType from '../../types/level/challenge'
+import NextLevelState from './NextLevelState'
 
 class RestartState implements IState {
     private game: GameController
@@ -53,6 +54,8 @@ class RestartState implements IState {
         this.ball.y = basket.y - 75 * devicePixelRatio
         this.ball.resetBall()
 
+        if (this.game.getGameMachine().getPreState() instanceof NextLevelState)
+            return
         this.addScore(-this.scoreCalculator.getCurrentScore())
     }
     private addScore(amount: number): void {

@@ -1,6 +1,7 @@
 import { Scene } from 'phaser'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
+import MainGameScene from '../scenes/MainGameScene'
 
 class Basket extends Phaser.GameObjects.Container {
     public static eventEmitter = new Phaser.Events.EventEmitter()
@@ -26,6 +27,9 @@ class Basket extends Phaser.GameObjects.Container {
 
     private maxScaleTargetY: number
     private minScaleTargetY: number
+
+    private prePointerX: number
+    private preDistance: number
     private canBack: boolean
     private canDrag: boolean
     private hasCollider: boolean
@@ -67,7 +71,7 @@ class Basket extends Phaser.GameObjects.Container {
     private setUpNetColliders(): void {
         for (let i = -60; i <= 60; i = i + 30) {
             const x = i
-            const y = (-x * x) / 100 + 25
+            const y = (-x * x) / 150 + 25
             const collider = new EmptyColliderGameObject(this.scene, x, y)
             collider.setSize(15, 15)
             collider.setOrigin(0.5, 0.5)
@@ -158,8 +162,8 @@ class Basket extends Phaser.GameObjects.Container {
     }
     private initInput(): void {
         this.setInteractive({
-            hitArea: new Phaser.Geom.Circle(0, 0, 100),
-            hitAreaCallback: Phaser.Geom.Circle.Contains,
+            hitArea: new Phaser.Geom.Rectangle(-100, -100, 200, 300),
+            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             useHandCursor: true,
         })
         this.scene.input.setDraggable(this)
@@ -215,9 +219,10 @@ class Basket extends Phaser.GameObjects.Container {
         this.maxScaleTargetY = 0.6
         this.minScaleTargetY = this.prevNetScaleY
         this.canDrag = true
+
         if (canAddScore) {
             let count = this.getPointAmount()
-            if (count) {
+            if (count || count == 0) {
                 if (count <= 0) {
                     count = 1
                 }
@@ -255,11 +260,20 @@ class Basket extends Phaser.GameObjects.Container {
             worldPointer.x,
             worldPointer.y
         )
-        angle += (Math.PI / 180) * 270
+        angle += Phaser.Math.DegToRad(270)
         this.rotation = angle
 
         // handle stretch
+
         let scaleFactor = pointer.getDistance() / 100
+
+        if (scaleFactor > 0.2) {
+            scaleFactor = 0.2
+        }
+        if (scaleFactor < 0.05) {
+            scaleFactor = 0
+        }
+
         const distance = Phaser.Math.Distance.Between(
             worldPointer.x,
             worldPointer.y,
@@ -267,8 +281,21 @@ class Basket extends Phaser.GameObjects.Container {
             this.y
         )
 
-        this.bounceNet(0.6, scaleFactor, distance)
+        // if (this.prePointerX != worldPointer.x) {
+        //     this.preDistance = distance
+        // }
+        const gameScene = this.scene
 
+        if (gameScene instanceof MainGameScene) {
+            this.bounceNet(
+                0.6,
+                scaleFactor,
+                distance,
+                100 * gameScene.deltaTime
+            )
+        }
+
+        this.prePointerX = worldPointer.x
         this.triggerDragEvent()
     }
     private triggerDragEvent() {
@@ -308,11 +335,20 @@ class Basket extends Phaser.GameObjects.Container {
         currentDistance: number,
         speed = 1
     ): void {
-        if (currentDistance >= 50) {
+        if (currentDistance > this.preDistance) {
             this.increaseNetSize(maxScale, scaleFactor, speed)
-        } else {
+        } else if (currentDistance < this.preDistance) {
             this.decreaseNetSize(scaleFactor, speed)
         }
+        // if (currentDistance >= 50) {
+        //     this.increaseNetSize(maxScale, scaleFactor, speed)
+        // }
+        // if (this.prePointerY <= currentDistance) {
+        //     this.decreaseNetSize(scaleFactor, 0.1)
+        // }
+        // console.log(currentDistance)
+
+        this.preDistance = currentDistance
     }
     private decreaseNetSize(scaleFactor: number, speed: number) {
         if (this.net.scaleY > this.prevNetScaleY) {
@@ -413,6 +449,43 @@ class Basket extends Phaser.GameObjects.Container {
         // this.netCollider.toggleCollision(!state)
     }
     public toggleBasket(state: boolean): void {
+        this.handleToggleBasket(state)
+        // if (state) {
+        //     this.setScale(1)
+        //     this.rim2.setScale(0.4)
+
+        //     // this.setActive(true)
+        //     // this.setVisible(true)
+        //     // this.rim2.setActive(true)
+        //     // this.rim2.setVisible(true)
+        //     // this.scene.tweens.add({
+        //     //     targets: this.rim2,
+        //     //     scale: 0.4,
+        //     //     duration: 500,
+        //     //     ease: 'Power2',
+        //     // })
+        //     // this.scene.tweens.add({
+        //     //     targets: this,
+        //     //     scale: 1,
+        //     //     duration: 500,
+        //     //     ease: 'Power2',
+        //     //     onComplete: () => {
+        //     //         this.handleToggleBasket(state)
+        //     //     },
+        //     // })
+        // } else {
+        //     this.scene.tweens.add({
+        //         targets: [this, this.rim2],
+        //         scale: 0,
+        //         duration: 500,
+        //         ease: 'Power2',
+        //         onComplete: () => {
+        //             this.handleToggleBasket(state)
+        //         },
+        //     })
+        // }
+    }
+    private handleToggleBasket(state: boolean): void {
         this.x = 1000
         this.toggleAllColliders(state)
         this.toggleCenterCollider(state)
@@ -429,6 +502,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.canBack = false
         this.currentBall = undefined
     }
+
     public setNewPosition(x: number, y: number): void {
         this.setPosition(x, y)
         this.rim2.setPosition(x, y)

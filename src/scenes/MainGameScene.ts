@@ -5,6 +5,7 @@ import ISceneData from '../types/sceneData'
 import ChallengeType from '../types/level/challenge'
 class MainGameScene extends Scene {
     private gameController: GameController
+    public deltaTime: number
     constructor() {
         super({
             key: 'MainGameScene',
@@ -30,12 +31,25 @@ class MainGameScene extends Scene {
     }
     create() {
         this.events.on('shutdown', this.handleShutdown, this)
+        window.addEventListener('resize', () => {
+            this.resizeGame()
+        })
+        window.addEventListener('load', () => {
+            this.resizeGame()
+        })
     }
     update(time: number, delta: number) {
         this.gameController.update(delta / 1000)
+        this.deltaTime = delta / 1000
     }
     private handleShutdown(): void {
         this.gameController.deleteEvents()
     }
+    private resizeGame() {
+        console.log('hehe')
+        const zoomFactor = this.scale.height / CONST.HEIGHT_SIZE
+        this.cameras.main.setZoom(zoomFactor)
+    }
 }
+
 export default MainGameScene

@@ -43,7 +43,6 @@ class ResetState implements IState {
         this.ball.x = basket.x
         this.ball.y = CONST.HEIGHT_SIZE / 2
         this.ball.resetBall()
-
         this.addScore(-this.scoreCalculator.getCurrentScore())
     }
     private addScore(amount: number): void {

@@ -46,12 +46,12 @@ class Level {
         this.obstacleTileObjs.sort((a, b) => a.y - b.y)
         this.basketTileObjs.forEach((basket) => {
             basket.setVisible(false)
-            // console.log(basket.x, basket.y)
+            //console.log(basket.x, basket.y)
         })
 
         this.obstacleTileObjs.forEach((obstacle) => {
             obstacle.y = CONST.HEIGHT_SIZE - obstacle.y * devicePixelRatio
-            obstacle.x = obstacle.x * devicePixelRatio - CONST.WIDTH_SIZE / 6.5
+            obstacle.x = obstacle.x * devicePixelRatio - CONST.WIDTH_SIZE / 5.9 //CONST.WIDTH_SIZE / 6.5
             obstacle.setVisible(false)
         })
     }
@@ -61,8 +61,8 @@ class Level {
     public getBasketPosX(): number {
         let value =
             this.basketTileObjs[this.currentBasketIndex].x * devicePixelRatio
-        value -= CONST.WIDTH_SIZE / 6.5
-
+        value -= 50 * devicePixelRatio
+        console.log(value)
         return value
     }
     public getBasketPosY(): number {

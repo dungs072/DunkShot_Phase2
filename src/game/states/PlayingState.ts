@@ -60,8 +60,9 @@ class PlayingState implements IState {
         if (
             this.game.getChallengeManager().getCurrentChallengeType() ==
             ChallengeType.NO_AIM
-        )
-            return
+        ) {
+            this.game.getGameUI().setConditionText('NO AIM')
+        }
         const levelManager = this.game
             .getChallengeManager()
             .getCurrentLevelManager()
@@ -140,7 +141,6 @@ class PlayingState implements IState {
             if (afterDotNum.length == 1) {
                 afterDotNum += '0'
             }
-            console.log(typeof afterDotNum)
 
             this.game
                 .getGameUI()

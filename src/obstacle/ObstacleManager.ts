@@ -5,6 +5,7 @@ import MovableObstacle from './MovableObstacle'
 import CONST from '../Const'
 import ChallengeManager from '../challenge/ChallengeManager'
 import ChallengeType from '../types/level/challenge'
+import BasketManager from '../basket/BasketManager'
 
 class ObstacleManager {
     private obstacles: Obstacle[]
@@ -19,6 +20,9 @@ class ObstacleManager {
         this.ball = ball
         this.challengeManager = challengeManager
         this.preObstacles = []
+        BasketManager.BasketCollided.on('basketcollided', () => {
+            this.handleTurnOffObstacle()
+        })
     }
 
     public createObstacleByLevel(): void {
@@ -34,19 +38,13 @@ class ObstacleManager {
         if (!obstacleDatas) return
 
         const obstacles = obstacleDatas.getObstacles()
-        // if (this.preObstacles.length > 0) {
-        //     this.preObstacles.forEach((obstacle) => {
-        //         if (obstacle) {
-        //             obstacle.toggleObstacle(false)
-        //         }
-        //     })
-        // }
-        // this.preObstacles.splice(0, this.preObstacles.length)
-        const cameraY = this.scene.cameras.main.scrollY
+        const upBorder = this.scene.cameras.main.scrollY + CONST.HEIGHT_SIZE / 3
+        const downBorder =
+            this.scene.cameras.main.scrollY + CONST.HEIGHT_SIZE / 1.2
         obstacles.forEach((obstacleData) => {
             if (
-                obstacleData.y <= cameraY + CONST.HEIGHT_SIZE &&
-                obstacleData.y >= cameraY &&
+                obstacleData.y <= downBorder &&
+                obstacleData.y >= upBorder &&
                 obstacleData.active
             ) {
                 const isVertical = obstacleData.angle != 90
@@ -60,12 +58,15 @@ class ObstacleManager {
                 obstacleData.setActive(false)
             }
         })
+    }
+    private handleTurnOffObstacle(): void {
+        const posY = this.ball.parentContainer.parentContainer.y
+
         this.obstacles.forEach((obstacle) => {
-            if (
-                obstacle.y > cameraY + CONST.HEIGHT_SIZE &&
-                obstacle.y < cameraY
-            ) {
-                obstacle.toggleObstacle(false)
+            if (obstacle.active) {
+                if (obstacle.y > posY) {
+                    obstacle.toggleObstacle(false)
+                }
             }
         })
     }
@@ -109,16 +110,6 @@ class ObstacleManager {
         }
         this.setUpColliders(newObstacle)
         this.obstacles.push(newObstacle)
-        // const horizontalObstacle = new MovableObstacle(
-        //     this.scene,
-        //     x + 300,
-        //     y,
-        //     false,
-        //     100,
-        //     100
-        // )
-        // this.setUpColliders(horizontalObstacle)
-        // this.obstacles.push(horizontalObstacle)
         return newObstacle
     }
     private setUpColliders(obstacle: Obstacle): void {
