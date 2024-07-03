@@ -130,6 +130,7 @@ class ObstacleManager {
     }
     private collideWithObstacle = () => {
         this.ball.playHitSound()
+        this.ball.setCurrentVelocityToInitialVelocity()
     }
 
     public getObstalces(): Obstacle[] {

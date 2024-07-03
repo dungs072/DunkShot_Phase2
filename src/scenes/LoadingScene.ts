@@ -47,6 +47,7 @@ class LoadingScene extends Scene {
         this.load.image('rim01', 'assets/baskets/rim01.png')
         this.load.image('rim02', 'assets/baskets/rim02.png')
         this.load.image('net01', 'assets/baskets/net01.png')
+        this.load.image('dot', 'assets/balls/dot.png')
 
         // Obstacles
         this.load.image('obstacle', 'assets/obstacles/obstacle.png')
@@ -67,6 +68,10 @@ class LoadingScene extends Scene {
         this.load.image('blueButton', 'assets/ui/buttons/blueButton.png')
         this.load.image('greyButton', 'assets/ui/buttons/greyButton.png')
         this.load.image('pausePanel', 'assets/ui/pause/pausePanel.png')
+
+        this.load.image('orangePanel', 'assets/ui/panels/orangePanel.png')
+        this.load.image('bluePanel', 'assets/ui/panels/bluePanel.png')
+        this.load.image('pauseButton', 'assets/ui/buttons/pauseButton.png')
 
         // Animations
         this.load.spritesheet('explosions', 'assets/effects/explosion4.png', {

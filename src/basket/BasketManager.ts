@@ -205,6 +205,7 @@ class BasketManager {
         if (!ball.body.allowGravity) return
 
         if (!other.getIsCenter()) {
+            ball.setCurrentVelocityToInitialVelocity()
             ball.playHitSound()
             return
         }

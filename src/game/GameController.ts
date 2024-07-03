@@ -39,6 +39,7 @@ class GameController {
     private challengeType: ChallengeType
 
     public currentTime: number = 0
+    public countHoop: number = 0
     constructor(scene: Scene, challengeType: ChallengeType) {
         this.scene = scene
         this.challengeType = challengeType

@@ -2,6 +2,7 @@ import { Scene } from 'phaser'
 import Point from './Point'
 import Basket from '../basket/Basket'
 import CONST from '../Const'
+import Utils from '../Utils'
 
 class TrajectoryPath {
     private points: Point[]
@@ -60,29 +61,37 @@ class TrajectoryPath {
     ) {
         let newIndex = -1
         let normalVector = undefined
-        let newStartPosition = undefined
+        let newStartPosition = new Phaser.Math.Vector2(0, 0)
+        let decreaseCount = this.currentMaxPoint
         for (let i = 0; i < this.currentMaxPoint; i++) {
             const pos = this.calculatePointPosition(
-                0.07 * ratio * i,
+                0.07 * ratio * (i + 1),
                 startPosition,
                 velocity
             )
-            newStartPosition = pos
-            if (pos.x < 0) {
+
+            if (pos.x - this.points[i].displayWidth < 0) {
+                newStartPosition.x = 0
+                newStartPosition.y = pos.y
                 newIndex = i
                 normalVector = new Phaser.Math.Vector2(1, 0)
                 break
-            } else if (pos.x > CONST.WIDTH_SIZE) {
+            } else if (pos.x + this.points[i].displayWidth > CONST.WIDTH_SIZE) {
+                newStartPosition.x = CONST.WIDTH_SIZE
+                newStartPosition.y = pos.y
                 newIndex = i
                 normalVector = new Phaser.Math.Vector2(-1, 0)
                 break
             }
             this.points[i].setPosition(pos.x, pos.y)
+            this.points[i].setPointScale(decreaseCount / this.currentMaxPoint)
             this.points[i].setVisible(true)
+            decreaseCount--
         }
         if (normalVector) {
-            velocity.y += 400
-            const newVelocity = this.getReflectionVelocity(
+            velocity.y = Math.min(velocity.y + 400, 0)
+            velocity.x = Utils.Lerp(velocity.x, 0, 0.1)
+            const newVelocity = Utils.getReflectionVelocity(
                 velocity,
                 normalVector
             )
@@ -98,6 +107,10 @@ class TrajectoryPath {
                     this.points[i].setPosition(pos.x, pos.y)
                     this.points[i].setVisible(true)
                     j++
+                    this.points[i].setPointScale(
+                        decreaseCount / this.currentMaxPoint
+                    )
+                    decreaseCount--
                 }
             }
         }
@@ -121,16 +134,6 @@ class TrajectoryPath {
                 0.5 * this.scene.physics.world.gravity.y * (time * time)
         )
         return currentPosition
-    }
-    private getReflectionVelocity(
-        incomeVelocity: Phaser.Math.Vector2,
-        normalVector: Phaser.Math.Vector2
-    ): Phaser.Math.Vector2 | null {
-        const dotValue = incomeVelocity.dot(normalVector)
-        return new Phaser.Math.Vector2(
-            incomeVelocity.x - 2 * normalVector.x * dotValue,
-            incomeVelocity.y - 2 * normalVector.y * dotValue
-        )
     }
     public setCurrentMaxPoint(amount: number): void {
         this.currentMaxPoint = amount > this.maxPoint ? this.maxPoint : amount

@@ -1,5 +1,6 @@
 import CONST from '../../Const'
 import Basket from '../../basket/Basket'
+import BasketManager from '../../basket/BasketManager'
 import Ball from '../../player/Ball'
 import ScoreCalculator from '../../player/ScoreCalculator'
 import ChallengeType from '../../types/level/challenge'
@@ -20,20 +21,25 @@ class PlayingState implements IState {
         this.camera = game.getMainCamera()
         this.scoreCalculator = game.getScoreCalculator()
         Basket.eventEmitter.on('balladded', (amount: number) => {
-            const challengeType = this.game
-                .getChallengeManager()
-                .getCurrentChallengeType()
-            if (
-                challengeType == ChallengeType.SCORE ||
-                challengeType == ChallengeType.NO_AIM ||
-                challengeType == ChallengeType.NONE
-            )
-                this.addScore(amount)
+            // const challengeType = this.game
+            //     .getChallengeManager()
+            //     .getCurrentChallengeType()
+            // if (
+            //     challengeType == ChallengeType.SCORE ||
+            //     challengeType == ChallengeType.NO_AIM ||
+            //     challengeType == ChallengeType.NONE
+            // )
+
+            this.addScore(amount)
+        })
+        BasketManager.BasketCollided.on('basketcollided', () => {
+            this.game.countHoop++
+            this.updateHoopsText(this.game.countHoop.toString())
         })
     }
     public enter(): void {
         console.log('start Playing state')
-        this.game.getGameUI().setVisible(true)
+        this.game.getGameUI().toggleUI(true)
         if (
             this.game.getChallengeManager().getCurrentChallengeType() !=
                 ChallengeType.NONE &&
@@ -41,7 +47,43 @@ class PlayingState implements IState {
         ) {
             this.game.getMainCamera().scrollY = -CONST.HEIGHT_SIZE / 1.5
         }
+        this.game
+            .getGameUI()
+            .toggleChallengePanel(
+                this.game.getChallengeManager().getCurrentChallengeType() !=
+                    ChallengeType.NONE
+            )
         this.setTime()
+        this.setUpLevel()
+    }
+    private setUpLevel(): void {
+        if (
+            this.game.getChallengeManager().getCurrentChallengeType() ==
+            ChallengeType.NO_AIM
+        )
+            return
+        const levelManager = this.game
+            .getChallengeManager()
+            .getCurrentLevelManager()
+        this.game
+            .getGameUI()
+            .setChallengeText(
+                'CHALLENGE ' + levelManager?.getCountLevel().toString()
+            )
+        this.updateHoopsText(this.game.countHoop.toString())
+    }
+    private updateHoopsText(countStr: string): void {
+        const levelManager = this.game
+            .getChallengeManager()
+            .getCurrentLevelManager()
+        this.game
+            .getGameUI()
+            .setMaxHoopsText(
+                countStr +
+                    '/' +
+                    levelManager?.getCurrentLevel().getMaxHoops().toString() +
+                    ' HOOPS'
+            )
     }
 
     public update(delta: number) {
@@ -89,7 +131,24 @@ class PlayingState implements IState {
                 Math.max(value - this.game.currentTime, 0),
                 -1
             )
-            this.game.getGameUI().setDataText(remainingTime.toString() + ' s')
+            let afterDotNum = (remainingTime - Math.floor(remainingTime))
+                .toString()
+                .substring(2, 4)
+            if (afterDotNum.length == 0) {
+                afterDotNum = '00'
+            }
+            if (afterDotNum.length == 1) {
+                afterDotNum += '0'
+            }
+            console.log(typeof afterDotNum)
+
+            this.game
+                .getGameUI()
+                .setConditionText(
+                    Math.floor(remainingTime).toString() +
+                        ':' +
+                        afterDotNum.toString()
+                )
             if (
                 this.game.currentTime >= value
                 // this.game.getChallengeManager().getDataGame()
@@ -104,7 +163,7 @@ class PlayingState implements IState {
     public exit(): void {
         console.log('end Playing state')
         this.scoreCalculator.saveHighScore()
-        this.game.getGameUI().setVisible(false)
+        this.game.getGameUI().toggleUI(false)
     }
 
     private addScore(amount: number): void {
@@ -123,7 +182,9 @@ class PlayingState implements IState {
                 .getCurrentLevelManager()
                 ?.getCurrentLevelData()
             if (!value) return
-            this.game.getGameUI().setDataText(value.toString() + ' s')
+            this.game
+                .getGameUI()
+                .setConditionText(value.toString() + ':' + '00')
             this.game.currentTime == 0
         }
     }

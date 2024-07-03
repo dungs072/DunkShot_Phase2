@@ -127,7 +127,7 @@ class Basket extends Phaser.GameObjects.Container {
             0,
             10
         ).setOrigin(0.5, 0.5)
-        this.centerCollider.setColliderSize(50, 20)
+        this.centerCollider.setColliderSize(20, 20)
         this.centerCollider.setIsCenter(true)
 
         // this.netCollider = new EmptyColliderGameObject(this.scene, 0, 0)

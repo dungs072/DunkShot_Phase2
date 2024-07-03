@@ -68,5 +68,8 @@ class Button extends Phaser.GameObjects.Container {
     public setText(text: string): void {
         this.text.text = text
     }
+    public getBackground(): Phaser.GameObjects.Image {
+        return this.background
+    }
 }
 export default Button

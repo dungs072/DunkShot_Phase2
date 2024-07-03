@@ -11,7 +11,9 @@ class OverState implements IState {
         this.game.getBall().toggleBall(false)
         this.game.getBasketManager().toggleInteractive(false)
         this.game.getOverUI().toggleUI(true)
+        this.game.getGameUI().toggleUI(true)
         this.game.currentTime = 0
+        this.game.countHoop = 0
         this.game
             .getOverUI()
             .setHighScoreText(this.game.getScoreCalculator().getHighScore())
@@ -21,6 +23,7 @@ class OverState implements IState {
     public exit(): void {
         console.log('end Over State')
         this.game.getOverUI().toggleUI(false)
+        this.game.getGameUI().toggleUI(false)
     }
 }
 export default OverState

@@ -86,6 +86,9 @@ class Level {
     public gotoNextBasket(): void {
         this.currentBasketIndex++
     }
+    public getMaxHoops(): number {
+        return this.basketTileObjs.length
+    }
     public resetLevel(): void {
         this.obstacleTileObjs.forEach((obstacle) => {
             obstacle.setActive(true)

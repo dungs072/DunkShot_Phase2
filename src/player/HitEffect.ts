@@ -2,8 +2,8 @@ import { Scene } from 'phaser'
 
 class HitEffect extends Phaser.GameObjects.Container {
     private centerHit: Phaser.GameObjects.Image
-    private upHit: Phaser.GameObjects.Image
-    private downHit: Phaser.GameObjects.Image
+    // private upHit: Phaser.GameObjects.Image
+    // private downHit: Phaser.GameObjects.Image
     private isRight = false
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
@@ -16,35 +16,40 @@ class HitEffect extends Phaser.GameObjects.Container {
             0,
             'hitcenter'
         )
-        this.upHit = new Phaser.GameObjects.Image(this.scene, 0, 0, 'hitupleft')
-        this.downHit = new Phaser.GameObjects.Image(
-            this.scene,
-            0,
-            0,
-            'hitdownleft'
-        )
+        // this.upHit = new Phaser.GameObjects.Image(
+        //     this.scene,
+        //     0,
+        //     -110,
+        //     'hitupleft'
+        // ).setScale(1)
+        // this.downHit = new Phaser.GameObjects.Image(
+        //     this.scene,
+        //     0,
+        //     125,
+        //     'hitdownleft'
+        // ).setScale(1)
 
         this.add(this.centerHit)
-        this.add(this.upHit)
-        this.add(this.downHit)
+        // this.add(this.upHit)
+        // this.add(this.downHit)
         this.scene.add.existing(this)
     }
     public triggerEffect(): void {
         this.setOrigins(1, 0.5)
-        const targetScaleX = 0.5
+        const targetScaleX = 0.4
         let targetX
         if (this.isRight) {
-            targetX = this.x + 20
+            targetX = this.x + 30
         } else {
-            targetX = this.x - 20
+            targetX = this.x - 30
         }
 
         this.scene.tweens.add({
             targets: this,
             scaleX: targetScaleX,
             x: targetX,
-            alpha: 0.1,
-            duration: 200,
+            alpha: 0.2,
+            duration: 300,
             ease: 'Linear',
             onComplete: () => {
                 this.setVisible(false)
@@ -56,8 +61,8 @@ class HitEffect extends Phaser.GameObjects.Container {
     }
     private setOrigins(x: number, y: number): void {
         this.centerHit.setOrigin(x, y)
-        this.upHit.setOrigin(x, y)
-        this.downHit.setOrigin(x, y)
+        // this.upHit.setOrigin(x, y)
+        // this.downHit.setOrigin(x, y)
     }
     public rotateToRight(): void {
         this.setAngle(180)

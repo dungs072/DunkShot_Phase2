@@ -19,7 +19,7 @@ class OverGameUI extends Phaser.GameObjects.Container {
         this.highScoreText = new Phaser.GameObjects.Text(
             this.scene,
             CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 7.5,
+            CONST.HEIGHT_SIZE / 5,
             '999',
             {
                 fontFamily: 'Arial',
@@ -32,12 +32,12 @@ class OverGameUI extends Phaser.GameObjects.Container {
         this.bestScoreTitleText = new Phaser.GameObjects.Text(
             this.scene,
             CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 15,
+            CONST.HEIGHT_SIZE / 8,
             'BEST SCORE',
             {
                 fontFamily: 'Arial',
                 color: '#FF9300',
-                fontSize: 30,
+                fontSize: 25,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)

@@ -1,3 +1,4 @@
+import Utils from '../Utils'
 import IImageConstructor from '../types/image'
 import HitEffect from './HitEffect'
 class Ball extends Phaser.GameObjects.Container {
@@ -85,8 +86,17 @@ class Ball extends Phaser.GameObjects.Container {
                         normalVector = new Phaser.Math.Vector2(-1, 0)
                     }
                     this.spawnHitEffect(ball.x, ball.y, !left)
-                    this.initialVelocity.y += 400
-                    const reflectVelocity = this.getReflectionVelocity(
+
+                    this.initialVelocity.y = Math.min(
+                        this.initialVelocity.y + 400,
+                        0
+                    )
+                    this.initialVelocity.x = Utils.Lerp(
+                        this.initialVelocity.x,
+                        0,
+                        0.1
+                    )
+                    const reflectVelocity = Utils.getReflectionVelocity(
                         this.initialVelocity,
                         normalVector
                     )
@@ -152,6 +162,7 @@ class Ball extends Phaser.GameObjects.Container {
             advance: 2000,
             blendMode: 'ADD',
         })
+        this.emitter.setDepth(10)
         this.emitter.startFollow(this)
     }
     public update(delta: number): void {
@@ -185,16 +196,10 @@ class Ball extends Phaser.GameObjects.Container {
         this.initialVelocity.x = x
         this.initialVelocity.y = y
     }
-    public getReflectionVelocity(
-        incomeVelocity: Phaser.Math.Vector2,
-        normalVector: Phaser.Math.Vector2
-    ): Phaser.Math.Vector2 | null {
-        const dotValue = incomeVelocity.dot(normalVector)
-        return new Phaser.Math.Vector2(
-            incomeVelocity.x - 2 * normalVector.x * dotValue,
-            incomeVelocity.y - 2 * normalVector.y * dotValue
-        )
+    public setCurrentVelocityToInitialVelocity(): void {
+        this.setInitialVelocity(this.body.velocity.x, this.body.velocity.y)
     }
+
     public toggleBall(state: boolean): void {
         this.body.enable = state
         this.setVisible(state)

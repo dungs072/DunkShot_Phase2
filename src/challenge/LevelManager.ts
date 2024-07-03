@@ -53,5 +53,8 @@ class LevelManager {
         }
         this.levelData = this.scene.cache.json.get(str) as ILevelData
     }
+    public getCountLevel(): number {
+        return this.currentLevelIndex + 1
+    }
 }
 export default LevelManager
