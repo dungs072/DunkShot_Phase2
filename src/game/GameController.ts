@@ -15,6 +15,7 @@ import NextLevelUI from '../ui/NextLevelUI'
 import Basket from '../basket/Basket'
 import PauseUI from '../ui/PauseUI'
 import ChallengeManager from '../challenge/ChallengeManager'
+import UIScene from '../scenes/UIScene'
 
 class GameController {
     private ball: Ball
@@ -22,11 +23,6 @@ class GameController {
     private obstacleManager: ObstacleManager
     private camera: Phaser.Cameras.Scene2D.Camera
 
-    private menu: MainMenuUI
-    private overGameUI: OverGameUI
-    private gameUI: MainGameUI
-    private nextLevelUI: NextLevelUI
-    private pauseUI: PauseUI
     private scoreCalculator: ScoreCalculator
 
     private gameStateMachine: GameStateMachine
@@ -36,13 +32,18 @@ class GameController {
     private trajectory: TrajectoryPath
 
     private scene: Scene
+    private uiScene: UIScene
     private challengeType: ChallengeType
 
     public currentTime: number = 0
     public countHoop: number = 0
-    constructor(scene: Scene, challengeType: ChallengeType) {
+    constructor(scene: Scene, uiScene: UIScene, challengeType: ChallengeType) {
         this.scene = scene
+        this.uiScene = uiScene
         this.challengeType = challengeType
+    }
+    public getScene(): Scene {
+        return this.scene
     }
     public getGameMachine(): GameStateMachine {
         return this.gameStateMachine
@@ -60,19 +61,19 @@ class GameController {
         return this.camera
     }
     public getMenuUI(): MainMenuUI {
-        return this.menu
+        return this.uiScene.getMenuUI()
     }
     public getOverUI(): OverGameUI {
-        return this.overGameUI
+        return this.uiScene.getOverUI()
     }
     public getGameUI(): MainGameUI {
-        return this.gameUI
+        return this.uiScene.getGameUI()
     }
     public getNextLevelUI(): NextLevelUI {
-        return this.nextLevelUI
+        return this.uiScene.getNextLevelUI()
     }
     public getPauseUI(): PauseUI {
-        return this.pauseUI
+        return this.uiScene.getPauseUI()
     }
     public getScoreCalculator(): ScoreCalculator {
         return this.scoreCalculator
@@ -100,16 +101,7 @@ class GameController {
     }
     private create(): void {
         this.trajectory = new TrajectoryPath(this.scene, 10)
-        this.menu = new MainMenuUI(this.scene, 0, 0)
-        this.gameUI = new MainGameUI(this.scene, 0, 0)
-        this.overGameUI = new OverGameUI(this.scene, 0, 0)
-        this.pauseUI = new PauseUI(this.scene)
-        this.nextLevelUI = new NextLevelUI(
-            this.scene,
-            CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 2
-        )
-        this.gameUI.setVisible(false)
+
         this.scene.physics.world.setBounds(
             0,
             0,
@@ -146,7 +138,7 @@ class GameController {
 
         this.ball.x = basket.x
         this.ball.y = basket.y - 100 * devicePixelRatio
-        this.menu.setFingerPosition(basket.x, basket.y)
+        this.getMenuUI().setFingerPosition(basket.x, basket.y)
 
         this.setUpEvents()
 
@@ -159,51 +151,54 @@ class GameController {
         }
     }
     private setUpEvents(): void {
-        this.menu.addHitChallengeButton(() => {
+        this.getMenuUI().addHitChallengeButton(() => {
             this.obstacleManager.clear()
         })
-        this.overGameUI.addHitPlayAgainListener(() => {
+        this.getOverUI().addHitPlayAgainListener(() => {
             this.trajectory.togglePoints(false)
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getRestartState()
             )
         })
 
-        this.gameUI.addHitPauseListener(() => {
+        this.getGameUI().addHitPauseListener(() => {
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getPauseState()
             )
         })
 
-        this.pauseUI.addBackMenuListener(() => {
+        this.getPauseUI().addBackMenuListener(() => {
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getResetState()
             )
         })
-        this.pauseUI.addResumeListenerListener(() => {
+        this.getPauseUI().addResumeListenerListener(() => {
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getResumeState()
             )
         })
-        this.pauseUI.addRestartListener(() => {
+        this.getPauseUI().addRestartListener(() => {
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getRestartState()
             )
         })
-        this.nextLevelUI.addBackMenuListener(() => {
+        this.getNextLevelUI().addBackMenuListener(() => {
             this.challengeManager.setChallengeType(ChallengeType.NONE)
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getResetState()
             )
         })
-        this.nextLevelUI.addNextLevelListener(() => {
+        this.getNextLevelUI().addNextLevelListener(() => {
             this.challengeManager.gotoNextLevel()
             this.gameStateMachine.transitionTo(
                 this.gameStateMachine.getRestartState()
             )
         })
         this.scene.input.on('pointerdown', () => {
-            if (this.menu.getStateMenu() && !this.menu.getIsButtonClick()) {
+            if (
+                this.getMenuUI().getStateMenu() &&
+                !this.getMenuUI().getIsButtonClick()
+            ) {
                 this.gameStateMachine.transitionTo(
                     this.gameStateMachine.getPlayingState()
                 )

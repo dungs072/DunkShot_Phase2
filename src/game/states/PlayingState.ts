@@ -3,10 +3,10 @@ import Basket from '../../basket/Basket'
 import BasketManager from '../../basket/BasketManager'
 import Ball from '../../player/Ball'
 import ScoreCalculator from '../../player/ScoreCalculator'
+import ScoreScene from '../../scenes/ScoreScene'
 import ChallengeType from '../../types/level/challenge'
 import IState from '../../types/state'
 import GameController from '../GameController'
-import ResumeState from './ResumeState'
 
 class PlayingState implements IState {
     private game: GameController
@@ -14,6 +14,7 @@ class PlayingState implements IState {
     private camera: Phaser.Cameras.Scene2D.Camera
     private scoreCalculator: ScoreCalculator
     private preBallPosY: number
+    private scoreScene: ScoreScene
 
     constructor(game: GameController) {
         this.game = game
@@ -21,32 +22,21 @@ class PlayingState implements IState {
         this.camera = game.getMainCamera()
         this.scoreCalculator = game.getScoreCalculator()
         Basket.eventEmitter.on('balladded', (amount: number) => {
-            // const challengeType = this.game
-            //     .getChallengeManager()
-            //     .getCurrentChallengeType()
-            // if (
-            //     challengeType == ChallengeType.SCORE ||
-            //     challengeType == ChallengeType.NO_AIM ||
-            //     challengeType == ChallengeType.NONE
-            // )
-
             this.addScore(amount)
         })
         BasketManager.BasketCollided.on('basketcollided', () => {
             this.game.countHoop++
             this.updateHoopsText(this.game.countHoop.toString())
         })
+
+        this.scoreScene = this.game
+            .getScene()
+            .scene.get('ScoreScene') as ScoreScene
     }
     public enter(): void {
         console.log('start Playing state')
+        this.game.getScene().scene.launch('ScoreScene')
         this.game.getGameUI().toggleUI(true)
-        if (
-            this.game.getChallengeManager().getCurrentChallengeType() !=
-                ChallengeType.NONE &&
-            !(this.game.getGameMachine().getPreState() instanceof ResumeState)
-        ) {
-            this.game.getMainCamera().scrollY = -CONST.HEIGHT_SIZE / 1.5
-        }
         this.game
             .getGameUI()
             .toggleChallengePanel(
@@ -91,31 +81,26 @@ class PlayingState implements IState {
         this.game.getBall().update(delta)
         this.game.getBasketManager().update(delta)
         this.game.getObstacleManager().update(delta)
-        const maxDownBorder =
-            this.camera.scrollY + this.camera.height - 200 * devicePixelRatio
-        const maxUpBorder =
-            this.camera.scrollY + this.camera.height / 2 + 50 * devicePixelRatio
-
+        const maxUpBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.5
+        const maxDownBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.6
         if (!this.ball.parentContainer) {
-            if (this.ball.y > this.camera.scrollY + this.camera.height + 100) {
+            if (this.ball.y > this.camera.scrollY + CONST.HEIGHT_SIZE * 1.2) {
                 this.game
                     .getGameMachine()
                     .transitionTo(this.game.getGameMachine().getOverState())
             } else {
-                if (this.ball.y < maxUpBorder) {
-                    this.camera.scrollY -= 200 * delta
-                } else if (this.ball.y > maxDownBorder) {
+                if (this.ball.y > maxDownBorder) {
                     this.camera.scrollY += 200 * delta
+                } else if (this.ball.y < maxUpBorder) {
+                    this.camera.scrollY -= 200 * delta
                 }
                 this.preBallPosY = this.ball.y
             }
         } else {
             if (this.preBallPosY > maxDownBorder) {
                 this.camera.scrollY += 200 * delta
+                //this.preBallPosY = this.ball.parentContainer.parentContainer.y
             }
-            // if (this.ball.y < maxUpBorder) {
-            //     this.camera.scrollY -= 200 * delta
-            // }
         }
         if (
             this.game.getChallengeManager().getCurrentChallengeType() ==
@@ -168,9 +153,9 @@ class PlayingState implements IState {
 
     private addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
-        this.game
-            .getGameUI()
-            .setDataText(this.scoreCalculator.getCurrentScore().toString())
+        this.scoreScene.setScoreText(
+            this.scoreCalculator.getCurrentScore().toString()
+        )
     }
     private setTime(): void {
         if (

@@ -1,4 +1,5 @@
 import Utils from '../Utils'
+import game from '../main'
 import IImageConstructor from '../types/image'
 import HitEffect from './HitEffect'
 class Ball extends Phaser.GameObjects.Container {
@@ -17,6 +18,8 @@ class Ball extends Phaser.GameObjects.Container {
     private currentVelocityX: number
     private currentVelocityY: number
 
+    private currentRotationSpeed: number
+
     private hitEffects: HitEffect[]
 
     public playHitSound(): void {
@@ -30,7 +33,7 @@ class Ball extends Phaser.GameObjects.Container {
 
     constructor(params: IImageConstructor) {
         super(params.scene, params.x, params.y)
-        this.forceAmount = 1400
+        this.forceAmount = 1200
         this.rotationSpeed = 15
         this.initImage(params.texture, params.frame)
         this.initPhysic()
@@ -40,6 +43,7 @@ class Ball extends Phaser.GameObjects.Container {
         this.hitSound = this.scene.sound.add('hit')
         this.boomSound = this.scene.sound.add('boom')
         this.hitEffects = []
+        this.currentRotationSpeed = this.rotationSpeed
     }
 
     private initImage(texture: string, frame: string | number | undefined) {
@@ -55,7 +59,7 @@ class Ball extends Phaser.GameObjects.Container {
         this.add(this.ballModel)
 
         this.setDepth(12)
-        this.setScale(0.3)
+        this.setScale(0.2)
     }
 
     private initPhysic(): void {
@@ -63,7 +67,7 @@ class Ball extends Phaser.GameObjects.Container {
         this.body.allowGravity = true
         this.body.setCircle(100, -100, -100)
         this.body.setBounce(0.75)
-        this.body.setFriction(0, 0)
+        this.body.setFriction(0)
         this.body.setAllowDrag(false)
         this.body.setCollideWorldBounds(true, 0, 0, true)
         this.body.setMass(100)
@@ -142,15 +146,6 @@ class Ball extends Phaser.GameObjects.Container {
         this.hitEffects.push(hitEffect)
     }
     private initEffects(): void {
-        // this.emitter = this.scene.add.particles(0, 0, 'flares', {
-        //     frame: {
-        //         frames: ['red', 'green', 'blue', 'white', 'yellow'],
-        //         cycle: true,
-        //     },
-        //     blendMode: 'ADD',
-        //     speed: 100,
-        //     scale: { start: 0.8, end: 0 },
-        // })
         this.emitter = this.scene.add.particles(0, 0, 'flares', {
             frame: 'white',
             color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
@@ -167,7 +162,7 @@ class Ball extends Phaser.GameObjects.Container {
     }
     public update(delta: number): void {
         if (!this.parentContainer) {
-            this.ballModel.rotation += delta * this.rotationSpeed
+            this.ballModel.rotation += delta * this.currentRotationSpeed
         }
     }
     public toggleStickMode(state: boolean): void {
@@ -175,7 +170,14 @@ class Ball extends Phaser.GameObjects.Container {
         this.body.immovable = state
         if (state) {
             this.body.setVelocity(0, 0)
+            this.currentRotationSpeed = this.rotationSpeed
         }
+    }
+    public decreaseRotationSpeed(amount: number): void {
+        this.currentRotationSpeed = Math.max(
+            this.currentRotationSpeed - amount,
+            0
+        )
     }
     public toggleTrail(state: boolean): void {
         this.emitter.stop()
@@ -206,6 +208,7 @@ class Ball extends Phaser.GameObjects.Container {
         this.setActive(state)
         this.body.immovable = !state
         this.body.allowGravity = state
+        this.emitter.setVisible(state)
     }
     public resetBall(): void {
         if (this.parentContainer) {

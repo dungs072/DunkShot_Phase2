@@ -2,6 +2,7 @@ import { Scene } from 'phaser'
 import Button from './base/Button'
 import CONST from '../Const'
 import ChallengeType from '../types/level/challenge'
+import UIScene from '../scenes/UIScene'
 
 class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Image
@@ -12,7 +13,6 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
 
     constructor(scene: Scene) {
         super(scene, CONST.WIDTH_SIZE / 2, CONST.HEIGHT_SIZE / 2)
-
         this.initUI()
         this.scene.add.existing(this)
         this.scale = 0
@@ -38,6 +38,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             'ballchallenge',
             () => {
                 const data = { challengeType: ChallengeType.NONE }
+                this.scene.scene.launch('UIScene')
                 this.scene.scene.start('MainGameScene', data)
             },
             'Back game',
@@ -51,15 +52,16 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             0,
             0,
             'challengePanel'
-        ).setScale(1.5)
+        ).setScale(1)
 
         this.timeButton = new Button(
             this.scene,
-            150,
-            -50,
+            CONST.WIDTH_SIZE * 0.25,
+            -CONST.HEIGHT_SIZE * 0.04,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.TIME }
+                this.scene.scene.launch('UIScene')
                 this.scene.scene.start('MainGameScene', data)
             },
             'Time (3)',
@@ -96,11 +98,12 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
         // ).setScale(0.5)
         this.noAimButton = new Button(
             this.scene,
-            150,
-            50,
+            CONST.WIDTH_SIZE * 0.25,
+            CONST.HEIGHT_SIZE * 0.05,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.NO_AIM }
+                this.scene.scene.launch('UIScene')
                 this.scene.scene.start('MainGameScene', data)
             },
             'No aim (3)',

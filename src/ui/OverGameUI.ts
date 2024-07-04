@@ -45,7 +45,7 @@ class OverGameUI extends Phaser.GameObjects.Container {
         this.playAgainButton = new Button(
             this.scene,
             CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 1.2,
+            CONST.HEIGHT_SIZE * 0.8,
             'playagain',
             () => {
                 this.playAgainButton.emit('playagain')
@@ -53,12 +53,11 @@ class OverGameUI extends Phaser.GameObjects.Container {
             '',
             400,
             400
-        ).setScale(0.35)
+        ).setScale(0.2)
 
         this.add(this.playAgainButton)
         this.add(this.highScoreText)
         this.add(this.bestScoreTitleText)
-        this.setScrollFactor(0, 0)
     }
     public toggleUI(state: boolean): void {
         this.setVisible(state)

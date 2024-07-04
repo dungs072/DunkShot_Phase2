@@ -34,15 +34,13 @@ class NextLevelUI extends Phaser.GameObjects.Container {
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
-        this.setScrollFactor(0, 0)
-        this.dataText.setScrollFactor(0, 0)
         this.add(this.background)
         this.add(this.dataText)
     }
     private initButtons(): void {
         this.nextButton = new Button(
             this.scene,
-            150,
+            130,
             140,
             'buttonbg',
             () => {
@@ -59,10 +57,9 @@ class NextLevelUI extends Phaser.GameObjects.Container {
             }
         ).setScale(0.5)
         this.add(this.nextButton)
-        this.nextButton.setScrollFactor(0, 0)
         this.backMainMenuButton = new Button(
             this.scene,
-            -150,
+            -130,
             140,
             'buttonbg',
             () => {
@@ -78,7 +75,6 @@ class NextLevelUI extends Phaser.GameObjects.Container {
                 fontStyle: 'bold',
             }
         ).setScale(0.5)
-        this.backMainMenuButton.setScrollFactor(0, 0)
         this.add(this.backMainMenuButton)
     }
     public setScoreText(amount: number) {

@@ -8,6 +8,7 @@ class HitEffect extends Phaser.GameObjects.Container {
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y)
         this.initImages()
+        this.setScale(0.5)
     }
     private initImages(): void {
         this.centerHit = new Phaser.GameObjects.Image(
@@ -16,6 +17,7 @@ class HitEffect extends Phaser.GameObjects.Container {
             0,
             'hitcenter'
         )
+        //this.centerHit.scaleX = 0.5
         // this.upHit = new Phaser.GameObjects.Image(
         //     this.scene,
         //     0,
@@ -36,17 +38,18 @@ class HitEffect extends Phaser.GameObjects.Container {
     }
     public triggerEffect(): void {
         this.setOrigins(1, 0.5)
-        const targetScaleX = 0.4
+        const targetScale = 0.15
         let targetX
         if (this.isRight) {
-            targetX = this.x + 30
+            targetX = this.x + 50
         } else {
-            targetX = this.x - 30
+            targetX = this.x - 50
         }
 
         this.scene.tweens.add({
             targets: this,
-            scaleX: targetScaleX,
+            scaleX: targetScale,
+            scaleY: targetScale,
             x: targetX,
             alpha: 0.2,
             duration: 300,
@@ -54,7 +57,8 @@ class HitEffect extends Phaser.GameObjects.Container {
             onComplete: () => {
                 this.setVisible(false)
                 this.setActive(false)
-                this.scaleX = 1
+                this.scaleX = 0.5
+                this.scaleY = 0.5
                 this.alpha = 1
             },
         })

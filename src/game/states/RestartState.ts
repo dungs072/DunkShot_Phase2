@@ -29,6 +29,12 @@ class RestartState implements IState {
     public update(delta: number): void {}
     public exit(): void {
         console.log('end restart state')
+        if (
+            this.game.getScene().scene.isActive('ScoreScene') ||
+            !this.game.getScene().scene.isSleeping('ScoreScene')
+        ) {
+            this.game.getScene().scene.sleep('ScoreScene')
+        }
     }
 
     private restartGame(): void {
@@ -60,9 +66,9 @@ class RestartState implements IState {
     }
     private addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
-        this.game
-            .getGameUI()
-            .setDataText(this.scoreCalculator.getCurrentScore().toString())
+        // this.game
+        //     .getGameUI()
+        //     .setDataText(this.scoreCalculator.getCurrentScore().toString())
     }
 }
 export default RestartState

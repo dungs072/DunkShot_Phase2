@@ -18,6 +18,7 @@ class Obstacle extends Phaser.GameObjects.Image {
         this.scene.physics.world.enable(this)
         this.body.allowGravity = false
         this.body.immovable = true
+        this.body.setBounce(0.5)
         if (this.isVertical) {
             this.body.setSize(this.displayWidth, this.displayHeight)
         } else {

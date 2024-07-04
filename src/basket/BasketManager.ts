@@ -207,6 +207,7 @@ class BasketManager {
         if (!other.getIsCenter()) {
             ball.setCurrentVelocityToInitialVelocity()
             ball.playHitSound()
+            ball.decreaseRotationSpeed(7)
             return
         }
         if (!ball.parentContainer) {
@@ -219,7 +220,10 @@ class BasketManager {
                 this.triggerPerfectText(gameObj)
             }
             this.toggleExplosionEffect(true, gameObj.x, gameObj.y - 40)
-            gameObj.addBall(ball, this.preBasket != gameObj)
+            gameObj.addBall(
+                ball,
+                this.preBasket != gameObj && this.preBasket != undefined
+            )
             gameObj.setInteractive()
 
             if (this.preBasket && this.preBasket != gameObj) {
@@ -290,10 +294,12 @@ class BasketManager {
     }
     public toggleInteractive(state: boolean): void {
         this.baskets.forEach((basket) => {
-            if (state) {
-                basket.setInteractive()
-            } else {
-                basket.disableInteractive()
+            if (basket.active) {
+                if (state) {
+                    basket.setInteractive()
+                } else {
+                    basket.disableInteractive()
+                }
             }
         })
     }

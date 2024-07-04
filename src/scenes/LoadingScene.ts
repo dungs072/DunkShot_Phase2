@@ -7,6 +7,12 @@ class LoadingScene extends Scene {
             key: 'LoadingScene',
         })
     }
+    init() {
+        this.resize()
+        window.addEventListener('resize', () => {
+            this.resize()
+        })
+    }
     preload() {
         // this.load.image('loadingbg', 'assets/bgs/bg4.png')
         this.add
@@ -20,7 +26,7 @@ class LoadingScene extends Scene {
         let loadingBarBg = this.add.graphics()
         loadingBarBg.fillStyle(0x222222, 1)
         loadingBarBg.fillRect(
-            CONST.WIDTH_SIZE / 3.6,
+            CONST.WIDTH_SIZE * 0.16,
             CONST.HEIGHT_SIZE / 1.4,
             320,
             50
@@ -32,7 +38,7 @@ class LoadingScene extends Scene {
             loadingBarFill.clear()
             loadingBarFill.fillStyle(0xffffff, 1)
             loadingBarFill.fillRect(
-                CONST.WIDTH_SIZE / 3.6 + 10,
+                CONST.WIDTH_SIZE * 0.15 + 10,
                 CONST.HEIGHT_SIZE / 1.4 + 10,
                 300 * value,
                 30
@@ -114,9 +120,35 @@ class LoadingScene extends Scene {
         this.load.audio('boom', 'assets/sounds/boom.mp3')
         this.load.audio('press', 'assets/sounds/press.mp3')
     }
+    private resize(): void {
+        const worldHeight = 846
+        const worldWidth = (worldHeight / 846) * 475.875
+
+        let width = window.innerWidth
+        let height = window.innerHeight
+
+        const ratio = 475.875 / 846
+        if (width / ratio > window.innerHeight) {
+            width = height * ratio
+        } else {
+            height = width / ratio
+        }
+
+        this.game.scale.resize(width, height)
+
+        this.game.scene.getScenes().forEach((scene) => {
+            scene.cameras.main.setZoom(width / worldWidth)
+            scene.cameras.main.centerOn(worldWidth / 2, worldHeight / 2)
+        })
+        this.cameras.main.setZoom(width / worldWidth)
+        this.cameras.main.centerOn(worldWidth / 2, worldHeight / 2)
+    }
 
     create() {
-        this.scene.start('MainGameScene')
+        this.scene.launch('BackgroundScene')
+        this.scene.launch('UIScene')
+        this.scene.launch('MainGameScene')
+        this.scene.bringToTop('UIScene')
     }
 }
 export default LoadingScene

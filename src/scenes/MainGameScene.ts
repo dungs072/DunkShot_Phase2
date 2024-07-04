@@ -1,70 +1,73 @@
 import { Scene } from 'phaser'
 import GameController from '../game/GameController'
-import CONST from '../Const'
 import ISceneData from '../types/sceneData'
 import ChallengeType from '../types/level/challenge'
-import HandlerScene from './HandlerScene'
+import UIScene from './UIScene'
 class MainGameScene extends Scene {
     private gameController: GameController
+    private uiScene: UIScene
     public deltaTime: number
-    private handlerScene: HandlerScene
     constructor() {
         super({
             key: 'MainGameScene',
         })
     }
     init(data: ISceneData) {
+        this.uiScene = this.game.scene.getScene('UIScene') as UIScene
         if (data.challengeType || data.challengeType == 0) {
-            this.gameController = new GameController(this, data.challengeType)
+            this.gameController = new GameController(
+                this,
+                this.uiScene,
+                data.challengeType
+            )
         } else {
-            this.gameController = new GameController(this, ChallengeType.NONE)
+            this.gameController = new GameController(
+                this,
+                this.uiScene,
+                ChallengeType.NONE
+            )
         }
     }
     preload() {
-        // initialize background
-        const mainGameBackground = this.add.image(0, 0, 'bg').setOrigin(0)
-        mainGameBackground.setDisplaySize(CONST.WIDTH_SIZE, CONST.HEIGHT_SIZE)
-        mainGameBackground.setScale(
-            CONST.WIDTH_SIZE / mainGameBackground.width,
-            CONST.HEIGHT_SIZE / mainGameBackground.height
-        )
-        mainGameBackground.setScrollFactor(0, 0)
-        const bricks = this.add.image(0, 0, 'bgbricks').setOrigin(0)
-        bricks.setDisplaySize(CONST.WIDTH_SIZE, CONST.HEIGHT_SIZE)
-        bricks.setScale(
-            CONST.WIDTH_SIZE / bricks.width,
-            CONST.HEIGHT_SIZE / bricks.height
-        )
-        bricks.setScrollFactor(0, 0)
-
         this.gameController.initialize()
-
-        // this = this.game.screenBaseSize.width
-        // this.height = this.game.screenBaseSize.height
-
-        // this.handlerScene = this.scene.get('handler')
-        // this.handlerScene.sceneRunning = 'preload'
     }
     create() {
         this.events.on('shutdown', this.handleShutdown, this)
+        this.resize()
         window.addEventListener('resize', () => {
-            this.resizeGame()
-        })
-        window.addEventListener('load', () => {
-            this.resizeGame()
+            this.resize()
         })
     }
+    private resize(): void {
+        const worldHeight = 846
+        const worldWidth = (worldHeight / 846) * 475.875
+
+        let width = window.innerWidth
+        let height = window.innerHeight
+
+        const ratio = 475.875 / 846
+        if (width / ratio > window.innerHeight) {
+            width = height * ratio
+        } else {
+            height = width / ratio
+        }
+
+        this.game.scale.resize(width, height)
+
+        this.game.scene.getScenes().forEach((scene) => {
+            scene.cameras.main.setZoom(width / worldWidth)
+            scene.cameras.main.centerOn(worldWidth / 2, worldHeight / 2)
+        })
+        this.cameras.main.setZoom(width / worldWidth)
+        this.cameras.main.centerOn(worldWidth / 2, worldHeight / 2)
+    }
+
     update(time: number, delta: number) {
         this.gameController.update(delta / 1000)
         this.deltaTime = delta / 1000
     }
     private handleShutdown(): void {
         this.gameController.deleteEvents()
-    }
-    private resizeGame() {
-        console.log('hehe')
-        const zoomFactor = this.scale.height / CONST.HEIGHT_SIZE
-        this.cameras.main.setZoom(zoomFactor)
     }
 }
 

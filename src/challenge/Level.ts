@@ -50,8 +50,9 @@ class Level {
         })
 
         this.obstacleTileObjs.forEach((obstacle) => {
-            obstacle.y = CONST.HEIGHT_SIZE - obstacle.y * devicePixelRatio
-            obstacle.x = obstacle.x * devicePixelRatio - CONST.WIDTH_SIZE / 5.9 //CONST.WIDTH_SIZE / 6.5
+            obstacle.y =
+                CONST.HEIGHT_SIZE - obstacle.y + 0.4 * CONST.HEIGHT_SIZE
+            obstacle.x = obstacle.x - CONST.WIDTH_SIZE / 6.2
             obstacle.setVisible(false)
         })
     }
@@ -59,16 +60,13 @@ class Level {
         return this.currentBasketIndex == this.basketTileObjs?.length
     }
     public getBasketPosX(): number {
-        let value =
-            this.basketTileObjs[this.currentBasketIndex].x * devicePixelRatio
-        value -= 50 * devicePixelRatio
-        console.log(value)
+        let value = this.basketTileObjs[this.currentBasketIndex].x
+        value -= 50
         return value
     }
     public getBasketPosY(): number {
-        let value =
-            this.basketTileObjs[this.currentBasketIndex].y * devicePixelRatio
-        value = CONST.HEIGHT_SIZE - value
+        let value = this.basketTileObjs[this.currentBasketIndex].y
+        value = CONST.HEIGHT_SIZE - value + CONST.HEIGHT_SIZE * 0.4
         return value
     }
     public getBasketRotation(): number {

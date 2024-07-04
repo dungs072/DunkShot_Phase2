@@ -20,7 +20,6 @@ class Button extends Phaser.GameObjects.Container {
         }
     ) {
         super(scene, x, y)
-        this.setScrollFactor(0, 0)
         this.minScalePlayAgainButton = 0.15
         this.background = new Phaser.GameObjects.Sprite(
             this.scene,

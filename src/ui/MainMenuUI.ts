@@ -1,6 +1,7 @@
 import { Scene } from 'phaser'
 import Button from './base/Button'
 import CONST from '../Const'
+import UIScene from '../scenes/UIScene'
 
 class MainMenuUI extends Phaser.GameObjects.Container {
     private titleGame: Phaser.GameObjects.Image
@@ -28,15 +29,15 @@ class MainMenuUI extends Phaser.GameObjects.Container {
     private initUI(): void {
         this.titleGame = new Phaser.GameObjects.Image(
             this.scene,
-            CONST.WIDTH_SIZE / 2,
+            CONST.WIDTH_SIZE * 0.53,
             CONST.HEIGHT_SIZE / 3,
             'dunkshot'
-        ).setScale(0.4)
+        ).setScale(0.3)
 
         this.challengesButton = new Button(
             this.scene,
-            CONST.WIDTH_SIZE / 1.2,
-            CONST.HEIGHT_SIZE / 1.1,
+            CONST.WIDTH_SIZE * 0.8,
+            CONST.HEIGHT_SIZE * 0.8,
             'challenge',
             () => {
                 this.handleChallengeButtonClick()
@@ -45,7 +46,7 @@ class MainMenuUI extends Phaser.GameObjects.Container {
             '',
             500,
             200
-        ).setScale(0.3)
+        ).setScale(0.2)
 
         this.challengesButton.on('pointerout', () => {
             this.handleButtonsOut()
@@ -59,13 +60,11 @@ class MainMenuUI extends Phaser.GameObjects.Container {
             0,
             0,
             'finger'
-        ).setScale(0.5)
+        ).setScale(0.3)
         this.dragIt.rotation = 20 * (Math.PI / 180)
         this.add(this.titleGame)
         this.add(this.dragIt)
         this.add(this.challengesButton)
-        this.setScrollFactor(0, 0)
-        this.challengesButton.setScrollFactor(0, 0)
     }
 
     public setFingerPosition(x: number, y: number): void {
@@ -101,7 +100,9 @@ class MainMenuUI extends Phaser.GameObjects.Container {
     }
     private handleChallengeButtonClick(): void {
         this.isButtonsClick = true
-        this.scene.scene.start('ChallengeSelectionScene')
+        const uiScene = this.scene.scene.get('UIScene') as UIScene
+        uiScene.getMenuUI().toggleMenu(false)
+        this.scene.scene.launch('ChallengeSelectionScene')
     }
     private handleButtonsOut(): void {
         this.isButtonsClick = false

@@ -17,13 +17,12 @@ class PauseUI extends Phaser.GameObjects.Container {
         this.scene.add.existing(this)
         this.scale = 0
         this.alpha = 0
-        this.setScrollFactor(0, 0)
     }
     private initUI(): void {
         const title = new Phaser.GameObjects.Text(
             this.scene,
             0,
-            -200,
+            -CONST.HEIGHT_SIZE * 0.2,
             'PAUSED',
             {
                 fontFamily: 'Arial',
@@ -38,12 +37,12 @@ class PauseUI extends Phaser.GameObjects.Container {
             0,
             0,
             'pausePanel'
-        ).setScale(1)
+        ).setScale(0.7)
 
         this.resumeButton = new Button(
             this.scene,
-            260,
-            -275,
+            CONST.WIDTH_SIZE * 0.4,
+            -CONST.HEIGHT_SIZE * 0.25,
             'closeButton',
             () => {
                 this.resumeButton.emit('resume')
@@ -91,8 +90,6 @@ class PauseUI extends Phaser.GameObjects.Container {
         this.add(this.backMenuButton)
         this.add(this.restartButton)
 
-        // this.backMenuButton.setScrollFactor(0, 0)
-        // this.resumeButton.setScrollFactor(0, 0)
         this.add(title)
     }
     public toggleUI(state: boolean, immediate = false): void {

@@ -3,7 +3,7 @@ import CONST from '../Const'
 import Button from './base/Button'
 
 class MainGameUI extends Phaser.GameObjects.Container {
-    private dataGameText: Phaser.GameObjects.Text
+    //private dataGameText: Phaser.GameObjects.Text
 
     private conditionalText: Phaser.GameObjects.Text
     private challengeLevelText: Phaser.GameObjects.Text
@@ -17,84 +17,79 @@ class MainGameUI extends Phaser.GameObjects.Container {
         this.initButtons()
 
         this.scene.add.existing(this)
-        this.setDataText('0')
+        //this.setDataText('0')
     }
     private initUI(): void {
-        this.dataGameText = new Phaser.GameObjects.Text(
-            this.scene,
-            CONST.WIDTH_SIZE / 2,
-            CONST.HEIGHT_SIZE / 2.5,
-            '999',
-            {
-                fontFamily: 'Arial',
-                color: '#BBB6B5',
-                fontSize: 100,
-                fontStyle: 'bold',
-            }
-        ).setOrigin(0.5)
-        this.setScrollFactor(0, 0)
-        this.add(this.dataGameText)
+        // this.dataGameText = new Phaser.GameObjects.Text(
+        //     this.scene,
+        //     CONST.WIDTH_SIZE * 0.5,
+        //     CONST.HEIGHT_SIZE * 0.4,
+        //     '999',
+        //     {
+        //         fontFamily: 'Arial',
+        //         color: '#BBB6B5',
+        //         fontSize: 100,
+        //         fontStyle: 'bold',
+        //     }
+        // ).setOrigin(0.5)
+        // this.add(this.dataGameText)
 
         this.topPanel = new Phaser.GameObjects.Image(
             this.scene,
-            CONST.WIDTH_SIZE / 2,
-            35,
+            CONST.WIDTH_SIZE * 0.2,
+            CONST.HEIGHT_SIZE * 0.02,
             'bluePanel'
         ).setOrigin(0.5)
         this.topPanel.setScale(1.4, 0.5)
-        this.setScrollFactor(0, 0)
         this.add(this.topPanel)
 
         this.conditionalText = new Phaser.GameObjects.Text(
             this.scene,
-            CONST.WIDTH_SIZE / 2,
-            35,
+            CONST.WIDTH_SIZE * 0.5,
+            CONST.HEIGHT_SIZE * 0.03,
             'Condition',
             {
                 fontFamily: 'Arial',
                 color: '#ffffff',
-                fontSize: 40,
+                fontSize: 30,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
-        this.setScrollFactor(0, 0)
         this.add(this.conditionalText)
 
         this.challengeLevelText = new Phaser.GameObjects.Text(
             this.scene,
-            CONST.WIDTH_SIZE / 4.5,
-            35,
+            CONST.WIDTH_SIZE * 0.25,
+            CONST.HEIGHT_SIZE * 0.03,
             'CHALLENGE 1',
             {
                 fontFamily: 'Arial',
                 color: '#ffffff',
-                fontSize: 20,
+                fontSize: 15,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
-        this.setScrollFactor(0, 0)
         this.add(this.challengeLevelText)
 
         this.numberHoopsText = new Phaser.GameObjects.Text(
             this.scene,
-            CONST.WIDTH_SIZE / 1.2,
-            35,
+            CONST.WIDTH_SIZE * 0.85,
+            CONST.HEIGHT_SIZE * 0.03,
             '0/5 HOOPS',
             {
                 fontFamily: 'Arial',
                 color: '#ffffff',
-                fontSize: 20,
+                fontSize: 15,
                 fontStyle: 'bold',
             }
         ).setOrigin(0.5)
-        this.setScrollFactor(0, 0)
         this.add(this.numberHoopsText)
     }
     private initButtons(): void {
         this.pauseButton = new Button(
             this.scene,
-            50,
-            35,
+            CONST.WIDTH_SIZE * 0.05,
+            CONST.HEIGHT_SIZE * 0.03,
             'pauseButton',
             () => {
                 this.pauseButton.emit('pause')
@@ -103,11 +98,12 @@ class MainGameUI extends Phaser.GameObjects.Container {
             100,
             100
         )
+
         this.add(this.pauseButton)
     }
-    public setDataText(text: string) {
-        this.dataGameText.text = text
-    }
+    // public setDataText(text: string) {
+    //     this.dataGameText.text = text
+    // }
     public setConditionText(text: string) {
         this.conditionalText.text = text
     }
