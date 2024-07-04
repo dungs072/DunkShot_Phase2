@@ -8,7 +8,7 @@
         "dev": "parcel index.html --no-cache --config ./parcel/.parcel.dev --open",
         "build": "parcel build index.html --public-url _relativeroute_ --no-source-maps --log-level error --config ./parcel/.parcel.prod",
         "predeploy": "npm run build",
-        "deploy": "gh-pages -d build"
+        "deploy": "gh-pages -d dist"
     },
     "repository": {
         "type": "git",
