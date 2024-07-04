@@ -28,7 +28,6 @@ class Basket extends Phaser.GameObjects.Container {
     private maxScaleTargetY: number
     private minScaleTargetY: number
 
-    private prePointerX: number
     private preDistance: number
     private canBack: boolean
     private canDrag: boolean
@@ -215,7 +214,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.currentBall = ball
         this.centerContainer.sendToBack(this.currentBall)
         this.toggleAllColliders(false)
-        this.toggleCenterCollider(false)
+        // this.toggleCenterCollider(false)
         this.maxScaleTargetY = 0.6
         this.minScaleTargetY = this.prevNetScaleY
         this.canDrag = true
@@ -281,9 +280,6 @@ class Basket extends Phaser.GameObjects.Container {
             this.y
         )
 
-        // if (this.prePointerX != worldPointer.x) {
-        //     this.preDistance = distance
-        // }
         const gameScene = this.scene
 
         if (gameScene instanceof MainGameScene) {
@@ -295,7 +291,6 @@ class Basket extends Phaser.GameObjects.Container {
             )
         }
 
-        this.prePointerX = worldPointer.x
         this.triggerDragEvent()
     }
     private triggerDragEvent() {
@@ -340,13 +335,6 @@ class Basket extends Phaser.GameObjects.Container {
         } else if (currentDistance < this.preDistance) {
             this.decreaseNetSize(scaleFactor, speed)
         }
-        // if (currentDistance >= 50) {
-        //     this.increaseNetSize(maxScale, scaleFactor, speed)
-        // }
-        // if (this.prePointerY <= currentDistance) {
-        //     this.decreaseNetSize(scaleFactor, 0.1)
-        // }
-        // console.log(currentDistance)
 
         this.preDistance = currentDistance
     }

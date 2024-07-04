@@ -1,6 +1,7 @@
-const HEIGHT_SIZE = 750 * devicePixelRatio
+const HEIGHT_SIZE = innerHeight * devicePixelRatio
+
 let CONST = {
-    WIDTH_SIZE: (2 / 3) * HEIGHT_SIZE,
+    WIDTH_SIZE: 0.82 * HEIGHT_SIZE,
     HEIGHT_SIZE: HEIGHT_SIZE,
 }
 export default CONST

@@ -6,8 +6,8 @@ import ChallengeType from '../types/level/challenge'
 class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Image
     private timeButton: Button
-    private scoreButton: Button
-    private bounceButton: Button
+    // private scoreButton: Button
+    // private bounceButton: Button
     private noAimButton: Button
 
     constructor(scene: Scene) {
@@ -56,7 +56,7 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
         this.timeButton = new Button(
             this.scene,
             150,
-            -105,
+            -50,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.TIME }
@@ -67,37 +67,37 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
             100
         ).setScale(0.5)
 
-        this.scoreButton = new Button(
-            this.scene,
-            150,
-            -35,
-            'buttonbg',
-            () => {
-                // const data = { challengeType: ChallengeType.SCORE }
-                // this.scene.scene.start('MainGameScene', data)
-            },
-            'Score',
-            400,
-            100
-        ).setScale(0.5)
+        // this.scoreButton = new Button(
+        //     this.scene,
+        //     150,
+        //     -35,
+        //     'buttonbg',
+        //     () => {
+        //         // const data = { challengeType: ChallengeType.SCORE }
+        //         // this.scene.scene.start('MainGameScene', data)
+        //     },
+        //     'Score',
+        //     400,
+        //     100
+        // ).setScale(0.5)
 
-        this.bounceButton = new Button(
-            this.scene,
-            150,
-            35,
-            'buttonbg',
-            () => {
-                // const data = { challengeType: ChallengeType.BOUNCE }
-                // this.scene.scene.start('MainGameScene', data)
-            },
-            'Bounce',
-            400,
-            100
-        ).setScale(0.5)
+        // this.bounceButton = new Button(
+        //     this.scene,
+        //     150,
+        //     35,
+        //     'buttonbg',
+        //     () => {
+        //         // const data = { challengeType: ChallengeType.BOUNCE }
+        //         // this.scene.scene.start('MainGameScene', data)
+        //     },
+        //     'Bounce',
+        //     400,
+        //     100
+        // ).setScale(0.5)
         this.noAimButton = new Button(
             this.scene,
             150,
-            105,
+            50,
             'buttonbg',
             () => {
                 const data = { challengeType: ChallengeType.NO_AIM }
@@ -110,8 +110,8 @@ class SelectionChallengeMenuUI extends Phaser.GameObjects.Container {
 
         this.add(this.background)
         this.add(this.timeButton)
-        this.add(this.scoreButton)
-        this.add(this.bounceButton)
+        // this.add(this.scoreButton)
+        // this.add(this.bounceButton)
         this.add(this.noAimButton)
         this.add(backMenu)
         this.add(title)
