@@ -67,6 +67,7 @@ class Basket extends Phaser.GameObjects.Container {
         this.setDepth(14)
         this.scene.add.existing(this)
         this.canDrag = false
+        this.scale
     }
     private setUpNetColliders(): void {
         for (let i = -60; i <= 60; i = i + 30) {
