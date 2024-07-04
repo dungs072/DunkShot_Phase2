@@ -29,6 +29,7 @@ class Basket extends Phaser.GameObjects.Container {
     private minScaleTargetY: number
 
     private preDistance: number
+    private prePosX: number
     private canBack: boolean
     private canDrag: boolean
     private hasCollider: boolean
@@ -279,16 +280,14 @@ class Basket extends Phaser.GameObjects.Container {
             this.x,
             this.y
         )
-
+        // if (Math.abs(this.prePosX - worldPointer.x) < 20) {
+        //     this.preDistance = distance
+        // }
+        // this.prePosX = worldPointer.x
         const gameScene = this.scene
 
         if (gameScene instanceof MainGameScene) {
-            this.bounceNet(
-                0.6,
-                scaleFactor,
-                distance,
-                100 * gameScene.deltaTime
-            )
+            this.bounceNet(0.6, scaleFactor, distance, 70 * gameScene.deltaTime)
         }
 
         this.triggerDragEvent()
@@ -333,7 +332,7 @@ class Basket extends Phaser.GameObjects.Container {
         if (currentDistance > this.preDistance) {
             this.increaseNetSize(maxScale, scaleFactor, speed)
         } else if (currentDistance < this.preDistance) {
-            this.decreaseNetSize(scaleFactor, speed)
+            this.decreaseNetSize(scaleFactor, speed * 1.3)
         }
 
         this.preDistance = currentDistance
@@ -368,6 +367,9 @@ class Basket extends Phaser.GameObjects.Container {
 
     private handleDragEnd(): void {
         if (!this.canDrag) {
+            return
+        }
+        if (this.net.scaleY < 0.415) {
             return
         }
         this.turnOffTrajectoryPath()
