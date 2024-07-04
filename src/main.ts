@@ -43,13 +43,7 @@ const config: Types.Core.GameConfig = {
             debug: false,
         },
     },
-    scene: [
-        HandlerScene,
-        BoostScene,
-        LoadingScene,
-        MainGameScene,
-        ChallengeSelectionScene,
-    ],
+    scene: [BoostScene, LoadingScene, MainGameScene, ChallengeSelectionScene],
 }
 const game = new Game(config)
 export default game
