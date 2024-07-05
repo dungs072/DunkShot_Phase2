@@ -1,5 +1,5 @@
 import Utils from '../Utils'
-import game from '../main'
+import CONST from '../const/const'
 import IImageConstructor from '../types/image'
 import HitEffect from './HitEffect'
 class Ball extends Phaser.GameObjects.Container {
@@ -33,8 +33,8 @@ class Ball extends Phaser.GameObjects.Container {
 
     constructor(params: IImageConstructor) {
         super(params.scene, params.x, params.y)
-        this.forceAmount = 1200
-        this.rotationSpeed = 15
+        this.forceAmount = CONST.BALL.FORCEAMOUNT
+        this.rotationSpeed = CONST.BALL.ROTATIONSPEED
         this.initImage(params.texture, params.frame)
         this.initPhysic()
         this.initEffects()
@@ -58,8 +58,8 @@ class Ball extends Phaser.GameObjects.Container {
         this.ballModel.setOrigin(0.5, 0.5)
         this.add(this.ballModel)
 
-        this.setDepth(12)
-        this.setScale(0.2)
+        this.setDepth(CONST.BALL.DEPTH)
+        this.setScale(CONST.BALL.SCALE)
     }
 
     private initPhysic(): void {

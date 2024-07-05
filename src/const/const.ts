@@ -44,6 +44,7 @@ let CONST = {
         GENERALCOLLIDER: {
             SIZEX: 10,
             SIZEY: 10,
+            BOUNCE: 0,
         },
         HITAREA: {
             POSX: -100,
@@ -51,6 +52,31 @@ let CONST = {
             WIDTH: 200,
             HEIGHT: 300,
         },
+        ANGLE: {
+            SHOOTDEGREE: 270,
+        },
+    },
+    MOVABLEBASKET: {
+        SPEED: 100,
+        MAXDISTANCE: 100,
+        MINDISTANCE: 100,
+    },
+    OBSTACLE: {
+        DEPTH: 5,
+        BOUNCE: 0.5,
+        VERTICALANGLE: 90,
+    },
+    MOVABLEOBSTACLE: {
+        SPEED: 100,
+        MINDISTANCE: 100,
+        MAXDISTANCE: 100,
+    },
+
+    BALL: {
+        FORCEAMOUNT: 1200,
+        ROTATIONSPEED: 15,
+        DEPTH: 12,
+        SCALE: 0.2,
     },
 }
 

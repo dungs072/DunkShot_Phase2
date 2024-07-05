@@ -6,6 +6,7 @@ import LevelManager from '../challenge/LevelManager'
 import ChallengeType from '../types/level/challenge'
 import ChallengeManager from '../challenge/ChallengeManager'
 import MovableBasket from './MovableBasket'
+import CONST from '../const/const'
 class BasketManager {
     public static BasketCollided = new Phaser.Events.EventEmitter()
     private baskets: Basket[]
@@ -285,7 +286,14 @@ class BasketManager {
         }
         let basket
         if (isMovable) {
-            basket = new MovableBasket(this.scene, x, y, isVertical, 100, 100)
+            basket = new MovableBasket(
+                this.scene,
+                x,
+                y,
+                isVertical,
+                CONST.MOVABLEBASKET.MINDISTANCE,
+                CONST.MOVABLEBASKET.MAXDISTANCE
+            )
         } else {
             basket = new Basket(this.scene, x, y)
         }

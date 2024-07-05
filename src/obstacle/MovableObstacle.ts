@@ -1,5 +1,6 @@
 import { Scene } from 'phaser'
 import Obstacle from './Obstacle'
+import CONST from '../const/const'
 
 class MovableObstacle extends Obstacle {
     private maxDistance: number
@@ -17,7 +18,7 @@ class MovableObstacle extends Obstacle {
         minDistance: number
     ) {
         super(scene, x, y, isVertical)
-        this.speed = 100
+        this.speed = CONST.MOVABLEOBSTACLE.SPEED
         this.maxDistance = maxDistance
         this.minDistance = minDistance
         this.startX = this.x

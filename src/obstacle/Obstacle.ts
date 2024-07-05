@@ -1,4 +1,5 @@
 import { Scene } from 'phaser'
+import CONST from '../const/const'
 
 class Obstacle extends Phaser.GameObjects.Image {
     declare body: Phaser.Physics.Arcade.Body
@@ -12,17 +13,17 @@ class Obstacle extends Phaser.GameObjects.Image {
     }
     private initImage(): void {
         this.setOrigin(0.5, 0.5)
-        this.setDepth(5)
+        this.setDepth(CONST.OBSTACLE.DEPTH)
     }
     private initPhysic(): void {
         this.scene.physics.world.enable(this)
         this.body.allowGravity = false
         this.body.immovable = true
-        this.body.setBounce(0.5)
+        this.body.setBounce(CONST.OBSTACLE.BOUNCE)
         if (this.isVertical) {
             this.body.setSize(this.displayWidth, this.displayHeight)
         } else {
-            this.setAngle(90)
+            this.setAngle(CONST.OBSTACLE.VERTICALANGLE)
             this.body.setSize(this.displayHeight, this.displayWidth)
         }
     }

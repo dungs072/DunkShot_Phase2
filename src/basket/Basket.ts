@@ -275,10 +275,8 @@ class Basket extends Phaser.GameObjects.Container {
             worldPointer.x,
             worldPointer.y
         )
-        angle += Phaser.Math.DegToRad(270)
+        angle += Phaser.Math.DegToRad(CONST.BASKET.ANGLE.SHOOTDEGREE)
         this.rotation = angle
-
-        // handle stretch
 
         let scaleFactor = pointer.getDistance() / 100
 
@@ -298,7 +296,12 @@ class Basket extends Phaser.GameObjects.Container {
         const gameScene = this.scene
 
         if (gameScene instanceof MainGameScene) {
-            this.bounceNet(0.6, scaleFactor, distance, 45 * gameScene.deltaTime)
+            this.bounceNet(
+                0.6,
+                scaleFactor,
+                distance,
+                (100 / devicePixelRatio) * gameScene.deltaTime
+            )
         }
 
         this.triggerDragEvent()

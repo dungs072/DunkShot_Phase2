@@ -102,8 +102,8 @@ class ObstacleManager {
                 x,
                 y,
                 isVertical,
-                100,
-                100
+                CONST.MOVABLEOBSTACLE.MINDISTANCE,
+                CONST.MOVABLEOBSTACLE.MAXDISTANCE
             )
         } else {
             newObstacle = new Obstacle(this.scene, x, y, isVertical)
