@@ -3,6 +3,7 @@ let CONST = {
     HEIGHT_SIZE: 846,
 
     BASKET: {
+        DEPTH: 14,
         NET: {
             POSX: 0,
             POSY: 0,
