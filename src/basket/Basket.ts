@@ -218,6 +218,7 @@ class Basket extends Phaser.GameObjects.Container {
             }
         } else {
             this.canDrag = true
+            console.log(this.canDrag)
         }
         if (this.currentBall) {
             this.currentBall.setPosition(0, 0)
@@ -385,7 +386,7 @@ class Basket extends Phaser.GameObjects.Container {
         if (!this.canDrag) {
             return
         }
-        if (this.net.scaleY < 0.415) {
+        if (this.net.scaleY < 0.315) {
             return
         }
         this.turnOffTrajectoryPath()
