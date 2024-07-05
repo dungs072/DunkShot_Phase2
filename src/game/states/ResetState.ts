@@ -3,7 +3,7 @@ import IState from '../../types/state'
 import Ball from '../../player/Ball'
 import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
-import CONST from '../../Const'
+import CONST from '../../const'
 import ChallengeType from '../../types/level/challenge'
 
 class ResetState implements IState {

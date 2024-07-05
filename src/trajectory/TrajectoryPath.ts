@@ -1,7 +1,7 @@
 import { Scene } from 'phaser'
 import Point from './Point'
 import Basket from '../basket/Basket'
-import CONST from '../Const'
+import CONST from '../const'
 import Utils from '../Utils'
 
 class TrajectoryPath {

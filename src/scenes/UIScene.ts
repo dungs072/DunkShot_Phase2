@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import CONST from '../Const'
+import CONST from '../const'
 import MainGameUI from '../ui/MainGameUI'
 import MainMenuUI from '../ui/MainMenuUI'
 import NextLevelUI from '../ui/NextLevelUI'

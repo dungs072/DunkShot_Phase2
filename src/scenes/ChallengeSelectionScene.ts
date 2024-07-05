@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 import SelectionChallengeMenuUI from '../ui/SelectionChallengeMenuUI'
-import CONST from '../Const'
+import CONST from '../const'
 class ChallengeSelectionScene extends Scene {
     constructor() {
         super({

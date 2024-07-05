@@ -1,4 +1,4 @@
-import CONST from '../../Const'
+import CONST from '../../const'
 import Basket from '../../basket/Basket'
 import BasketManager from '../../basket/BasketManager'
 import Ball from '../../player/Ball'

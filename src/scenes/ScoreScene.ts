@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import CONST from '../Const'
+import CONST from '../const'
 
 class ScoreScene extends Scene {
     private scoreText: Phaser.GameObjects.Text

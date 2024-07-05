@@ -193,9 +193,11 @@ class Basket extends Phaser.GameObjects.Container {
         if (this.canBack) {
             this.decreaseNetSize(0.1, 15)
             this.minScaleTargetY = this.maxScaleTargetY
+            this.canDrag = false
             if (this.net.scaleY <= this.prevNetScaleY) {
                 this.canBack = false
                 this.minScaleTargetY = this.prevNetScaleY
+                this.canDrag = true
             }
         } else if (this.minScaleTargetY < this.maxScaleTargetY) {
             this.increaseNetSize(this.maxScaleTargetY, 0.1, 15)
@@ -370,7 +372,7 @@ class Basket extends Phaser.GameObjects.Container {
         if (!this.canDrag) {
             return
         }
-        if (this.net.scaleY < 0.315) {
+        if (this.net.scaleY < 0.415) {
             return
         }
         this.turnOffTrajectoryPath()
@@ -441,40 +443,6 @@ class Basket extends Phaser.GameObjects.Container {
     }
     public toggleBasket(state: boolean): void {
         this.handleToggleBasket(state)
-        // if (state) {
-        //     this.setScale(1)
-        //     this.rim2.setScale(0.4)
-
-        //     // this.setActive(true)
-        //     // this.setVisible(true)
-        //     // this.rim2.setActive(true)
-        //     // this.rim2.setVisible(true)
-        //     // this.scene.tweens.add({
-        //     //     targets: this.rim2,
-        //     //     scale: 0.4,
-        //     //     duration: 500,
-        //     //     ease: 'Power2',
-        //     // })
-        //     // this.scene.tweens.add({
-        //     //     targets: this,
-        //     //     scale: 1,
-        //     //     duration: 500,
-        //     //     ease: 'Power2',
-        //     //     onComplete: () => {
-        //     //         this.handleToggleBasket(state)
-        //     //     },
-        //     // })
-        // } else {
-        //     this.scene.tweens.add({
-        //         targets: [this, this.rim2],
-        //         scale: 0,
-        //         duration: 500,
-        //         ease: 'Power2',
-        //         onComplete: () => {
-        //             this.handleToggleBasket(state)
-        //         },
-        //     })
-        // }
     }
     private handleToggleBasket(state: boolean): void {
         this.x = 1000
