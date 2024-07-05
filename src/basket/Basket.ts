@@ -260,6 +260,22 @@ class Basket extends Phaser.GameObjects.Container {
             pointer.y
         )
 
+        const distance = Phaser.Math.Distance.Between(
+            worldPointer.x,
+            worldPointer.y,
+            this.startPointer.x,
+            this.startPointer.y
+        )
+        let scaleFactor = distance / 100
+
+        if (scaleFactor > 0.3) {
+            scaleFactor = 0.3
+        }
+        if (scaleFactor < 0.05) {
+            scaleFactor = 0
+        }
+
+        const gameScene = this.scene
         let angle = Phaser.Math.Angle.Between(
             this.startPointer.x,
             this.startPointer.y,
@@ -267,26 +283,9 @@ class Basket extends Phaser.GameObjects.Container {
             worldPointer.y
         )
         angle += Phaser.Math.DegToRad(CONST.BASKET.ANGLE.SHOOTDEGREE)
-        this.rotation = angle
-
-        let scaleFactor = pointer.getDistance() / 100
-
-        if (scaleFactor > 0.2) {
-            scaleFactor = 0.2
-        }
-        if (scaleFactor < 0.05) {
-            scaleFactor = 0
-        }
-
-        const distance = Phaser.Math.Distance.Between(
-            worldPointer.x,
-            worldPointer.y,
-            this.startPointer.x,
-            this.startPointer.y
-        )
-        const gameScene = this.scene
 
         if (gameScene instanceof MainGameScene) {
+            this.rotation = angle // gameScene.deltaTime
             this.bounceNet(
                 0.6,
                 scaleFactor,
@@ -334,10 +333,14 @@ class Basket extends Phaser.GameObjects.Container {
         currentDistance: number,
         speed = 1
     ): void {
-        if (currentDistance > this.preDistance) {
+        if (currentDistance > this.preDistance && currentDistance > 50) {
             this.increaseNetSize(maxScale, scaleFactor, speed)
-        } else if (currentDistance < this.preDistance) {
+        }
+        if (currentDistance < this.preDistance && currentDistance < 100) {
             this.decreaseNetSize(scaleFactor, speed)
+        }
+        if (currentDistance < 5) {
+            this.resetNet()
         }
 
         this.preDistance = currentDistance
