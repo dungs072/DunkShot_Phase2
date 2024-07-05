@@ -24,6 +24,7 @@ class BasketManager {
 
     private explosionEffect: Phaser.GameObjects.Sprite
     private complimentText: Phaser.GameObjects.Text
+    private addScoreText: Phaser.GameObjects.Text
     //for time
     private firstDragEnd: boolean = false
 
@@ -67,8 +68,22 @@ class BasketManager {
         )
         this.complimentText.setDepth(5)
         this.complimentText.setVisible(false)
-        // this.complicationText.setVisible(false)
+        this.addScoreText = new Phaser.GameObjects.Text(
+            this.scene,
+            50,
+            0,
+            '+5',
+            {
+                fontFamily: 'Arial',
+                color: '#676663',
+                fontSize: 30,
+                fontStyle: 'bold',
+            }
+        ).setOrigin(0.5)
+        this.addScoreText.setDepth(5)
+        this.addScoreText.setVisible(false)
         this.scene.add.existing(this.complimentText)
+        this.scene.add.existing(this.addScoreText)
         this.initAnimations()
         this.setUpEvents()
     }
@@ -217,9 +232,6 @@ class BasketManager {
 
         const gameObj = other.parentContainer
         if (gameObj instanceof Basket) {
-            if (gameObj.isPerfectThrow()) {
-                this.triggerPerfectText(gameObj)
-            }
             this.toggleExplosionEffect(true, gameObj.x, gameObj.y - 40)
             gameObj.addBall(
                 ball,
@@ -229,6 +241,12 @@ class BasketManager {
 
             if (this.preBasket && this.preBasket != gameObj) {
                 this.preBasket.toggleBasket(false)
+                if (gameObj.isPerfectThrow()) {
+                    this.triggerPerfectText(gameObj)
+                } else {
+                    this.setAddScoreText('+' + gameObj.getScore()?.toString())
+                    this.triggerAddScoreText(gameObj)
+                }
             }
             if (this.preBasket != gameObj) {
                 BasketManager.BasketCollided.emit('basketcollided')
@@ -343,7 +361,29 @@ class BasketManager {
             duration: 500,
             ease: 'Power2',
             yoyo: true,
+            onComplete: () => {
+                this.setAddScoreText('+2')
+                this.triggerAddScoreText(basket)
+            },
         })
+    }
+    private triggerAddScoreText(basket: Basket): void {
+        this.addScoreText.setVisible(true)
+        this.addScoreText.setPosition(basket.x, basket.y - 35)
+        this.scene.tweens.add({
+            targets: this.addScoreText,
+            y: {
+                from: this.addScoreText.y,
+                to: this.addScoreText.y - 35,
+            },
+            alpha: { from: 0, to: 1 },
+            duration: 500,
+            ease: 'Power2',
+            yoyo: true,
+        })
+    }
+    public setAddScoreText(text: string): void {
+        this.addScoreText.text = text
     }
 
     public getBaskets(): Basket[] {

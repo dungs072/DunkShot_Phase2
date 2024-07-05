@@ -218,7 +218,6 @@ class Basket extends Phaser.GameObjects.Container {
             }
         } else {
             this.canDrag = true
-            console.log(this.canDrag)
         }
         if (this.currentBall) {
             this.currentBall.setPosition(0, 0)
@@ -238,15 +237,18 @@ class Basket extends Phaser.GameObjects.Container {
         this.canDrag = false
 
         if (canAddScore) {
-            let count = this.getPointAmount()
-            if (count || count == 0) {
-                if (count <= 0) {
-                    count = 1
-                }
-
-                Basket.eventEmitter.emit('balladded', count)
+            let count = this.getScore()
+            Basket.eventEmitter.emit('balladded', count)
+        }
+    }
+    public getScore(): number | undefined {
+        let count = this.getPointAmount()
+        if (count || count == 0) {
+            if (count <= 0) {
+                count = 1
             }
         }
+        return count
     }
     public removeBalls(): void {
         this.centerContainer.removeAll()
@@ -494,7 +496,7 @@ class Basket extends Phaser.GameObjects.Container {
 
         return count == this.maxPoint
     }
-    private getPointAmount(): number | undefined {
+    public getPointAmount(): number | undefined {
         let count = this.colliderPoints.get(this.topLeftCollider)
         const temp = this.colliderPoints.get(this.topRightCollider)
         if (count) {
