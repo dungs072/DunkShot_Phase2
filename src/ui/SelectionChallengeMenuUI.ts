@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 import Button from './base/Button'
-import CONST from '../const'
+import CONST from '../const/const'
 import ChallengeType from '../types/level/challenge'
 import UIScene from '../scenes/UIScene'
 

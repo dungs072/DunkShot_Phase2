@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 import Button from './base/Button'
-import CONST from '../Const'
+import CONST from '../const/const'
 
 class PauseUI extends Phaser.GameObjects.Container {
     private background: Phaser.GameObjects.Image

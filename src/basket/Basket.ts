@@ -2,6 +2,7 @@ import { Scene } from 'phaser'
 import Ball from '../player/Ball'
 import EmptyColliderGameObject from './EmptyColliderGameObject'
 import MainGameScene from '../scenes/MainGameScene'
+import CONST from '../const/const'
 
 class Basket extends Phaser.GameObjects.Container {
     public static eventEmitter = new Phaser.Events.EventEmitter()
@@ -16,7 +17,6 @@ class Basket extends Phaser.GameObjects.Container {
     private topLeftCollider: EmptyColliderGameObject
     private topRightCollider: EmptyColliderGameObject
     protected centerCollider: EmptyColliderGameObject
-    // private netCollider: EmptyColliderGameObject
 
     private netColliders: Phaser.GameObjects.Container
 
@@ -29,16 +29,12 @@ class Basket extends Phaser.GameObjects.Container {
     private minScaleTargetY: number
 
     private preDistance: number
-    private prePosX: number
     private canBack: boolean
     private canDrag: boolean
     private hasCollider: boolean
 
     private maxPoint: number
     private colliderPoints: Map<EmptyColliderGameObject, number>
-
-    // private line: Phaser.Geom.Line
-    // private graphics: Phaser.GameObjects.Graphics
 
     public getColliders(): Phaser.GameObjects.Group {
         return this.groupColliders
@@ -73,9 +69,12 @@ class Basket extends Phaser.GameObjects.Container {
             const x = i
             const y = (-x * x) / 70 + 30
             const collider = new EmptyColliderGameObject(this.scene, x, y)
-            collider.setSize(10, 10)
+            collider.setSize(
+                CONST.BASKET.GENERALCOLLIDER.SIZEX,
+                CONST.BASKET.GENERALCOLLIDER.SIZEY
+            )
             collider.setOrigin(0.5, 0.5)
-            collider.setBounce(0)
+            collider.setBounce(CONST.BASKET.GENERALCOLLIDER.BOUNCE)
             this.netColliders.add(collider)
             this.groupColliders.add(collider)
         }
@@ -90,68 +89,75 @@ class Basket extends Phaser.GameObjects.Container {
     private initChildren() {
         this.net = new Phaser.GameObjects.Sprite(
             this.scene,
-            0,
-            0,
+            CONST.BASKET.NET.POSX,
+            CONST.BASKET.NET.POSY,
             'net01'
-        ).setScale(0.3)
+        ).setScale(CONST.BASKET.NET.SCALE)
         this.net.setOrigin(0.5, 0.5)
         const rim1 = new Phaser.GameObjects.Sprite(
             this.scene,
-            0,
-            -25,
+            CONST.BASKET.RIM1.POSX,
+            CONST.BASKET.RIM1.POSY,
             'rim01'
-        ).setScale(0.3)
+        ).setScale(CONST.BASKET.RIM1.SCALE)
         rim1.setOrigin(0.5, 0.5)
         this.rim2 = new Phaser.GameObjects.Sprite(
             this.scene,
             this.x,
             this.y,
             'rim02'
-        ).setScale(0.3)
-        this.rim2.setDepth(2)
-        this.rim2.setSize(375, 325)
+        ).setScale(CONST.BASKET.RIM2.SCALE)
+        this.rim2.setDepth(CONST.BASKET.RIM2.DEPTH)
+        this.rim2.setSize(CONST.BASKET.RIM2.SIZEX, CONST.BASKET.RIM2.SIZEY)
         this.rim2.setOrigin(0.5, 0.5)
 
         this.add(this.net)
         this.add(rim1)
 
-        this.topLeftCollider = new EmptyColliderGameObject(this.scene, 50, -30)
-        //this.topLeftCollider.createCircleCollider(10, 10, 30)
-        this.topLeftCollider.setSize(10, 10)
+        this.topLeftCollider = new EmptyColliderGameObject(
+            this.scene,
+            CONST.BASKET.TOPLEFTCOLLIDER.POSX,
+            CONST.BASKET.TOPLEFTCOLLIDER.POSY
+        )
+        this.topLeftCollider.setSize(
+            CONST.BASKET.TOPLEFTCOLLIDER.SIZEX,
+            CONST.BASKET.TOPLEFTCOLLIDER.SIZEY
+        )
         this.topLeftCollider.setOrigin(0.5, 0.5)
 
         this.topRightCollider = new EmptyColliderGameObject(
             this.scene,
-            -50,
-            -30
+            CONST.BASKET.TOPRIGHTCOLLIDER.POSX,
+            CONST.BASKET.TOPRIGHTCOLLIDER.POSY
         )
-        this.topRightCollider.setSize(10, 10)
+        this.topRightCollider.setSize(
+            CONST.BASKET.TOPRIGHTCOLLIDER.SIZEX,
+            CONST.BASKET.TOPRIGHTCOLLIDER.SIZEY
+        )
 
         this.centerCollider = new EmptyColliderGameObject(
             this.scene,
-            0,
-            10
+            CONST.BASKET.CENTERCOLLIDER.POSX,
+            CONST.BASKET.CENTERCOLLIDER.POSY
         ).setOrigin(0.5, 0.5)
-        this.centerCollider.setColliderSize(20, 20)
+        this.centerCollider.setColliderSize(
+            CONST.BASKET.CENTERCOLLIDER.SIZEX,
+            CONST.BASKET.CENTERCOLLIDER.SIZEY
+        )
         this.centerCollider.setIsCenter(true)
-
-        // this.netCollider = new EmptyColliderGameObject(this.scene, 0, 0)
-        // this.netCollider.setColliderSize(60, 40)
 
         this.add(this.topLeftCollider)
         this.add(this.topRightCollider)
         this.add(this.centerCollider)
-        // this.add(this.netCollider)
 
         this.groupColliders.add(this.topLeftCollider)
         this.groupColliders.add(this.topRightCollider)
         this.groupColliders.add(this.centerCollider)
-        // this.groupColliders.add(this.netCollider)
 
         this.centerContainer = new Phaser.GameObjects.Container(
             this.scene,
-            0,
-            -10
+            CONST.BASKET.CENTERCONTAINER.POSX,
+            CONST.BASKET.CENTERCONTAINER.POSY
         )
         this.add(this.centerContainer)
         this.sendToBack(this.centerContainer)
@@ -163,7 +169,12 @@ class Basket extends Phaser.GameObjects.Container {
     }
     private initInput(): void {
         this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(-100, -100, 200, 300),
+            hitArea: new Phaser.Geom.Rectangle(
+                CONST.BASKET.HITAREA.POSX,
+                CONST.BASKET.HITAREA.POSY,
+                CONST.BASKET.HITAREA.WIDTH,
+                CONST.BASKET.HITAREA.HEIGHT
+            ),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             useHandCursor: true,
         })
@@ -242,6 +253,7 @@ class Basket extends Phaser.GameObjects.Container {
         if (!this.canDrag) {
             return
         }
+        this.net.scaleY = CONST.BASKET.NET.SCALE
         this.prevNetY = this.net.y
         this.prevNetScaleY = this.net.scaleY
         this.prevCenterColliderY = this.centerCollider.y
@@ -283,10 +295,6 @@ class Basket extends Phaser.GameObjects.Container {
             this.x,
             this.y
         )
-        // if (Math.abs(this.prePosX - worldPointer.x) < 20) {
-        //     this.preDistance = distance
-        // }
-        // this.prePosX = worldPointer.x
         const gameScene = this.scene
 
         if (gameScene instanceof MainGameScene) {
@@ -438,7 +446,7 @@ class Basket extends Phaser.GameObjects.Container {
         }
     }
     public toggleCenterCollider(state: boolean): void {
-        //this.centerCollider.toggleCollision(state)
+        this.centerCollider.toggleCollision(state)
         // this.netCollider.toggleCollision(!state)
     }
     public toggleBasket(state: boolean): void {

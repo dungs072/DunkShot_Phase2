@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import CONST from '../const'
+import CONST from '../const/const'
 import Button from './base/Button'
 
 class MainGameUI extends Phaser.GameObjects.Container {
