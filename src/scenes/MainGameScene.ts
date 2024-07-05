@@ -3,6 +3,8 @@ import GameController from '../game/GameController'
 import ISceneData from '../types/sceneData'
 import ChallengeType from '../types/level/challenge'
 import UIScene from './UIScene'
+import CONST from '../const/const'
+
 class MainGameScene extends Scene {
     private gameController: GameController
     private uiScene: UIScene
@@ -31,11 +33,49 @@ class MainGameScene extends Scene {
     preload() {
         this.gameController.initialize()
     }
+
     create() {
         this.events.on('shutdown', this.handleShutdown, this)
         this.resize()
         window.addEventListener('resize', () => {
             this.resize()
+        })
+        this.handleInput()
+    }
+    private handleInput(): void {
+        const zone = this.add.zone(0, 0, CONST.WIDTH_SIZE, CONST.HEIGHT_SIZE)
+        zone.setOrigin(0, 0)
+        zone.setScrollFactor(0, 0)
+        zone.setInteractive()
+
+        this.input.setDraggable(zone)
+
+        zone.on('dragstart', (pointer: Phaser.Input.Pointer) => {
+            const basket = this.gameController
+                .getBasketManager()
+                .getCurrentBasket()
+
+            if (basket) {
+                basket.handleDragStart(pointer.x, pointer.y)
+            }
+        })
+
+        zone.on('drag', (pointer: Phaser.Input.Pointer) => {
+            const basket = this.gameController
+                .getBasketManager()
+                .getCurrentBasket()
+            if (basket) {
+                basket.handleDrag(pointer)
+            }
+        })
+
+        zone.on('dragend', (pointer: Phaser.Input.Pointer) => {
+            const basket = this.gameController
+                .getBasketManager()
+                .getCurrentBasket()
+            if (basket) {
+                basket.handleDragEnd()
+            }
         })
     }
     private resize(): void {

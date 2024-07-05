@@ -214,6 +214,7 @@ class GameController {
             this.obstacleManager.createObstacleByLevel()
         })
     }
+
     public deleteEvents(): void {
         BasketManager.BasketCollided.destroy()
         LevelManager.LevelFinished.destroy()

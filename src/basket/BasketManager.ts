@@ -36,8 +36,8 @@ class BasketManager {
     ) {
         this.scene = scene
         this.challengeManager = challengeManager
-        this.maxHeight = 200
-        this.minHeight = 150
+        this.maxHeight = 150
+        this.minHeight = 100
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
 
@@ -121,9 +121,6 @@ class BasketManager {
                 if (distance > 100) {
                     this.baskets[i].toggleAllColliders(true)
                 }
-                this.baskets[i].toggleCenterCollider(
-                    this.ball.y < this.baskets[i].y
-                )
             }
         }
     }
@@ -237,7 +234,6 @@ class BasketManager {
                 ball,
                 this.preBasket != gameObj && this.preBasket != undefined
             )
-            gameObj.setInteractive()
 
             if (this.preBasket && this.preBasket != gameObj) {
                 this.preBasket.toggleBasket(false)
@@ -397,6 +393,9 @@ class BasketManager {
     }
     public isFirstBasket(): boolean {
         return this.firstDragEnd
+    }
+    public getCurrentBasket(): Basket | undefined {
+        return this.preBasket
     }
 }
 export default BasketManager

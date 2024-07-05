@@ -81,8 +81,8 @@ class PlayingState implements IState {
         this.game.getBall().update(delta)
         this.game.getBasketManager().update(delta)
         this.game.getObstacleManager().update(delta)
-        const maxUpBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.4
-        const maxDownBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.55
+        const maxUpBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.5
+        const maxDownBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.8
         if (!this.ball.parentContainer) {
             if (this.ball.y > this.camera.scrollY + CONST.HEIGHT_SIZE * 1.2) {
                 this.game

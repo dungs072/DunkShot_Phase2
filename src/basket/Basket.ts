@@ -34,6 +34,7 @@ class Basket extends Phaser.GameObjects.Container {
     private hasCollider: boolean
 
     private maxPoint: number
+    private startPointer: Phaser.Math.Vector2
     private colliderPoints: Map<EmptyColliderGameObject, number>
 
     public getColliders(): Phaser.GameObjects.Group {
@@ -55,8 +56,8 @@ class Basket extends Phaser.GameObjects.Container {
         this.groupColliders = new Phaser.GameObjects.Group(this.scene)
         this.groupColliders.runChildUpdate = true
         this.netColliders = new Phaser.GameObjects.Container(this.scene, 0, 0)
+        this.startPointer = new Phaser.Math.Vector2(0, 0)
         this.initChildren()
-        this.initInput()
         this.initPhysic()
         this.setUpPoint()
         this.setUpNetColliders()
@@ -167,22 +168,6 @@ class Basket extends Phaser.GameObjects.Container {
         this.minScaleTargetY = this.maxScaleTargetY = 0
         this.canBack = false
     }
-    private initInput(): void {
-        this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(
-                CONST.BASKET.HITAREA.POSX,
-                CONST.BASKET.HITAREA.POSY,
-                CONST.BASKET.HITAREA.WIDTH,
-                CONST.BASKET.HITAREA.HEIGHT
-            ),
-            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
-            useHandCursor: true,
-        })
-        this.scene.input.setDraggable(this)
-        this.on('dragstart', this.handleDragStart, this)
-        this.on('drag', this.handleDrag, this)
-        this.on('dragend', this.handleDragEnd, this)
-    }
 
     private initPhysic(): void {
         this.scene.physics.add.staticGroup()
@@ -254,17 +239,18 @@ class Basket extends Phaser.GameObjects.Container {
         this.centerContainer.removeAll()
     }
 
-    private handleDragStart(): void {
+    public handleDragStart(x: number, y: number): void {
         if (!this.canDrag) {
             return
         }
+        this.startPointer = this.scene.cameras.main.getWorldPoint(x, y)
         this.net.scaleY = CONST.BASKET.NET.SCALE
         this.prevNetY = this.net.y
         this.prevNetScaleY = this.net.scaleY
         this.prevCenterColliderY = this.centerCollider.y
         this.prevCenterContainerY = this.centerContainer.y
     }
-    private handleDrag(pointer: Phaser.Input.Pointer): void {
+    public handleDrag(pointer: Phaser.Input.Pointer): void {
         if (!this.canDrag) {
             return
         }
@@ -275,8 +261,8 @@ class Basket extends Phaser.GameObjects.Container {
         )
 
         let angle = Phaser.Math.Angle.Between(
-            this.x,
-            this.y,
+            this.startPointer.x,
+            this.startPointer.y,
             worldPointer.x,
             worldPointer.y
         )
@@ -295,8 +281,8 @@ class Basket extends Phaser.GameObjects.Container {
         const distance = Phaser.Math.Distance.Between(
             worldPointer.x,
             worldPointer.y,
-            this.x,
-            this.y
+            this.startPointer.x,
+            this.startPointer.y
         )
         const gameScene = this.scene
 
@@ -384,7 +370,7 @@ class Basket extends Phaser.GameObjects.Container {
         }
     }
 
-    private handleDragEnd(): void {
+    public handleDragEnd(): void {
         if (!this.canDrag) {
             return
         }
@@ -453,17 +439,12 @@ class Basket extends Phaser.GameObjects.Container {
             }
         }
     }
-    public toggleCenterCollider(state: boolean): void {
-        //this.centerCollider.toggleCollision(state)
-        // this.netCollider.toggleCollision(!state)
-    }
     public toggleBasket(state: boolean): void {
         this.handleToggleBasket(state)
     }
     private handleToggleBasket(state: boolean): void {
         this.x = 1000
         this.toggleAllColliders(state)
-        this.toggleCenterCollider(state)
         this.rim2.setVisible(state)
         this.rim2.setActive(state)
         this.rotation = 0
