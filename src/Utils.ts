@@ -1,5 +1,5 @@
 class Utils {
-    public static Lerp(
+    public static lerp(
         startValue: number,
         endValue: number,
         t: number

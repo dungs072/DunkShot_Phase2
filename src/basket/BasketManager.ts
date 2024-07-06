@@ -189,9 +189,9 @@ class BasketManager {
         }
         if (Math.random() > 0.75) {
             if (this.isLeft) {
-                basket.setAngle(-30)
+                basket.setAngle(-10)
             } else {
-                basket.setAngle(30)
+                basket.setAngle(10)
             }
         }
 
@@ -247,6 +247,11 @@ class BasketManager {
             }
             if (this.preBasket != gameObj) {
                 BasketManager.BasketCollided.emit('basketcollided')
+                BasketManager.BasketCollided.emit(
+                    'baskettrajectory',
+                    gameObj.x,
+                    gameObj.y
+                )
             }
 
             this.preBasket = gameObj

@@ -4,15 +4,14 @@ import Basket from '../basket/Basket'
 import CONST from '../const/const'
 import Utils from '../Utils'
 
-class TrajectoryPath {
+class TrajectoryPath extends Phaser.GameObjects.Container {
     private points: Point[]
-    private scene: Scene
     private maxPoint: number
     private currentMaxPoint: number
     private forceDown: boolean
     constructor(scene: Scene, maxPoint: number, forceDown = false) {
+        super(scene, 0, 0)
         this.points = []
-        this.scene = scene
         this.maxPoint = maxPoint
         this.currentMaxPoint = maxPoint
         this.forceDown = forceDown
@@ -54,6 +53,12 @@ class TrajectoryPath {
     public setForceDown(state: boolean): void {
         this.forceDown = state
     }
+    public updatePoints(deltaTime: number): void {
+        for (let i = 0; i < this.maxPoint; i++) {
+            if (!this.points[i].active) continue
+            this.points[i].updatePositionByTime(deltaTime)
+        }
+    }
     private drawTrajectory(
         startPosition: Phaser.Math.Vector2,
         velocity: Phaser.Math.Vector2,
@@ -69,7 +74,6 @@ class TrajectoryPath {
                 startPosition,
                 velocity
             )
-
             if (pos.x - this.points[i].displayWidth < 0) {
                 newStartPosition.x = 0
                 newStartPosition.y = pos.y
@@ -83,14 +87,14 @@ class TrajectoryPath {
                 normalVector = new Phaser.Math.Vector2(-1, 0)
                 break
             }
-            this.points[i].setPosition(pos.x, pos.y)
+            this.points[i].setTargetPosition(pos.x, pos.y)
             this.points[i].setPointScale(decreaseCount / this.currentMaxPoint)
             this.points[i].setVisible(true)
             decreaseCount--
         }
         if (normalVector) {
             velocity.y = Math.min(velocity.y + 400, 0)
-            velocity.x = Utils.Lerp(velocity.x, 0, 0.1)
+            velocity.x = Utils.lerp(velocity.x, 0, 0.1)
             const newVelocity = Utils.getReflectionVelocity(
                 velocity,
                 normalVector
@@ -104,7 +108,7 @@ class TrajectoryPath {
                         newStartPosition,
                         newVelocity
                     )
-                    this.points[i].setPosition(pos.x, pos.y)
+                    this.points[i].setTargetPosition(pos.x, pos.y)
                     this.points[i].setVisible(true)
                     j++
                     this.points[i].setPointScale(
@@ -137,6 +141,12 @@ class TrajectoryPath {
     }
     public setCurrentMaxPoint(amount: number): void {
         this.currentMaxPoint = amount > this.maxPoint ? this.maxPoint : amount
+    }
+    public setPointsPosition(x: number, y: number): void {
+        this.points.forEach((point) => {
+            point.setPosition(x, y)
+            point.setTargetPosition(x, y)
+        })
     }
 }
 export default TrajectoryPath

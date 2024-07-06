@@ -39,6 +39,7 @@ class Basket extends Phaser.GameObjects.Container {
     private currentAngle: number
     private scaleFactor: number
     private pointerDistance: number
+    private preWorldPointerY: number
     private startPointer: Phaser.Math.Vector2
     private colliderPoints: Map<EmptyColliderGameObject, number>
 
@@ -288,6 +289,24 @@ class Basket extends Phaser.GameObjects.Container {
             pointer.x,
             pointer.y
         )
+        let angle = Phaser.Math.Angle.Between(
+            this.startPointer.x,
+            this.startPointer.y,
+            worldPointer.x,
+            worldPointer.y
+        )
+        angle += Phaser.Math.DegToRad(CONST.BASKET.ANGLE.SHOOTDEGREE)
+        this.targetAngle = Number(Phaser.Math.RAD_TO_DEG * angle)
+        this.targetAngle = Phaser.Math.Angle.WrapDegrees(this.targetAngle)
+        this.targetAngle = this.targetAngle % 360
+
+        if (this.targetAngle < 0) {
+            this.targetAngle += 360
+        }
+        if (worldPointer.y == this.preWorldPointerY) {
+            return
+        }
+        this.preWorldPointerY = worldPointer.y
 
         this.pointerDistance = Phaser.Math.Distance.Between(
             worldPointer.x,
@@ -302,20 +321,6 @@ class Basket extends Phaser.GameObjects.Container {
         }
         if (this.scaleFactor < 0.05) {
             this.scaleFactor = 0
-        }
-        let angle = Phaser.Math.Angle.Between(
-            this.startPointer.x,
-            this.startPointer.y,
-            worldPointer.x,
-            worldPointer.y
-        )
-        angle += Phaser.Math.DegToRad(CONST.BASKET.ANGLE.SHOOTDEGREE)
-        this.targetAngle = Number(Phaser.Math.RAD_TO_DEG * angle)
-        this.targetAngle = Phaser.Math.Angle.WrapDegrees(this.targetAngle)
-        this.targetAngle = this.targetAngle % 360
-
-        if (this.targetAngle < 0) {
-            this.targetAngle += 360
         }
 
         // const gameScene = this.scene

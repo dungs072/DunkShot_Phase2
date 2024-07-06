@@ -95,7 +95,7 @@ class Ball extends Phaser.GameObjects.Container {
                         this.initialVelocity.y + 400,
                         0
                     )
-                    this.initialVelocity.x = Utils.Lerp(
+                    this.initialVelocity.x = Utils.lerp(
                         this.initialVelocity.x,
                         0,
                         0.1

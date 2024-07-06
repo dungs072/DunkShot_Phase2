@@ -81,6 +81,9 @@ class GameController {
     public getChallengeManager(): ChallengeManager {
         return this.challengeManager
     }
+    public getTrajectory(): TrajectoryPath {
+        return this.trajectory
+    }
 
     public initialize(): void {
         if (!this.challengeManager) {
@@ -101,7 +104,6 @@ class GameController {
     }
     private create(): void {
         this.trajectory = new TrajectoryPath(this.scene, 10)
-
         this.scene.physics.world.setBounds(
             0,
             0,
@@ -213,6 +215,12 @@ class GameController {
         BasketManager.BasketCollided.on('basketcollided', () => {
             this.obstacleManager.createObstacleByLevel()
         })
+        BasketManager.BasketCollided.on(
+            'baskettrajectory',
+            (x: number, y: number) => {
+                this.trajectory.setPointsPosition(x, y)
+            }
+        )
     }
 
     public deleteEvents(): void {
