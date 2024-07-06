@@ -83,7 +83,7 @@ class PlayingState implements IState {
         this.game.getObstacleManager().update(delta)
         this.game.getTrajectory().updatePoints(delta)
         const maxUpBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.5
-        const maxDownBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.8
+        const maxDownBorder = this.camera.scrollY + CONST.HEIGHT_SIZE * 0.6
         if (!this.ball.parentContainer) {
             if (this.ball.y > this.camera.scrollY + CONST.HEIGHT_SIZE * 1.2) {
                 this.game

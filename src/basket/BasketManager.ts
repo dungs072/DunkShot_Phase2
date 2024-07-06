@@ -121,7 +121,7 @@ class BasketManager {
                 if (distance > 100) {
                     this.baskets[i].toggleAllColliders(true)
                 }
-                this.baskets[i].toggleCenterCollider(distance < 100)
+                this.baskets[i].toggleCenterCollider(distance < 50)
             }
         }
     }
@@ -230,6 +230,11 @@ class BasketManager {
 
         const gameObj = other.parentContainer
         if (gameObj instanceof Basket) {
+            BasketManager.BasketCollided.emit(
+                'baskettrajectory',
+                gameObj.x,
+                gameObj.y
+            )
             this.toggleExplosionEffect(true, gameObj.x, gameObj.y - 40)
             gameObj.addBall(
                 ball,
@@ -247,11 +252,6 @@ class BasketManager {
             }
             if (this.preBasket != gameObj) {
                 BasketManager.BasketCollided.emit('basketcollided')
-                BasketManager.BasketCollided.emit(
-                    'baskettrajectory',
-                    gameObj.x,
-                    gameObj.y
-                )
             }
 
             this.preBasket = gameObj

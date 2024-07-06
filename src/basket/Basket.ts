@@ -487,6 +487,8 @@ class Basket extends Phaser.GameObjects.Container {
         this.rim2.setVisible(state)
         this.rim2.setActive(state)
         this.rotation = 0
+        this.targetAngle = 0
+        this.currentAngle = 0
         this.setVisible(state)
         this.setActive(state)
         this.centerContainer.removeAll()
