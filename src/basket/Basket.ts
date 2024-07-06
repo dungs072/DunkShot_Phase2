@@ -208,7 +208,6 @@ class Basket extends Phaser.GameObjects.Container {
             if (this.net.scaleY <= this.prevNetScaleY) {
                 this.canBack = false
                 this.minScaleTargetY = this.prevNetScaleY
-                //console.log(this.canDrag)
             }
         } else if (this.minScaleTargetY < this.maxScaleTargetY) {
             this.increaseNetSize(this.maxScaleTargetY, 0.1, 15)
@@ -259,7 +258,6 @@ class Basket extends Phaser.GameObjects.Container {
         if (!this.canDrag) {
             return
         }
-        //this.centerCollider.toggleCollision(false)
         this.startPointer = this.scene.cameras.main.getWorldPoint(x, y)
         this.net.scaleY = CONST.BASKET.NET.SCALE
         this.prevNetY = this.net.y
@@ -356,8 +354,8 @@ class Basket extends Phaser.GameObjects.Container {
         if (currentDistance > this.preDistance && currentDistance > 50) {
             this.increaseNetSize(maxScale, scaleFactor, speed)
         }
-        if (currentDistance < this.preDistance && currentDistance < 100) {
-            this.decreaseNetSize(scaleFactor, speed)
+        if (currentDistance < this.preDistance && currentDistance < 200) {
+            this.decreaseNetSize(scaleFactor, speed * 0.5)
         }
         if (currentDistance < 5) {
             this.resetNet()
@@ -400,7 +398,6 @@ class Basket extends Phaser.GameObjects.Container {
         if (this.net.scaleY < 0.315) {
             return
         }
-        //this.centerCollider.toggleCollision(true)
         this.currentAngle = this.targetAngle
         this.turnOffTrajectoryPath()
         if (this.net.scaleY <= this.prevNetScaleY) {
