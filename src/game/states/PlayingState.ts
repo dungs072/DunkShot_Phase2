@@ -28,14 +28,12 @@ class PlayingState implements IState {
             this.game.countHoop++
             this.updateHoopsText(this.game.countHoop.toString())
         })
-
-        this.scoreScene = this.game
-            .getScene()
-            .scene.get('ScoreScene') as ScoreScene
     }
     public enter(): void {
         console.log('start Playing state')
-        this.game.getScene().scene.launch('ScoreScene')
+        this.scoreScene = this.game
+            .getScene()
+            .scene.get('ScoreScene') as ScoreScene
         this.game.getGameUI().toggleUI(true)
         this.game
             .getGameUI()
@@ -43,6 +41,8 @@ class PlayingState implements IState {
                 this.game.getChallengeManager().getCurrentChallengeType() !=
                     ChallengeType.NONE
             )
+
+        //this.addScore(this.game.getScoreCalculator().getCurrentScore())
         this.setTime()
         this.setUpLevel()
     }

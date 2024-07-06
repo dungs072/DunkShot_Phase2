@@ -51,6 +51,8 @@ class MainGameScene extends Scene {
         this.input.setDraggable(zone)
 
         zone.on('dragstart', (pointer: Phaser.Input.Pointer) => {
+            if (!this.gameController.getBall().parentContainer) return
+            if (!this.gameController.getCanDrag()) return
             const basket = this.gameController
                 .getBasketManager()
                 .getCurrentBasket()
@@ -61,6 +63,8 @@ class MainGameScene extends Scene {
         })
 
         zone.on('drag', (pointer: Phaser.Input.Pointer) => {
+            if (!this.gameController.getBall().parentContainer) return
+            if (!this.gameController.getCanDrag()) return
             const basket = this.gameController
                 .getBasketManager()
                 .getCurrentBasket()
@@ -70,6 +74,8 @@ class MainGameScene extends Scene {
         })
 
         zone.on('dragend', (pointer: Phaser.Input.Pointer) => {
+            if (!this.gameController.getBall().parentContainer) return
+            if (!this.gameController.getCanDrag()) return
             const basket = this.gameController
                 .getBasketManager()
                 .getCurrentBasket()

@@ -5,6 +5,7 @@ import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
 import CONST from '../../const/const'
 import ChallengeType from '../../types/level/challenge'
+import ScoreScene from '../../scenes/ScoreScene'
 
 class ResetState implements IState {
     private game: GameController
@@ -12,6 +13,7 @@ class ResetState implements IState {
     private basketManager: BasketManager
     private camera: Phaser.Cameras.Scene2D.Camera
     private scoreCalculator: ScoreCalculator
+    private scoreScene: ScoreScene
     constructor(game: GameController) {
         this.game = game
         this.ball = game.getBall()
@@ -21,6 +23,9 @@ class ResetState implements IState {
     }
     public enter(): void {
         console.log('reset state')
+        this.scoreScene = this.game
+            .getScene()
+            .scene.get('ScoreScene') as ScoreScene
         this.resetGame()
         this.game
             .getGameMachine()
@@ -29,23 +34,17 @@ class ResetState implements IState {
     public update(delta: number): void {}
     public exit(): void {
         console.log('end reset state')
-        if (
-            this.game.getScene().scene.isActive('ScoreScene') ||
-            !this.game.getScene().scene.isSleeping('ScoreScene')
-        ) {
-            this.game.getScene().scene.sleep('ScoreScene')
-        }
     }
 
     private resetGame(): void {
         this.game.getChallengeManager().resetCurrentLevel()
         this.camera.scrollY = 0
         this.basketManager.reset()
-        this.basketManager.toggleInteractive(true)
+        this.game.setCanDrag(true)
         this.game.getObstacleManager().reset()
         this.game.getChallengeManager().setChallengeType(ChallengeType.NONE)
         const basket = this.basketManager.createBasket()
-        this.game.getMenuUI().setFingerPosition(basket.x, basket.y)
+        this.game.getMenuUI().setFingerPosition(basket.x, basket.y + 150)
         this.ball.x = basket.x
         this.ball.y = CONST.HEIGHT_SIZE / 2
         this.ball.resetBall()
@@ -53,9 +52,9 @@ class ResetState implements IState {
     }
     private addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
-        // this.game
-        //     .getGameUI()
-        //     .setDataText(this.scoreCalculator.getCurrentScore().toString())
+        this.scoreScene.setScoreText(
+            this.scoreCalculator.getCurrentScore().toString()
+        )
     }
 }
 export default ResetState

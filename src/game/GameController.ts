@@ -30,6 +30,7 @@ class GameController {
     private challengeManager: ChallengeManager
 
     private trajectory: TrajectoryPath
+    private canDrag: boolean
 
     private scene: Scene
     private uiScene: UIScene
@@ -41,6 +42,7 @@ class GameController {
         this.scene = scene
         this.uiScene = uiScene
         this.challengeType = challengeType
+        this.canDrag = true
     }
     public getScene(): Scene {
         return this.scene
@@ -83,6 +85,13 @@ class GameController {
     }
     public getTrajectory(): TrajectoryPath {
         return this.trajectory
+    }
+    public getCanDrag(): boolean {
+        return this.canDrag
+    }
+
+    public setCanDrag(state: boolean): void {
+        this.canDrag = state
     }
 
     public initialize(): void {

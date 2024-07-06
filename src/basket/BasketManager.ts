@@ -112,16 +112,21 @@ class BasketManager {
             if (this.baskets[i] instanceof Basket) {
                 this.baskets[i].update(delta)
                 if (this.baskets[i].getCurrentBall() != undefined) continue
+
+                if (this.ball.parentContainer) continue
                 const distance = Phaser.Math.Distance.Between(
                     this.ball.x,
                     this.ball.y,
                     this.baskets[i].x,
                     this.baskets[i].y
                 )
-                if (distance > 100) {
+                if (distance > 150) {
                     this.baskets[i].toggleAllColliders(true)
                 }
-                this.baskets[i].toggleCenterCollider(distance < 50)
+
+                this.baskets[i].toggleCenterCollider(
+                    distance >= 33 && distance < 150
+                )
             }
         }
     }
@@ -147,8 +152,6 @@ class BasketManager {
         }
 
         level.gotoNextBasket()
-
-        basket.disableInteractive()
         if (!basket.getHasCollider()) {
             this.setUpColliders(basket)
             basket.setHasCollider(true)
@@ -189,9 +192,9 @@ class BasketManager {
         }
         if (Math.random() > 0.75) {
             if (this.isLeft) {
-                basket.setAngle(-10)
+                basket.setAngle(-30)
             } else {
-                basket.setAngle(10)
+                basket.setAngle(30)
             }
         }
 
@@ -319,17 +322,6 @@ class BasketManager {
         }
         this.baskets.push(basket)
         return basket
-    }
-    public toggleInteractive(state: boolean): void {
-        this.baskets.forEach((basket) => {
-            if (basket.active) {
-                if (state) {
-                    basket.setInteractive()
-                } else {
-                    basket.disableInteractive()
-                }
-            }
-        })
     }
     public reset(): void {
         this.prevHeight = this.screenHeight

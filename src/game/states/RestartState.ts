@@ -5,6 +5,7 @@ import BasketManager from '../../basket/BasketManager'
 import ScoreCalculator from '../../player/ScoreCalculator'
 import ChallengeType from '../../types/level/challenge'
 import NextLevelState from './NextLevelState'
+import ScoreScene from '../../scenes/ScoreScene'
 
 class RestartState implements IState {
     private game: GameController
@@ -12,6 +13,7 @@ class RestartState implements IState {
     private basketManager: BasketManager
     private camera: Phaser.Cameras.Scene2D.Camera
     private scoreCalculator: ScoreCalculator
+    private scoreScene: ScoreScene
     constructor(game: GameController) {
         this.game = game
         this.ball = game.getBall()
@@ -21,6 +23,9 @@ class RestartState implements IState {
     }
     public enter(): void {
         console.log('restart state')
+        this.scoreScene = this.game
+            .getScene()
+            .scene.get('ScoreScene') as ScoreScene
         this.restartGame()
         this.game
             .getGameMachine()
@@ -29,12 +34,6 @@ class RestartState implements IState {
     public update(delta: number): void {}
     public exit(): void {
         console.log('end restart state')
-        if (
-            this.game.getScene().scene.isActive('ScoreScene') ||
-            !this.game.getScene().scene.isSleeping('ScoreScene')
-        ) {
-            this.game.getScene().scene.sleep('ScoreScene')
-        }
     }
 
     private restartGame(): void {
@@ -43,7 +42,7 @@ class RestartState implements IState {
         this.game.currentTime = 0
         this.game.countHoop = 0
         this.basketManager.reset()
-        this.basketManager.toggleInteractive(true)
+        this.game.setCanDrag(true)
         this.game.getObstacleManager().reset()
         this.game.getChallengeManager().resetCurrentLevel()
         let basket
@@ -66,9 +65,9 @@ class RestartState implements IState {
     }
     private addScore(amount: number): void {
         this.scoreCalculator.addCurrentScore(amount)
-        // this.game
-        //     .getGameUI()
-        //     .setDataText(this.scoreCalculator.getCurrentScore().toString())
+        this.scoreScene.setScoreText(
+            this.scoreCalculator.getCurrentScore().toString()
+        )
     }
 }
 export default RestartState

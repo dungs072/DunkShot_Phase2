@@ -12,9 +12,9 @@ class LoadingScene extends Scene {
         window.addEventListener('resize', () => {
             this.resize()
         })
+        this.events.on('loading', this.handleLoadData, this)
     }
     preload() {
-        // this.load.image('loadingbg', 'assets/bgs/bg4.png')
         this.add
             .image(CONST.WIDTH_SIZE / 2, CONST.HEIGHT_SIZE / 2, 'prebg')
             .setOrigin(0.5, 0.5)
@@ -22,29 +22,7 @@ class LoadingScene extends Scene {
             .image(CONST.WIDTH_SIZE / 2, CONST.HEIGHT_SIZE / 2, 'logo')
             .setOrigin(0.5, 0.5)
             .setScale(0.5)
-
-        let loadingBarBg = this.add.graphics()
-        loadingBarBg.fillStyle(0x222222, 1)
-        loadingBarBg.fillRect(
-            CONST.WIDTH_SIZE * 0.16,
-            CONST.HEIGHT_SIZE / 1.4,
-            320,
-            50
-        )
-
-        let loadingBarFill = this.add.graphics()
-
-        this.load.on('progress', (value: number) => {
-            loadingBarFill.clear()
-            loadingBarFill.fillStyle(0xffffff, 1)
-            loadingBarFill.fillRect(
-                CONST.WIDTH_SIZE * 0.15 + 10,
-                CONST.HEIGHT_SIZE / 1.4 + 10,
-                300 * value,
-                30
-            )
-        })
-
+        this.events.emit('loading')
         // assets
         this.load.image('bg', 'assets/bgs/bg4.png')
         this.load.image('bgbricks', 'assets/bgs/bgWithBricks.png')
@@ -143,11 +121,35 @@ class LoadingScene extends Scene {
         this.cameras.main.setZoom(width / worldWidth)
         this.cameras.main.centerOn(worldWidth / 2, worldHeight / 2)
     }
+    private handleLoadData(): void {
+        let loadingBarBg = this.add.graphics()
+        loadingBarBg.fillStyle(0x222222, 1)
+        loadingBarBg.fillRect(
+            CONST.WIDTH_SIZE * 0.16,
+            CONST.HEIGHT_SIZE / 1.4,
+            320,
+            50
+        )
+
+        let loadingBarFill = this.add.graphics()
+
+        this.load.on('progress', (value: number) => {
+            loadingBarFill.clear()
+            loadingBarFill.fillStyle(0xffffff, 1)
+            loadingBarFill.fillRect(
+                CONST.WIDTH_SIZE * 0.15 + 10,
+                CONST.HEIGHT_SIZE / 1.4 + 10,
+                300 * value,
+                30
+            )
+        })
+    }
 
     create() {
         this.scene.launch('BackgroundScene')
         this.scene.launch('UIScene')
         this.scene.launch('MainGameScene')
+        this.scene.launch('ScoreScene')
         this.scene.bringToTop('UIScene')
     }
 }

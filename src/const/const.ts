@@ -34,9 +34,9 @@ let CONST = {
         },
         CENTERCOLLIDER: {
             POSX: 0,
-            POSY: 10,
-            SIZEX: 20,
-            SIZEY: 20,
+            POSY: 5,
+            SIZEX: 30,
+            SIZEY: 30,
         },
         CENTERCONTAINER: {
             POSX: 0,
@@ -45,7 +45,7 @@ let CONST = {
         GENERALCOLLIDER: {
             SIZEX: 10,
             SIZEY: 10,
-            BOUNCE: 0,
+            BOUNCE: 0.5,
         },
         HITAREA: {
             POSX: -100,
