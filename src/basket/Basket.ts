@@ -37,6 +37,8 @@ class Basket extends Phaser.GameObjects.Container {
     private maxPoint: number
     private targetAngle: number
     private currentAngle: number
+    private scaleFactor: number
+    private pointerDistance: number
     private startPointer: Phaser.Math.Vector2
     private colliderPoints: Map<EmptyColliderGameObject, number>
 
@@ -190,16 +192,8 @@ class Basket extends Phaser.GameObjects.Container {
     }
 
     public update(deltaTime: number): void {
-        let normalizedCurrentAngle = Utils.normalizeAngle(this.currentAngle)
-        let normalizedTargetAngle = Utils.normalizeAngle(this.targetAngle)
-        let angleDifference = Utils.shortestAngleDifference(
-            normalizedCurrentAngle,
-            normalizedTargetAngle
-        )
-        this.currentAngle += angleDifference * deltaTime * 10
-        this.angle = Utils.normalizeAngle(this.currentAngle)
-        if (Math.abs(angleDifference) >= 0.05) this.triggerDragEvent()
-
+        this.handleRotation(deltaTime)
+        this.handleDragForce(deltaTime)
         this.rim2.rotation = this.rotation
         if (this.canBack) {
             this.decreaseNetSize(0.1, 15)
@@ -222,6 +216,26 @@ class Basket extends Phaser.GameObjects.Container {
             this.currentBall.setPosition(0, 0)
         }
     }
+    private handleRotation(deltaTime: number) {
+        let normalizedCurrentAngle = Utils.normalizeAngle(this.currentAngle)
+        let normalizedTargetAngle = Utils.normalizeAngle(this.targetAngle)
+        let angleDifference = Utils.shortestAngleDifference(
+            normalizedCurrentAngle,
+            normalizedTargetAngle
+        )
+        this.currentAngle += angleDifference * deltaTime * 10
+        this.angle = Utils.normalizeAngle(this.currentAngle)
+        if (Math.abs(angleDifference) >= 0.05) this.triggerDragEvent()
+    }
+    private handleDragForce(deltaTime: number): void {
+        this.bounceNet(
+            0.6,
+            this.scaleFactor,
+            this.pointerDistance,
+            50 * deltaTime
+        )
+    }
+
     public addBall(ball: Ball, canAddScore = true): void {
         this.centerContainer.add(ball)
         ball.setPosition(0, 0)
@@ -275,22 +289,20 @@ class Basket extends Phaser.GameObjects.Container {
             pointer.y
         )
 
-        const distance = Phaser.Math.Distance.Between(
+        this.pointerDistance = Phaser.Math.Distance.Between(
             worldPointer.x,
             worldPointer.y,
             this.startPointer.x,
             this.startPointer.y
         )
-        let scaleFactor = distance / 100
+        this.scaleFactor = this.pointerDistance / 100
 
-        if (scaleFactor > 0.3) {
-            scaleFactor = 0.3
+        if (this.scaleFactor > 0.3) {
+            this.scaleFactor = 0.3
         }
-        if (scaleFactor < 0.05) {
-            scaleFactor = 0
+        if (this.scaleFactor < 0.05) {
+            this.scaleFactor = 0
         }
-
-        const gameScene = this.scene
         let angle = Phaser.Math.Angle.Between(
             this.startPointer.x,
             this.startPointer.y,
@@ -305,14 +317,11 @@ class Basket extends Phaser.GameObjects.Container {
         if (this.targetAngle < 0) {
             this.targetAngle += 360
         }
-        if (gameScene instanceof MainGameScene) {
-            this.bounceNet(
-                0.6,
-                scaleFactor,
-                distance,
-                (100 / devicePixelRatio) * gameScene.deltaTime
-            )
-        }
+
+        // const gameScene = this.scene
+        // if (gameScene instanceof MainGameScene) {
+
+        // }
     }
     private triggerDragEvent() {
         if (this.currentBall) {
@@ -355,7 +364,7 @@ class Basket extends Phaser.GameObjects.Container {
             this.increaseNetSize(maxScale, scaleFactor, speed)
         }
         if (currentDistance < this.preDistance && currentDistance < 200) {
-            this.decreaseNetSize(scaleFactor, speed * 0.5)
+            this.decreaseNetSize(scaleFactor, speed)
         }
         if (currentDistance < 5) {
             this.resetNet()
