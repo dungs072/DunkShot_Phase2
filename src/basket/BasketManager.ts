@@ -121,6 +121,7 @@ class BasketManager {
                 if (distance > 100) {
                     this.baskets[i].toggleAllColliders(true)
                 }
+                this.baskets[i].toggleCenterCollider(distance < 100)
             }
         }
     }

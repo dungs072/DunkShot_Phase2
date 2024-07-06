@@ -16,5 +16,14 @@ class Utils {
             incomeVelocity.y - 2 * normalVector.y * dotValue
         )
     }
+    public static normalizeAngle(angle: number): number {
+        return angle - 360 * Math.floor(angle / 360)
+    }
+
+    public static shortestAngleDifference(from: number, to: number) {
+        let difference = to - from
+        difference = Utils.normalizeAngle(difference + 180) - 180
+        return difference
+    }
 }
 export default Utils

@@ -190,16 +190,15 @@ class Basket extends Phaser.GameObjects.Container {
     }
 
     public update(deltaTime: number): void {
-        if (Math.abs(this.currentAngle - this.targetAngle) > 0.05) {
-            this.currentAngle = Utils.Lerp(
-                this.currentAngle,
-                this.targetAngle,
-                deltaTime * 10
-            )
-            console.log(Number(this.targetAngle))
-            this.angle = this.currentAngle
-            this.triggerDragEvent()
-        }
+        let normalizedCurrentAngle = Utils.normalizeAngle(this.currentAngle)
+        let normalizedTargetAngle = Utils.normalizeAngle(this.targetAngle)
+        let angleDifference = Utils.shortestAngleDifference(
+            normalizedCurrentAngle,
+            normalizedTargetAngle
+        )
+        this.currentAngle += angleDifference * deltaTime * 10
+        this.angle = Utils.normalizeAngle(this.currentAngle)
+        if (Math.abs(angleDifference) >= 0.05) this.triggerDragEvent()
 
         this.rim2.rotation = this.rotation
         if (this.canBack) {
@@ -229,6 +228,7 @@ class Basket extends Phaser.GameObjects.Container {
         ball.setPosition(0, 0)
         ball.toggleStickMode(true)
         ball.toggleTrail(false)
+        this.centerCollider.toggleCollision(false)
         this.currentBall = ball
         this.centerContainer.sendToBack(this.currentBall)
         this.toggleAllColliders(false)
@@ -259,6 +259,7 @@ class Basket extends Phaser.GameObjects.Container {
         if (!this.canDrag) {
             return
         }
+        //this.centerCollider.toggleCollision(false)
         this.startPointer = this.scene.cameras.main.getWorldPoint(x, y)
         this.net.scaleY = CONST.BASKET.NET.SCALE
         this.prevNetY = this.net.y
@@ -300,9 +301,13 @@ class Basket extends Phaser.GameObjects.Container {
         )
         angle += Phaser.Math.DegToRad(CONST.BASKET.ANGLE.SHOOTDEGREE)
         this.targetAngle = Number(Phaser.Math.RAD_TO_DEG * angle)
-        //console.log(this.targetAngle)
+        this.targetAngle = Phaser.Math.Angle.WrapDegrees(this.targetAngle)
+        this.targetAngle = this.targetAngle % 360
+
+        if (this.targetAngle < 0) {
+            this.targetAngle += 360
+        }
         if (gameScene instanceof MainGameScene) {
-            //this.rotation = angle // gameScene.deltaTime
             this.bounceNet(
                 0.6,
                 scaleFactor,
@@ -310,8 +315,6 @@ class Basket extends Phaser.GameObjects.Container {
                 (100 / devicePixelRatio) * gameScene.deltaTime
             )
         }
-
-        //this.triggerDragEvent()
     }
     private triggerDragEvent() {
         if (this.currentBall) {
@@ -397,6 +400,8 @@ class Basket extends Phaser.GameObjects.Container {
         if (this.net.scaleY < 0.315) {
             return
         }
+        //this.centerCollider.toggleCollision(true)
+        this.currentAngle = this.targetAngle
         this.turnOffTrajectoryPath()
         if (this.net.scaleY <= this.prevNetScaleY) {
             this.resetNet()
@@ -416,7 +421,7 @@ class Basket extends Phaser.GameObjects.Container {
 
                 this.currentBall.toggleStickMode(false)
                 this.scene.physics.velocityFromRotation(
-                    this.rotation + (-90 * Math.PI) / 180,
+                    (this.currentAngle - 90) * Phaser.Math.DEG_TO_RAD,
                     forceAmount,
                     this.currentBall.body.velocity
                 )
@@ -458,6 +463,9 @@ class Basket extends Phaser.GameObjects.Container {
                 collider.toggleCollision(state)
             }
         }
+    }
+    public toggleCenterCollider(state: boolean): void {
+        this.centerCollider.toggleCollision(state)
     }
     public toggleBasket(state: boolean): void {
         this.handleToggleBasket(state)
